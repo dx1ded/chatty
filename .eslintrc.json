@@ -1,7 +1,7 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nx"],
+  "plugins": ["@nx", "import"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -18,13 +18,35 @@
               }
             ]
           }
+        ],
+        "import/prefer-default-export": "off",
+        "import/order": [
+          "error",
+          {
+            "groups": [
+              "builtin",
+              "external",
+              "internal",
+              ["sibling", "parent"],
+              "index",
+              "unknown"
+            ]
+          }
         ]
       }
     },
     {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nx/typescript"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-shadow": "off",
+        "@typescript-eslint/no-use-before-define": "off",
+        "@typescript-eslint/lines-between-class-members": "off",
+        "@typescript-eslint/naming-convention": "off",
+        "@typescript-eslint/default-param-last": "off",
+        "@typescript-eslint/no-throw-literal": "off",
+        "@typescript-eslint/no-unused-vars": "warn"
+      }
     },
     {
       "files": ["*.js", "*.jsx"],

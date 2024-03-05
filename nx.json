@@ -33,7 +33,34 @@
       "options": {
         "targetName": "test"
       }
+    },
+    {
+      "plugin": "@nx/vite/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "previewTargetName": "preview",
+        "testTargetName": "test",
+        "serveTargetName": "serve",
+        "serveStaticTargetName": "serve-static"
+      }
     }
   ],
-  "nxCloudAccessToken": "NDgwOWM1YzEtMWZjNy00YjdjLWE3ZjEtNmVlNThjZDM3OTFifHJlYWQtd3JpdGU="
+  "nxCloudAccessToken": "NDgwOWM1YzEtMWZjNy00YjdjLWE3ZjEtNmVlNThjZDM3OTFifHJlYWQtd3JpdGU=",
+  "generators": {
+    "@nx/react": {
+      "application": {
+        "babel": true,
+        "style": "css",
+        "linter": "eslint",
+        "bundler": "vite"
+      },
+      "component": {
+        "style": "css"
+      },
+      "library": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    }
+  }
 }
