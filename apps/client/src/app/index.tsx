@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom"
-import "./styles/index.css"
 import { Auth } from "pages/Auth"
+import "./styles/index.css"
+
 
 export function App() {
   return (

@@ -1,3 +1,3 @@
 export function Auth() {
-  return <div>Auth</div>
+  return <div className="text-blue-400">Auth</div>
 }
