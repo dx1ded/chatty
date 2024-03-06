@@ -1,3 +1,9 @@
+import { useState } from "react"
+import { SignIn } from "./SignIn"
+import { SignUp } from "./SignUp"
+
 export function Auth() {
-  return <div className="text-blue-400">Auth</div>
+  const [hasAccount, setHasAccount] = useState(true)
+
+  return hasAccount ? <SignIn setHasAccount={setHasAccount} /> : <SignUp setHasAccount={setHasAccount} />
 }
