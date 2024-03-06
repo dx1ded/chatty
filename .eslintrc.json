@@ -58,7 +58,8 @@
         "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/default-param-last": "off",
         "@typescript-eslint/no-throw-literal": "off",
-        "@typescript-eslint/no-unused-vars": "warn"
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-non-null-assertion": "off"
       }
     },
     {

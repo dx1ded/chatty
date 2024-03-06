@@ -1,5 +1,5 @@
 import { Done, Close } from "@mui/icons-material"
-import type { ComponentPropsWithoutRef } from "react"
+import { forwardRef, type ComponentPropsWithoutRef } from "react"
 import { Spinner } from "../Spinner"
 
 const inputVariants = {
@@ -19,7 +19,10 @@ interface InputProps extends ComponentPropsWithoutRef<"input"> {
   isLoading?: boolean
 }
 
-export function Input({ className, variant = "primary", isCorrect, isLoading, ...props }: InputProps) {
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  { className, variant = "primary", isCorrect, isLoading, ...props }: InputProps,
+  ref,
+) {
   const inputClassName = `rounded w-full border outline-none ${inputVariants[variant]} ${className || ""}`
 
   if (typeof isCorrect !== "undefined") {
@@ -32,7 +35,7 @@ export function Input({ className, variant = "primary", isCorrect, isLoading, ..
           className={`absolute right-4 top-1/2 flex h-4 w-4 -translate-y-1/2 items-center justify-center rounded-full text-white ${extrasClassName}`}>
           <ExtrasIcon sx={{ width: "0.75rem" }} />
         </div>
-        <input type="text" {...props} className={`${inputClassName} ${!isCorrect ? "border-red-500" : ""}`} />
+        <input ref={ref} type="text" {...props} className={`${inputClassName} ${!isCorrect ? "border-red-500" : ""}`} />
       </div>
     )
   }
@@ -43,10 +46,10 @@ export function Input({ className, variant = "primary", isCorrect, isLoading, ..
         <div className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2">
           <Spinner size={1} />
         </div>
-        <input type="text" {...props} disabled className={inputClassName} />
+        <input ref={ref} type="text" {...props} disabled className={inputClassName} />
       </div>
     )
   }
 
-  return <input type="text" {...props} className={inputClassName} />
-}
+  return <input ref={ref} type="text" {...props} className={inputClassName} />
+})
