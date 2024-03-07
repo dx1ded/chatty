@@ -4,12 +4,14 @@ import z from "zod"
 import { Heading, Subheading } from "shared/ui/Typography"
 import { Input } from "shared/ui/Input"
 import { Button } from "shared/ui/Button"
+import { useAuth } from "shared/model"
 import { SignInSchema, type AuthFormProps } from "../lib"
 import { ErrorMessage } from "./ErrorMessage"
 
 type SignInFields = z.infer<typeof SignInSchema>
 
 export function SignIn({ setHasAccount }: AuthFormProps) {
+  const auth = useAuth()
   const {
     register,
     handleSubmit,
@@ -21,10 +23,11 @@ export function SignIn({ setHasAccount }: AuthFormProps) {
   const submitHandler = (data: SignInFields) => {
     console.log(data)
     console.log("submit!")
+    console.log(auth)
   }
 
   return (
-    <div className="absolute left-1/2 top-1/2 w-full max-w-[26.875rem] -translate-x-1/2 -translate-y-1/2">
+    <div className="absolute left-1/2 top-1/2 max-h-full w-full max-w-[26.875rem] -translate-x-1/2 -translate-y-1/2 p-2.5">
       <div className="mb-12 text-center">
         <Heading className="mb-1.5">Sign in to account</Heading>
         <Subheading>Please, sign in to your account</Subheading>
@@ -36,6 +39,7 @@ export function SignIn({ setHasAccount }: AuthFormProps) {
               type="email"
               className="p-4"
               placeholder="E-mail"
+              autoComplete="off"
               isCorrect={errors.email ? false : undefined}
               {...register("email")}
             />
@@ -46,6 +50,7 @@ export function SignIn({ setHasAccount }: AuthFormProps) {
               type="password"
               className="p-4"
               placeholder="Password"
+              autoComplete="off"
               isCorrect={errors.password ? false : undefined}
               {...register("password")}
             />
@@ -56,7 +61,7 @@ export function SignIn({ setHasAccount }: AuthFormProps) {
           <Button type="submit" className="w-full py-4 uppercase">
             Sign in
           </Button>
-          <button type="button" onClick={() => setHasAccount(false)} className="text-center font-light text-[#ADADAD]">
+          <button type="button" className="text-center font-light text-[#ADADAD]" onClick={() => setHasAccount(false)}>
             Don&apos;t have an account?
           </button>
         </div>

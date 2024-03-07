@@ -15,7 +15,7 @@
         "bundle": false,
         "main": "apps/server/src/main.ts",
         "tsConfig": "apps/server/tsconfig.app.json",
-        "assets": ["apps/server/src/assets"],
+        "assets": [],
         "generatePackageJson": true,
         "esbuildOptions": {
           "sourcemap": true,
@@ -50,6 +50,14 @@
           "buildTarget": "server:build:production"
         }
       }
+    },
+    "build-graphql-types": {
+      "command": "graphql-codegen",
+      "dependsOn": ["^build"]
+    },
+    "serve-graphql-types": {
+      "command": "graphql-codegen --watch",
+      "dependsOn": ["^serve"]
     }
   },
   "tags": []

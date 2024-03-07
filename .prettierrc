@@ -5,6 +5,6 @@
   "singeQuote": false,
   "useTabs": false,
   "bracketSameLine": true,
-  "printWidth": 130,
+  "printWidth": 110,
   "plugins": ["prettier-plugin-tailwindcss"]
 }
