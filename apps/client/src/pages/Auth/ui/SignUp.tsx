@@ -1,29 +1,32 @@
-import _ from "lodash"
 import { Heading, Subheading } from "shared/ui/Typography"
 import { Input } from "shared/ui/Input"
 import { Button } from "shared/ui/Button"
 import z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
-import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, updateProfile } from "firebase/auth"
-import { useAuth } from "shared/model"
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth"
+import { useFirebase } from "shared/model"
 import { generateAvatarByFullName } from "shared/lib"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
+import { useLazyQuery } from "@apollo/client"
+import type { IsEmailUsedQuery } from "graphql/graphql"
 import { AuthFormProps, SignUpSchema } from "../lib"
 import { ErrorMessage } from "./ErrorMessage"
 import { Verification } from "./Verification"
+import { IS_EMAIL_USED } from "../model/queries"
 
 type SignUpFields = z.infer<typeof SignUpSchema>
 
 export function SignUp({ setHasAccount }: AuthFormProps) {
-  const auth = useAuth()
+  const { auth } = useFirebase()
+  const [sendIsEmailUsed, { loading, called, data }] = useLazyQuery<IsEmailUsedQuery>(IS_EMAIL_USED)
   const [isVerification, setIsVerification] = useState(false)
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setError,
     trigger,
   } = useForm<SignUpFields>({
@@ -36,13 +39,9 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
 
     if (!isValid) return
 
-    const methods = await fetchSignInMethodsForEmail(auth, email)
+    const isUsed = await sendIsEmailUsed({ variables: { email } })
 
-    console.log(methods)
-
-    if (!methods.length) return
-
-    console.log("used")
+    if (!isUsed.data?.isEmailUsed) return
 
     setError("email", { message: "E-mail is already used" })
   }, 1000)
@@ -60,7 +59,7 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
 
       setIsVerification(true)
     } catch (e) {
-      console.error(e)
+      /* Catch */
     }
   }
 
@@ -87,9 +86,10 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
                       className="p-4"
                       placeholder="E-mail"
                       autoComplete="off"
-                      isCorrect={errors.email ? false : undefined}
+                      isCorrect={errors.email ? false : called ? !data?.isEmailUsed : undefined}
+                      isLoading={loading}
                       defaultValue={field.value}
-                      onChange={async (e) => {
+                      onChange={(e) => {
                         field.onChange(e)
                         debouncedCheckEmail(e.target.value)
                       }}
@@ -133,10 +133,13 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
               </div>
             </div>
             <div className="flex flex-col items-center gap-7">
-              <Button type="submit" className="w-full py-4 uppercase">
+              <Button type="submit" className="w-full py-4 uppercase" disabled={isSubmitting}>
                 Sign up
               </Button>
-              <button type="button" className="text-center font-light text-[#ADADAD]" onClick={() => setHasAccount(true)}>
+              <button
+                type="button"
+                className="text-center font-light text-[#ADADAD]"
+                onClick={() => setHasAccount(true)}>
                 Already have an account?
               </button>
             </div>

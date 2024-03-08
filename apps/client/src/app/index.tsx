@@ -3,7 +3,10 @@ import { initializeApp } from "firebase/app"
 import { getAuth } from "firebase/auth"
 import { Auth } from "pages/Auth"
 import "./styles/index.css"
-import { FirebaseContext } from "shared/model"
+import { FirebaseProvider } from "shared/model"
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
+import { Main } from "pages/Main"
+import { PrivateRoutes, PublicRoutes } from "./model"
 
 const app = initializeApp({
   apiKey: import.meta.env.VITE_FB_API_KEY,
@@ -16,14 +19,28 @@ const app = initializeApp({
 })
 
 const auth = getAuth(app)
-const defaultValue = { auth }
+const defaultValue = {
+  auth,
+}
+
+const client = new ApolloClient({
+  uri: import.meta.env.VITE_GRAPHQL_URL,
+  cache: new InMemoryCache(),
+})
 
 export function App() {
   return (
-    <FirebaseContext.Provider value={defaultValue}>
-      <Routes>
-        <Route element={<Auth />} path="/" />
-      </Routes>
-    </FirebaseContext.Provider>
+    <ApolloProvider client={client}>
+      <FirebaseProvider value={defaultValue}>
+        <Routes>
+          <Route element={<PublicRoutes />}>
+            <Route element={<Auth />} path="/auth" />
+          </Route>
+          <Route element={<PrivateRoutes />}>
+            <Route element={<Main />} path="/" />
+          </Route>
+        </Routes>
+      </FirebaseProvider>
+    </ApolloProvider>
   )
 }

@@ -4,3 +4,7 @@ type User {
   email: String!
   photoURL: String!
 }
+
+type Query {
+  isEmailUsed(email: String!): Boolean!
+}

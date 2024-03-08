@@ -4,26 +4,34 @@ import z from "zod"
 import { Heading, Subheading } from "shared/ui/Typography"
 import { Input } from "shared/ui/Input"
 import { Button } from "shared/ui/Button"
-import { useAuth } from "shared/model"
+import { useFirebase } from "shared/model"
+import { signInWithEmailAndPassword, type AuthError } from "firebase/auth"
 import { SignInSchema, type AuthFormProps } from "../lib"
 import { ErrorMessage } from "./ErrorMessage"
 
 type SignInFields = z.infer<typeof SignInSchema>
 
 export function SignIn({ setHasAccount }: AuthFormProps) {
-  const auth = useAuth()
+  const { auth } = useFirebase()
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+    setError,
   } = useForm<SignInFields>({
     resolver: zodResolver(SignInSchema),
   })
 
-  const submitHandler = (data: SignInFields) => {
-    console.log(data)
-    console.log("submit!")
-    console.log(auth)
+  const submitHandler = async (data: SignInFields) => {
+    try {
+      await signInWithEmailAndPassword(auth, data.email, data.password)
+    } catch (_e) {
+      const error = _e as AuthError
+
+      if (error.code === "auth/invalid-credential") {
+        setError("email", { message: "Credentials are invalid" })
+      }
+    }
   }
 
   return (
@@ -58,10 +66,13 @@ export function SignIn({ setHasAccount }: AuthFormProps) {
           </div>
         </div>
         <div className="flex flex-col items-center gap-7">
-          <Button type="submit" className="w-full py-4 uppercase">
+          <Button type="submit" className="w-full py-4 uppercase" disabled={isSubmitting}>
             Sign in
           </Button>
-          <button type="button" className="text-center font-light text-[#ADADAD]" onClick={() => setHasAccount(false)}>
+          <button
+            type="button"
+            className="text-center font-light text-[#ADADAD]"
+            onClick={() => setHasAccount(false)}>
             Don&apos;t have an account?
           </button>
         </div>
