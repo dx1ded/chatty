@@ -23,6 +23,10 @@ module.exports = {
       xs: { max: "26.25rem" }, // 420px
       xss: { max: "23.4375rem" }, // 375px
     },
+    boxShadow: {
+      "message-blue": "0 5px 5px 0 rgba(54, 116, 255, 0.2)",
+      "message-white": "0 1px 2px 0 rgba(0, 0, 0, 0.2)",
+    },
   },
   plugins: [],
 }
