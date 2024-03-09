@@ -4,7 +4,7 @@ import z from "zod"
 import { Heading, Subheading } from "shared/ui/Typography"
 import { Input } from "shared/ui/Input"
 import { Button } from "shared/ui/Button"
-import { useFirebase } from "shared/model"
+import { useAppSelector } from "shared/model"
 import { signInWithEmailAndPassword, type AuthError } from "firebase/auth"
 import { SignInSchema, type AuthFormProps } from "../lib"
 import { ErrorMessage } from "./ErrorMessage"
@@ -12,7 +12,7 @@ import { ErrorMessage } from "./ErrorMessage"
 type SignInFields = z.infer<typeof SignInSchema>
 
 export function SignIn({ setHasAccount }: AuthFormProps) {
-  const { auth } = useFirebase()
+  const { auth } = useAppSelector((state) => state.firebase)
   const {
     register,
     handleSubmit,

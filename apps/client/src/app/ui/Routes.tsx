@@ -1,8 +1,8 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom"
-import { useFirebase } from "shared/model"
+import { useAppSelector } from "shared/model"
 
 export function PrivateRoutes() {
-  const { user, isLoading } = useFirebase()
+  const { isLoading, user } = useAppSelector((state) => state.firebase)
 
   if (isLoading) return <Outlet />
 
@@ -10,7 +10,7 @@ export function PrivateRoutes() {
 }
 
 export function PublicRoutes() {
-  const { user, isLoading } = useFirebase()
+  const { isLoading, user } = useAppSelector((state) => state.firebase)
   const location = useLocation()
 
   if (isLoading) return <Outlet />

@@ -5,7 +5,7 @@ import z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth"
-import { useFirebase } from "shared/model"
+import { useAppSelector } from "shared/model"
 import { generateAvatarByFullName } from "shared/lib"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
@@ -19,7 +19,7 @@ import { IS_EMAIL_USED } from "../model/queries"
 type SignUpFields = z.infer<typeof SignUpSchema>
 
 export function SignUp({ setHasAccount }: AuthFormProps) {
-  const { auth } = useFirebase()
+  const { auth } = useAppSelector((state) => state.firebase)
   const [sendIsEmailUsed, { loading, called, data }] = useLazyQuery<IsEmailUsedQuery>(IS_EMAIL_USED)
   const [isVerification, setIsVerification] = useState(false)
   const {

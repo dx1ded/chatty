@@ -1,6 +1,5 @@
-import { useContext } from "react"
-import { FirebaseContext } from "./context"
+import type { AppDispatch, AppStore } from "app/store"
+import { useDispatch, type TypedUseSelectorHook, useSelector } from "react-redux"
 
-export function useFirebase() {
-  return useContext(FirebaseContext)
-}
+export const useAppDispatch: () => AppDispatch = useDispatch
+export const useAppSelector: TypedUseSelectorHook<AppStore> = useSelector
