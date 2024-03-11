@@ -9,18 +9,19 @@ import { useAppSelector } from "shared/model"
 import { generateAvatarByFullName } from "shared/lib"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
-import { useLazyQuery } from "@apollo/client"
-import type { IsEmailUsedQuery } from "graphql/graphql"
+import { useLazyQuery, useMutation } from "@apollo/client"
+import type { CreateUserInput, CreateUserMutation, IsEmailUsedQuery } from "graphql/graphql"
 import { AuthFormProps, SignUpSchema } from "../lib"
 import { ErrorMessage } from "./ErrorMessage"
 import { Verification } from "./Verification"
-import { IS_EMAIL_USED } from "../model/queries"
+import { CREATE_USER, IS_EMAIL_USED } from "../model/queries"
 
 type SignUpFields = z.infer<typeof SignUpSchema>
 
 export function SignUp({ setHasAccount }: AuthFormProps) {
   const { auth } = useAppSelector((state) => state.firebase)
   const [sendIsEmailUsed, { loading, called, data }] = useLazyQuery<IsEmailUsedQuery>(IS_EMAIL_USED)
+  const [createUser] = useMutation<CreateUserMutation, CreateUserInput>(CREATE_USER)
   const [isVerification, setIsVerification] = useState(false)
   const {
     register,
@@ -50,12 +51,22 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
     try {
       const { user } = await createUserWithEmailAndPassword(auth, data.email, data.password)
 
+      const photoURL = generateAvatarByFullName(data.fullName)
+
       await updateProfile(user, {
         displayName: data.fullName,
-        photoURL: generateAvatarByFullName(data.fullName),
+        photoURL,
       })
 
       await sendEmailVerification(user)
+      await createUser({
+        variables: {
+          uid: user.uid,
+          displayName: data.fullName,
+          email: data.email,
+          photoURL,
+        },
+      })
 
       setIsVerification(true)
     } catch (e) {

@@ -5,3 +5,11 @@ export const IS_EMAIL_USED = gql`
     isEmailUsed(email: $email)
   }
 `
+
+export const CREATE_USER = gql`
+  mutation CreateUser($user: CreateUserInput!) {
+    createUser(user: $user) {
+      firebaseId
+    }
+  }
+`

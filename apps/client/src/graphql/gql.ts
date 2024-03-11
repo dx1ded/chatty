@@ -14,6 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  query IsEmailUsed($email: String!) {\n    isEmailUsed(email: $email)\n  }\n": types.IsEmailUsedDocument,
+    "\n  mutation CreateUser($user: CreateUserInput!) {\n    createUser(user: $user) {\n      firebaseId\n    }\n  }\n": types.CreateUserDocument,
 };
 
 /**
@@ -34,6 +35,10 @@ export function gql(source: string): unknown;
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query IsEmailUsed($email: String!) {\n    isEmailUsed(email: $email)\n  }\n"): (typeof documents)["\n  query IsEmailUsed($email: String!) {\n    isEmailUsed(email: $email)\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation CreateUser($user: CreateUserInput!) {\n    createUser(user: $user) {\n      firebaseId\n    }\n  }\n"): (typeof documents)["\n  mutation CreateUser($user: CreateUserInput!) {\n    createUser(user: $user) {\n      firebaseId\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

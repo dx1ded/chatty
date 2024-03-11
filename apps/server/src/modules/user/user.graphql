@@ -1,10 +1,22 @@
 type User {
-  uid: ID!
+  firebaseId: ID!
   displayName: String!
   email: String!
   photoURL: String!
+  online: Boolean!
 }
 
 type Query {
   isEmailUsed(email: String!): Boolean!
+}
+
+type Mutation {
+  createUser(user: CreateUserInput!): User!
+}
+
+input CreateUserInput {
+  uid: ID!
+  displayName: String!
+  email: String!
+  photoURL: String!
 }

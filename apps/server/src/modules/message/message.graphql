@@ -1,0 +1,61 @@
+interface Message {
+  id: ID!
+  author: User!
+  chat: Chat!
+  # Time sent
+  timeStamp: Int!
+  # Whether read or not
+  read: Boolean!
+}
+
+type TextMessage implements Message {
+  id: ID!
+  author: User!
+  chat: Chat!
+  timeStamp: Int!
+  read: Boolean!
+  text: String!
+}
+
+type VoiceMessage implements Message {
+  id: ID!
+  author: User!
+  chat: Chat!
+  timeStamp: Int!
+  read: Boolean!
+  voiceUrl: String!
+}
+
+type PictureMessage implements Message {
+  id: ID!
+  author: User!
+  chat: Chat!
+  timeStamp: Int!
+  read: Boolean!
+  imageUrl: String!
+}
+
+type Mutation {
+  createTextMessage(message: TextMessageInput!): TextMessage!
+  createVoiceMessage(message: VoiceMessageInput!): VoiceMessage!
+  createPictureMessage(message: PictureMessageInput!): PictureMessage!
+}
+
+input MessageInput {
+  chat: ID!
+}
+
+input TextMessageInput {
+  meta: MessageInput!
+  text: String!
+}
+
+input VoiceMessageInput {
+  meta: MessageInput!
+  voiceUrl: String!
+}
+
+input PictureMessageInput {
+  meta: MessageInput!
+  imageUrl: String!
+}
