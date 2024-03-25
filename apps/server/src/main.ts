@@ -1,36 +1,85 @@
 import "dotenv/config"
+import { createServer } from "http"
+import { WebSocketServer } from "ws"
+import express from "express"
+import bodyParser from "body-parser"
+import cors from "cors"
+
 import { ApolloServer } from "@apollo/server"
-import { startStandaloneServer } from "@apollo/server/standalone"
+import { expressMiddleware } from "@apollo/server/express4"
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
+import { useServer } from "graphql-ws/lib/use/ws"
 
 import { initializeApp, cert } from "firebase-admin/app"
 import { getAuth, type DecodedIdToken } from "firebase-admin/auth"
-import { apolloServerOptions } from "./modules"
+import { schema } from "./modules"
+import pubsub from "./modules/pubsub"
 import firebaseCredentials from "./credentials"
 
-const server = new ApolloServer(apolloServerOptions)
-const app = initializeApp({
-  credential: cert(firebaseCredentials),
-})
+async function start() {
+  const app = express()
+  const httpServer = createServer(app)
 
-const auth = getAuth(app)
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/graphql",
+  })
 
-startStandaloneServer(server, {
-  listen: { port: Number(process.env.GRAPHQL_PORT) },
-  context: async ({ req }) => {
-    const token = req.headers.authorization || ""
-    let user: DecodedIdToken | undefined
+  const firebase = initializeApp({
+    credential: cert(firebaseCredentials),
+  })
+  const auth = getAuth(firebase)
 
-    if (token) {
-      try {
-        user = await auth.verifyIdToken(token)
-      } catch (e) {
-        /* empty */
-      }
-    }
+  const serverCleanup = useServer(
+    {
+      schema,
+    },
+    wsServer,
+  )
 
-    return {
-      auth,
-      user,
-    }
-  },
-}).then(({ url }) => console.log(`Server ready at port ${url}`))
+  const server = new ApolloServer({
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose()
+            },
+          }
+        },
+      },
+    ],
+  })
+
+  await server.start()
+
+  app.use(
+    "/graphql",
+    bodyParser.json(),
+    cors<cors.CorsRequest>(),
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const token = req.headers.authorization as string
+        let user: DecodedIdToken | undefined
+
+        if (token) {
+          user = await auth.verifyIdToken(token)
+        }
+
+        return {
+          auth,
+          user,
+          pubsub,
+        }
+      },
+    }),
+  )
+
+  httpServer.listen(Number(process.env.GRAPHQL_PORT), () => {
+    console.log(`Server is listening port ${process.env.GRAPHQL_PORT}`)
+  })
+}
+
+start()

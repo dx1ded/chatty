@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   synchronize: true,
-  entities: ["./entities/**/*.ts"],
+  entities: [`${__dirname}/entities/**/*.js`],
 })
 
 export const userRepository = AppDataSource.getRepository(User)

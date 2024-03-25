@@ -1,16 +1,36 @@
+import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from "@apollo/client"
+import { setContext } from "@apollo/client/link/context"
 import { Route, Routes } from "react-router-dom"
-import { initializeApp } from "firebase/app"
-import { getAuth } from "firebase/auth"
-import { Auth } from "pages/Auth"
-import "./styles/index.css"
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
-import { Main } from "pages/Main"
 import { Provider } from "react-redux"
+import { Auth } from "pages/Auth"
+import { Main } from "pages/Main"
 import { PrivateRoutes, PublicRoutes, OnAuthStateChanged } from "./ui"
 import { store } from "./store"
 
-const client = new ApolloClient({
+import "react-loading-skeleton/dist/skeleton.css"
+import "./styles/index.css"
+
+const httpLink = createHttpLink({
   uri: import.meta.env.VITE_GRAPHQL_URL,
+})
+
+const authLink = setContext(async (_, { headers }) => {
+  let token = await store.getState().firebase.user?.getIdToken()
+
+  if (typeof token === "undefined") {
+    token = ""
+  }
+
+  return {
+    headers: {
+      ...headers,
+      authorization: token,
+    },
+  }
+})
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 })
 
@@ -24,7 +44,7 @@ export function App() {
               <Route element={<Auth />} path="/auth" />
             </Route>
             <Route element={<PrivateRoutes />}>
-              <Route element={<Main />} path="/" />
+              <Route element={<Main />} path="/:id?" />
             </Route>
           </Routes>
         </OnAuthStateChanged>

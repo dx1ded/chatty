@@ -10,7 +10,8 @@ const config: CodegenConfig = {
     "apps/client/src/graphql/": {
       preset: "client",
       presetConfig: {
-        gqlTagName: "gql"
+        gqlTagName: "gql",
+        fragmentMasking: false
       },
     }
   },

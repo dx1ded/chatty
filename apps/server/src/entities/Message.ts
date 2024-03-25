@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from "typeorm"
+import { nanoid } from "nanoid"
+import { Entity, Column, PrimaryColumn, ManyToOne } from "typeorm"
 import type { Message as IMessage } from "../modules/types"
 import { User } from "./User"
 import { Chat } from "./Chat"
@@ -11,12 +12,10 @@ export abstract class Message implements IMessage {
   @Column("text")
   type: string
 
-  @ManyToOne(() => User)
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.messages)
   author: User
 
-  @ManyToOne(() => Chat)
-  @JoinColumn()
+  @ManyToOne(() => Chat, (chat) => chat.messages)
   chat: Chat
 
   @Column("int")
@@ -26,6 +25,7 @@ export abstract class Message implements IMessage {
   read: boolean
 
   constructor(type: string, author: User, chat: Chat) {
+    this.id = nanoid(8)
     this.type = type
     this.author = author
     this.chat = chat

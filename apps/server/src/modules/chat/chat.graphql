@@ -1,14 +1,19 @@
 type Chat {
   id: ID!
-  members: [ID!]!
+  members: [User!]!
   messages: [Message]!
 }
 
 type Query {
-  chat(id: ID!): [Chat]!
+  chat(id: ID!): Chat
   findUserChats(userId: ID!): [Chat]!
 }
 
 type Mutation {
   createChat(members: [ID!]!): Chat
+}
+
+type Subscription {
+  chatList(userId: ID!): Chat!
+  chat(id: ID!): Chat!
 }

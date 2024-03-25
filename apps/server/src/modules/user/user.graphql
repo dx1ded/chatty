@@ -8,6 +8,7 @@ type User {
 
 type Query {
   isEmailUsed(email: String!): Boolean!
+  findUser(payload: String!): [User!]!
 }
 
 type Mutation {

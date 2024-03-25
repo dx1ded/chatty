@@ -1,10 +1,11 @@
 import { join } from "node:path"
 
-import { ApolloServerOptions } from "@apollo/server"
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader"
 import { loadSchemaSync } from "@graphql-tools/load"
 import { loadFilesSync } from "@graphql-tools/load-files"
+import { makeExecutableSchema } from "@graphql-tools/schema"
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge"
+import type { PubSub } from "graphql-subscriptions"
 
 import { type Auth, type DecodedIdToken } from "firebase-admin/auth"
 
@@ -17,9 +18,10 @@ const resolvers = loadFilesSync(join(__dirname, "./**/resolver.js"))
 export interface ApolloContext {
   auth: Auth
   user: DecodedIdToken | undefined
+  pubsub: PubSub
 }
 
-export const apolloServerOptions: ApolloServerOptions<ApolloContext> = {
+export const schema = makeExecutableSchema<ApolloContext>({
   typeDefs: mergeTypeDefs(typeDefs),
   resolvers: mergeResolvers(resolvers),
-}
+})

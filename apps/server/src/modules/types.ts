@@ -19,7 +19,7 @@ export type Scalars = {
 export type Chat = {
   __typename?: 'Chat';
   id: Scalars['ID']['output'];
-  members: Array<Scalars['ID']['output']>;
+  members: Array<User>;
   messages: Array<Maybe<Message>>;
 };
 
@@ -93,7 +93,8 @@ export type PictureMessageInput = {
 
 export type Query = {
   __typename?: 'Query';
-  chat: Array<Maybe<Chat>>;
+  chat?: Maybe<Chat>;
+  findUser: Array<User>;
   findUserChats: Array<Maybe<Chat>>;
   isEmailUsed: Scalars['Boolean']['output'];
 };
@@ -104,6 +105,11 @@ export type QueryChatArgs = {
 };
 
 
+export type QueryFindUserArgs = {
+  payload: Scalars['String']['input'];
+};
+
+
 export type QueryFindUserChatsArgs = {
   userId: Scalars['ID']['input'];
 };
@@ -111,6 +117,22 @@ export type QueryFindUserChatsArgs = {
 
 export type QueryIsEmailUsedArgs = {
   email: Scalars['String']['input'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  chat: Chat;
+  chatList: Chat;
+};
+
+
+export type SubscriptionChatArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type SubscriptionChatListArgs = {
+  userId: Scalars['ID']['input'];
 };
 
 export type TextMessage = Message & {
@@ -239,6 +261,7 @@ export type ResolversTypes = {
   PictureMessageInput: PictureMessageInput;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Subscription: ResolverTypeWrapper<{}>;
   TextMessage: ResolverTypeWrapper<TextMessage>;
   TextMessageInput: TextMessageInput;
   User: ResolverTypeWrapper<User>;
@@ -260,6 +283,7 @@ export type ResolversParentTypes = {
   PictureMessageInput: PictureMessageInput;
   Query: {};
   String: Scalars['String']['output'];
+  Subscription: {};
   TextMessage: TextMessage;
   TextMessageInput: TextMessageInput;
   User: User;
@@ -269,7 +293,7 @@ export type ResolversParentTypes = {
 
 export type ChatResolvers<ContextType = any, ParentType extends ResolversParentTypes['Chat'] = ResolversParentTypes['Chat']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  members?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType>;
+  members?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   messages?: Resolver<Array<Maybe<ResolversTypes['Message']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -302,9 +326,15 @@ export type PictureMessageResolvers<ContextType = any, ParentType extends Resolv
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  chat?: Resolver<Array<Maybe<ResolversTypes['Chat']>>, ParentType, ContextType, RequireFields<QueryChatArgs, 'id'>>;
+  chat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<QueryChatArgs, 'id'>>;
+  findUser?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryFindUserArgs, 'payload'>>;
   findUserChats?: Resolver<Array<Maybe<ResolversTypes['Chat']>>, ParentType, ContextType, RequireFields<QueryFindUserChatsArgs, 'userId'>>;
   isEmailUsed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<QueryIsEmailUsedArgs, 'email'>>;
+};
+
+export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  chat?: SubscriptionResolver<ResolversTypes['Chat'], "chat", ParentType, ContextType, RequireFields<SubscriptionChatArgs, 'id'>>;
+  chatList?: SubscriptionResolver<ResolversTypes['Chat'], "chatList", ParentType, ContextType, RequireFields<SubscriptionChatListArgs, 'userId'>>;
 };
 
 export type TextMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['TextMessage'] = ResolversParentTypes['TextMessage']> = {
@@ -342,6 +372,7 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   PictureMessage?: PictureMessageResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
   TextMessage?: TextMessageResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   VoiceMessage?: VoiceMessageResolvers<ContextType>;
