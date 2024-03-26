@@ -3,7 +3,7 @@ import { setContext } from "@apollo/client/link/context"
 import { Route, Routes } from "react-router-dom"
 import { Provider } from "react-redux"
 import { Auth } from "pages/Auth"
-import { Main } from "pages/Main"
+import { Main, Chat, NoSelected } from "pages/Main"
 import { PrivateRoutes, PublicRoutes, OnAuthStateChanged } from "./ui"
 import { store } from "./store"
 
@@ -15,11 +15,7 @@ const httpLink = createHttpLink({
 })
 
 const authLink = setContext(async (_, { headers }) => {
-  let token = await store.getState().firebase.user?.getIdToken()
-
-  if (typeof token === "undefined") {
-    token = ""
-  }
+  const token = (await store.getState().firebase.user?.getIdToken()) || ""
 
   return {
     headers: {
@@ -44,7 +40,10 @@ export function App() {
               <Route element={<Auth />} path="/auth" />
             </Route>
             <Route element={<PrivateRoutes />}>
-              <Route element={<Main />} path="/:id?" />
+              <Route element={<Main />} path="/">
+                <Route element={<NoSelected />} path="/" />
+                <Route element={<Chat />} path="/chat/:id?" />
+              </Route>
             </Route>
           </Routes>
         </OnAuthStateChanged>

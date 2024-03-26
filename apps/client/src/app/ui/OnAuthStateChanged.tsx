@@ -2,9 +2,10 @@ import { onAuthStateChanged } from "firebase/auth"
 import { useEffect, type ReactNode } from "react"
 import { useAppDispatch, useAppSelector } from "shared/model"
 import { setIsLoading, setUser } from "shared/slices/firebase"
+import { Loader } from "shared/ui/Loader"
 
 export function OnAuthStateChanged({ children }: { children: ReactNode }) {
-  const { auth } = useAppSelector((state) => state.firebase)
+  const { auth, isLoading } = useAppSelector((state) => state.firebase)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -16,5 +17,5 @@ export function OnAuthStateChanged({ children }: { children: ReactNode }) {
     return unsubcribe
   }, [dispatch, auth])
 
-  return children
+  return isLoading ? <Loader /> : children
 }

@@ -20,7 +20,7 @@ const documents = {
     "\n  \n\n  subscription ChatList($userId: ID!) {\n    chatList(userId: $userId) {\n      ...ChatFields\n    }\n  }\n": types.ChatListDocument,
     "\n  query FindUser($payload: String!) {\n    findUser(payload: $payload) {\n      firebaseId\n      displayName\n      photoURL\n    }\n  }\n": types.FindUserDocument,
     "\n  fragment MessageFields on Message {\n    __typename\n    id\n    author {\n      displayName\n      firebaseId\n      online\n      photoURL\n    }\n    read\n    timeStamp\n\n    ... on TextMessage {\n      text\n    }\n\n    ... on VoiceMessage {\n      voiceUrl\n    }\n\n    ... on PictureMessage {\n      imageUrl\n    }\n  }\n": types.MessageFieldsFragmentDoc,
-    "\n  \n\n  fragment ChatFields on Chat {\n    id\n    members {\n      firebaseId\n      displayName\n      online\n    }\n    messages {\n      ...MessageFields\n    }\n  }\n": types.ChatFieldsFragmentDoc,
+    "\n  \n\n  fragment ChatFields on Chat {\n    id\n    members {\n      firebaseId\n      displayName\n      online\n      photoURL\n    }\n    messages {\n      ...MessageFields\n    }\n  }\n": types.ChatFieldsFragmentDoc,
     "\n  \n\n  mutation CreateChat($members: [ID!]!) {\n    createChat(members: $members) {\n      ...ChatFields\n    }\n  }\n": types.CreateChatDocument,
 };
 
@@ -69,7 +69,7 @@ export function gql(source: "\n  fragment MessageFields on Message {\n    __type
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  \n\n  fragment ChatFields on Chat {\n    id\n    members {\n      firebaseId\n      displayName\n      online\n    }\n    messages {\n      ...MessageFields\n    }\n  }\n"): (typeof documents)["\n  \n\n  fragment ChatFields on Chat {\n    id\n    members {\n      firebaseId\n      displayName\n      online\n    }\n    messages {\n      ...MessageFields\n    }\n  }\n"];
+export function gql(source: "\n  \n\n  fragment ChatFields on Chat {\n    id\n    members {\n      firebaseId\n      displayName\n      online\n      photoURL\n    }\n    messages {\n      ...MessageFields\n    }\n  }\n"): (typeof documents)["\n  \n\n  fragment ChatFields on Chat {\n    id\n    members {\n      firebaseId\n      displayName\n      online\n      photoURL\n    }\n    messages {\n      ...MessageFields\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

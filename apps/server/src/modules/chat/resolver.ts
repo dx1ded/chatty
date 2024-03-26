@@ -1,4 +1,4 @@
-import { Raw, In } from "typeorm"
+import { In } from "typeorm"
 import { withFilter } from "graphql-subscriptions"
 import type { ApolloContext } from ".."
 import { chatRepository, userRepository } from "../../database"
@@ -31,14 +31,26 @@ export default {
     chat(_, { id }, { user }) {
       if (!user) return null
 
-      return chatRepository.findOne({ where: { id } })
+      return chatRepository.findOne({
+        relations: ["members", "messages"],
+        where: { id },
+      })
     },
-    findUserChats(_, __, { user }) {
+    async findUserChats(_, __, { user }) {
       if (!user) return []
 
+      // TODO: make it with one query
+
+      const items = await chatRepository.findBy({
+        members: {
+          firebaseId: user.uid,
+        },
+      })
+
       return chatRepository.find({
+        relations: ["members", "messages"],
         where: {
-          members: Raw((alias) => `:id = ANY(${alias})`, { id: user.uid }),
+          id: In(items.map((item) => item.id)),
         },
       })
     },
@@ -59,7 +71,6 @@ export default {
       if (chatExists) return chatExists
 
       const membersFromDb = await userRepository.findBy({ firebaseId: In(members) })
-
       const chat = new Chat()
 
       chat.members = membersFromDb

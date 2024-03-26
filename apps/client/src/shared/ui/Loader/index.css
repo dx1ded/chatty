@@ -1,0 +1,17 @@
+.app-loader {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-loader div {
+  width:3.5rem;
+  height:3.5rem;
+  border-radius:50%;
+  border:10px solid;
+  border-color:#3674FF #0000;
+  animation:s10 1s infinite;
+}
+
+@keyframes s10 {to{transform: rotate(.5turn)}}

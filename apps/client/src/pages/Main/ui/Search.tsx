@@ -9,21 +9,20 @@ import { FIND_USER } from "../model/user.queries"
 
 export function Search() {
   const dispatch = useAppDispatch()
-  const [findUsers, { data }] = useLazyQuery<FindUserQuery, FindUserQueryVariables>(FIND_USER)
+  const [findUsers] = useLazyQuery<FindUserQuery, FindUserQueryVariables>(FIND_USER)
 
   const debouncedSearch = useDebouncedCallback(async (value: string) => {
     if (!value) return dispatch(setResult([]))
 
     dispatch(setIsLoading(true))
 
-    await findUsers({
+    const query = await findUsers({
       variables: { payload: value },
     })
 
-    if (!data) return
-
-    dispatch(setResult(data.findUser))
     dispatch(setIsLoading(false))
+    if (!query.data?.findUser) return
+    dispatch(setResult(query.data.findUser))
   }, 500)
 
   return (

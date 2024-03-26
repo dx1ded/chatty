@@ -1,1 +1,1 @@
-export { Main } from "./ui"
+export * from "./ui"

@@ -3,12 +3,12 @@ import type { FindUserQuery } from "graphql/graphql"
 
 interface SearchState {
   result: FindUserQuery["findUser"]
-  isLoading: boolean | undefined
+  isLoading: boolean
 }
 
 const initialState: SearchState = {
   result: [],
-  isLoading: undefined,
+  isLoading: false,
 }
 
 const searchSlice = createSlice({

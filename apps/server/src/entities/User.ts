@@ -26,7 +26,7 @@ export class User implements IUser {
   @OneToMany(() => Message, (message) => message.author)
   messages: Message[]
 
-  @ManyToMany(() => Chat)
+  @ManyToMany(() => Chat, (chat) => chat.members)
   chats: Chat[]
 
   constructor(firebaseId: string, displayName: string, email: string, photoURL: string, online = false) {

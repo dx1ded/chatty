@@ -13,11 +13,12 @@ export function Sidebar() {
   const { user } = useAppSelector((state) => state.firebase)
   const search = useAppSelector((state) => state.search)
   const { loading, data } = useQuery<GetUserChatsQuery, GetUserChatsQueryVariables>(GET_CHATS, {
+    skip: !user?.uid,
     variables: { userId: user?.uid || "" },
   })
 
   return (
-    <aside className="flex basis-96 flex-col border-r border-[#F7F7F7]">
+    <aside className="flex flex-shrink-0 basis-96 flex-col border-r border-[#F7F7F7]">
       <div className="mb-5 flex h-14 items-center justify-between border-b border-[#F7F7F7] px-5">
         <div className="flex items-center gap-2">
           <GroupOutlined className="text-dark" />
@@ -29,9 +30,9 @@ export function Sidebar() {
       </div>
       <Search />
       <div className="flex-1 overflow-y-auto">
-        {loading || (typeof search.isLoading !== "undefined" && search.isLoading) ? (
+        {loading || search.isLoading ? (
           <Skeleton count={3} height={54} inline containerClassName="flex flex-col gap-2.5 px-5" />
-        ) : search.result ? (
+        ) : search.result.length ? (
           search.result.map((user) => (
             <ProfileCard
               key={user.firebaseId}

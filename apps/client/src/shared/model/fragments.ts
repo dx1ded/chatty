@@ -36,6 +36,7 @@ export const CHAT_FIELDS = gql`
       firebaseId
       displayName
       online
+      photoURL
     }
     messages {
       ...MessageFields
