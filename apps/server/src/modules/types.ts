@@ -95,7 +95,7 @@ export type Query = {
   __typename?: 'Query';
   chat?: Maybe<Chat>;
   findUser: Array<User>;
-  findUserChats: Array<Maybe<Chat>>;
+  findUserChats: Array<Chat>;
   isEmailUsed: Scalars['Boolean']['output'];
 };
 
@@ -328,7 +328,7 @@ export type PictureMessageResolvers<ContextType = any, ParentType extends Resolv
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   chat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<QueryChatArgs, 'id'>>;
   findUser?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryFindUserArgs, 'payload'>>;
-  findUserChats?: Resolver<Array<Maybe<ResolversTypes['Chat']>>, ParentType, ContextType, RequireFields<QueryFindUserChatsArgs, 'userId'>>;
+  findUserChats?: Resolver<Array<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<QueryFindUserChatsArgs, 'userId'>>;
   isEmailUsed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<QueryIsEmailUsedArgs, 'email'>>;
 };
 

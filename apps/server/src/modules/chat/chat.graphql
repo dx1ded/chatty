@@ -6,7 +6,7 @@ type Chat {
 
 type Query {
   chat(id: ID!): Chat
-  findUserChats(userId: ID!): [Chat]!
+  findUserChats(userId: ID!): [Chat!]!
 }
 
 type Mutation {

@@ -1,20 +1,43 @@
-import { useQuery } from "@apollo/client"
+import { useQuery, useSubscription } from "@apollo/client"
 import { GroupOutlined, LaunchOutlined } from "@mui/icons-material"
-import { GetUserChatsQuery, GetUserChatsQueryVariables } from "graphql/graphql"
+import type {
+  GetUserChatsQuery,
+  GetUserChatsQueryVariables,
+  ChatListSubscription,
+  ChatListSubscriptionVariables,
+} from "codegen/graphql"
 import Skeleton from "react-loading-skeleton"
-import { useAppSelector } from "shared/model"
+import { useAppDispatch, useAppSelector } from "shared/model"
 import { Text } from "shared/ui/Typography"
 import { ChatCard } from "shared/ui/ChatCard"
 import { ProfileCard } from "shared/ui/ProfileCard"
-import { GET_CHATS } from "../model/chat.queries"
+import { setChats, setIsLoading } from "shared/slices/chatList"
+import { CHATS_SUBSCRIPTION, GET_CHATS } from "../model/chat.queries"
 import { Search } from "./Search"
 
 export function Sidebar() {
   const { user } = useAppSelector((state) => state.firebase)
   const search = useAppSelector((state) => state.search)
-  const { loading, data } = useQuery<GetUserChatsQuery, GetUserChatsQueryVariables>(GET_CHATS, {
+  const chatList = useAppSelector((state) => state.chatList)
+  const dispatch = useAppDispatch()
+
+  useQuery<GetUserChatsQuery, GetUserChatsQueryVariables>(GET_CHATS, {
     skip: !user?.uid,
     variables: { userId: user?.uid || "" },
+    onCompleted(data) {
+      if (!data.findUserChats) return
+      dispatch(setChats(data.findUserChats))
+      dispatch(setIsLoading(false))
+    },
+  })
+
+  useSubscription<ChatListSubscription, ChatListSubscriptionVariables>(CHATS_SUBSCRIPTION, {
+    variables: { userId: user?.uid || "" },
+    onData(options) {
+      const data = options.data.data?.chatList
+      if (!data) return
+      dispatch(setChats([...chatList.chats, data]))
+    },
   })
 
   return (
@@ -30,7 +53,7 @@ export function Sidebar() {
       </div>
       <Search />
       <div className="flex-1 overflow-y-auto">
-        {loading || search.isLoading ? (
+        {chatList.isLoading || search.isLoading ? (
           <Skeleton count={3} height={54} inline containerClassName="flex flex-col gap-2.5 px-5" />
         ) : search.result.length ? (
           search.result.map((user) => (
@@ -42,7 +65,7 @@ export function Sidebar() {
             />
           ))
         ) : (
-          data?.findUserChats?.map((chat) => <ChatCard key={chat!.id} chat={chat!} uid={user!.uid} />)
+          chatList.chats.map((chat) => <ChatCard key={chat!.id} chat={chat!} uid={user!.uid} />)
         )}
       </div>
     </aside>

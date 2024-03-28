@@ -1,7 +1,7 @@
 import { Done, DoneAll } from "@mui/icons-material"
 import { formatDate } from "shared/lib"
 import { ChatFieldsFragment } from "graphql/graphql"
-import { Link, NavLink } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 import { Text } from "../Typography"
 
 interface ChatCardProps {

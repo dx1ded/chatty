@@ -1,5 +1,8 @@
-import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from "@apollo/client"
+import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache, split } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions"
+import { getMainDefinition } from "@apollo/client/utilities"
+import { createClient } from "graphql-ws"
 import { Route, Routes } from "react-router-dom"
 import { Provider } from "react-redux"
 import { Auth } from "pages/Auth"
@@ -25,8 +28,23 @@ const authLink = setContext(async (_, { headers }) => {
   }
 })
 
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: import.meta.env.VITE_GRAPHQL_WS_URL,
+  }),
+)
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query)
+    return definition.kind === "OperationDefinition" && definition.operation === "subscription"
+  },
+  wsLink,
+  authLink.concat(httpLink),
+)
+
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: splitLink,
   cache: new InMemoryCache(),
 })
 

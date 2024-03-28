@@ -2,7 +2,13 @@ import { In } from "typeorm"
 import { withFilter } from "graphql-subscriptions"
 import type { ApolloContext } from ".."
 import { chatRepository, userRepository } from "../../database"
-import type { Message, Resolvers, SubscriptionChatArgs, SubscriptionChatListArgs } from "../types"
+import type {
+  Message,
+  Resolvers,
+  Subscription,
+  SubscriptionChatArgs,
+  SubscriptionChatListArgs,
+} from "../types"
 import { Chat } from "../../entities/Chat"
 import { TextMessage } from "../../entities/TextMessage"
 import { VoiceMessage } from "../../entities/VoiceMessage"
@@ -78,18 +84,20 @@ export default {
 
       const savedChat = await chatRepository.save(chat)
 
-      await pubsub.publish(CHAT_CREATED, savedChat)
+      await pubsub.publish(CHAT_CREATED, {
+        chatList: savedChat,
+      })
 
       return savedChat
     },
   },
   Subscription: {
     chatList: {
-      subscribe: () => ({
+      subscribe: (_, args: SubscriptionChatListArgs) => ({
         [Symbol.asyncIterator]: withFilter(
-          () => pubsub.asyncIterator([CHAT_CREATED]),
-          (payload: Chat, variables: SubscriptionChatListArgs) => {
-            return payload.members.some((member) => member.firebaseId === variables.userId)
+          () => pubsub.asyncIterator(CHAT_CREATED),
+          (payload: Pick<Subscription, "chatList">) => {
+            return payload.chatList.members.some((member) => member.firebaseId === args.userId)
           },
         ),
       }),

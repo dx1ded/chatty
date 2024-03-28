@@ -2,7 +2,7 @@ import { useMutation } from "@apollo/client"
 import { useNavigate } from "react-router-dom"
 import type { CreateChatMutation, CreateChatMutationVariables } from "graphql/graphql"
 import { useAppDispatch, useAppSelector } from "shared/model"
-import { setIsLoading, setResult } from "shared/slices/chat"
+import { setIsLoading, setChat } from "shared/slices/chat"
 import { Text } from "../Typography"
 import { CREATE_CHAT } from "./model"
 
@@ -32,7 +32,7 @@ export function ProfileCard({ id, name, profilePic }: ProfileCardProps) {
     const result = query.data?.createChat
     if (!result) return
 
-    dispatch(setResult(result))
+    dispatch(setChat(result))
     dispatch(setIsLoading(false))
 
     navigate(`/chat/${result.id}`)
