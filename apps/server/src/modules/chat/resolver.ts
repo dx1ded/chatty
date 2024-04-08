@@ -1,7 +1,7 @@
 import { In } from "typeorm"
 import { withFilter } from "graphql-subscriptions"
 import type { ApolloContext } from ".."
-import { chatRepository, textMessageRepository, userRepository } from "../../database"
+import { chatRepository, userRepository } from "../../database"
 import type {
   Message,
   Resolvers,
