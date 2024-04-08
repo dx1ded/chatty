@@ -1,14 +1,14 @@
 import { In } from "typeorm"
 import { withFilter } from "graphql-subscriptions"
 import type { ApolloContext } from ".."
-import { chatRepository, userRepository } from "../../database"
+import { chatRepository, textMessageRepository, userRepository } from "../../database"
 import type {
   Message,
   Resolvers,
   Subscription,
   SubscriptionChatArgs,
   SubscriptionChatListArgs,
-} from "../types"
+} from "../__generated__"
 import { Chat } from "../../entities/Chat"
 import { TextMessage } from "../../entities/TextMessage"
 import { VoiceMessage } from "../../entities/VoiceMessage"
@@ -34,13 +34,17 @@ export default {
     },
   },
   Query: {
-    chat(_, { id }, { user }) {
+    async chat(_, { id }, { user }) {
       if (!user) return null
 
-      return chatRepository.findOne({
+      const a = await chatRepository.findOne({
         relations: ["members", "messages"],
         where: { id },
       })
+
+      console.log(a)
+
+      return a
     },
     async findUserChats(_, __, { user }) {
       if (!user) return []

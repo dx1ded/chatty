@@ -1,18 +1,23 @@
 import { Done, DoneAll } from "@mui/icons-material"
-import { MessageFieldsFragment } from "graphql/graphql"
+import { FragmentType, getFragment } from "__generated__"
+import { MESSAGE_FIELDS } from "shared/model"
 import { Text } from "../Typography"
 
 interface MessageProps {
-  data: MessageFieldsFragment
+  data: FragmentType<typeof MESSAGE_FIELDS>
   uid: string
 }
 
 export function Message({ data, uid }: MessageProps) {
-  const sentByYou = data.author.firebaseId === uid
+  const message = getFragment(MESSAGE_FIELDS, data)
+
+  console.log(message)
+
+  const sentByYou = message.author.firebaseId === uid
   const messagePreview =
-    data.__typename === "TextMessage"
-      ? data.text
-      : data.__typename === "VoiceMessage"
+    message.__typename === "TextMessage"
+      ? message.text
+      : message.__typename === "VoiceMessage"
         ? "Voice Message"
         : "Picture"
 
@@ -20,7 +25,7 @@ export function Message({ data, uid }: MessageProps) {
     <div
       className={`flex max-w-[30rem] items-end gap-3 first:mt-auto ${sentByYou ? "self-end" : "self-start"}`}>
       {sentByYou ? (
-        data.read ? (
+        message.read ? (
           <DoneAll className="text-cornflower-blue" sx={{ width: "1.1rem", height: "1.1rem" }} />
         ) : (
           <Done className="text-cornflower-blue" sx={{ width: "1.1rem", height: "1.1rem" }} />
@@ -29,7 +34,11 @@ export function Message({ data, uid }: MessageProps) {
         false
       )}
       <div className="h-8 w-8 flex-shrink-0">
-        <img src={data.author.photoURL} alt="Profile" className="h-full w-full rounded-full object-cover" />
+        <img
+          src={message.author.photoURL}
+          alt="Profile"
+          className="h-full w-full rounded-full object-cover"
+        />
       </div>
       <div
         className={`relative rounded-[0.75rem] border p-3.5 ${

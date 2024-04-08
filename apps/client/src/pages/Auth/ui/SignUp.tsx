@@ -10,7 +10,7 @@ import { generateAvatarByFullName } from "shared/lib"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useLazyQuery, useMutation } from "@apollo/client"
-import type { CreateUserMutation, CreateUserMutationVariables, IsEmailUsedQuery } from "graphql/graphql"
+import type { CreateUserMutation, CreateUserMutationVariables, IsEmailUsedQuery } from "__generated__/graphql"
 import { AuthFormProps, SignUpSchema } from "../lib"
 import { ErrorMessage } from "./ErrorMessage"
 import { Verification } from "./Verification"
@@ -50,7 +50,6 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
   const submitHandler = async (data: SignUpFields) => {
     try {
       const { user } = await createUserWithEmailAndPassword(auth, data.email, data.password)
-
       const photoURL = generateAvatarByFullName(data.fullName)
 
       await updateProfile(user, {

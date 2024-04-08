@@ -7,7 +7,7 @@ import { makeExecutableSchema } from "@graphql-tools/schema"
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge"
 import type { PubSub } from "graphql-subscriptions"
 
-import { type Auth, type DecodedIdToken } from "firebase-admin/auth"
+import type { Auth, DecodedIdToken } from "firebase-admin/auth"
 
 const typeDefs = loadSchemaSync("./**/*.graphql", {
   loaders: [new GraphQLFileLoader()],

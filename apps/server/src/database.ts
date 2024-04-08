@@ -2,9 +2,7 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "./entities/User"
 import { Chat } from "./entities/Chat"
-import { TextMessage } from "./entities/TextMessage"
-import { VoiceMessage } from "./entities/VoiceMessage"
-import { PictureMessage } from "./entities/PictureMessage"
+import { Message } from "./entities/Message"
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -19,9 +17,7 @@ export const AppDataSource = new DataSource({
 
 export const userRepository = AppDataSource.getRepository(User)
 export const chatRepository = AppDataSource.getRepository(Chat)
-export const textMessageRepository = AppDataSource.getRepository(TextMessage)
-export const voiceMessageRepository = AppDataSource.getRepository(VoiceMessage)
-export const pictureMessageRepository = AppDataSource.getRepository(PictureMessage)
+export const messageRepository = AppDataSource.getRepository(Message)
 
 AppDataSource.initialize()
   .then(() => console.log("Connected to the DB"))

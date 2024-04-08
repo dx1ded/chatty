@@ -35,7 +35,7 @@ export type Message = {
   chat: Chat;
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
 };
 
 export type MessageInput = {
@@ -45,10 +45,10 @@ export type MessageInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createChat?: Maybe<Chat>;
-  createPictureMessage: PictureMessage;
-  createTextMessage: TextMessage;
+  createPictureMessage?: Maybe<PictureMessage>;
+  createTextMessage?: Maybe<TextMessage>;
   createUser: User;
-  createVoiceMessage: VoiceMessage;
+  createVoiceMessage?: Maybe<VoiceMessage>;
 };
 
 
@@ -83,7 +83,7 @@ export type PictureMessage = Message & {
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
 };
 
 export type PictureMessageInput = {
@@ -142,7 +142,7 @@ export type TextMessage = Message & {
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
   text: Scalars['String']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
 };
 
 export type TextMessageInput = {
@@ -165,7 +165,7 @@ export type VoiceMessage = Message & {
   chat: Chat;
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
   voiceUrl: Scalars['String']['output'];
 };
 
@@ -174,7 +174,8 @@ export type VoiceMessageInput = {
   voiceUrl: Scalars['String']['input'];
 };
 
-
+export type WithIndex<TObject> = TObject & Record<string, any>;
+export type ResolversObject<TObject> = WithIndex<TObject>;
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -243,17 +244,16 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 
 /** Mapping of interface types */
-export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
+export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = ResolversObject<{
   Message: ( PictureMessage ) | ( TextMessage ) | ( VoiceMessage );
-};
+}>;
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = {
+export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Chat: ResolverTypeWrapper<Chat>;
   CreateUserInput: CreateUserInput;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
-  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Message: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Message']>;
   MessageInput: MessageInput;
   Mutation: ResolverTypeWrapper<{}>;
@@ -267,15 +267,14 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>;
   VoiceMessage: ResolverTypeWrapper<VoiceMessage>;
   VoiceMessageInput: VoiceMessageInput;
-};
+}>;
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = {
+export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   Chat: Chat;
   CreateUserInput: CreateUserInput;
   ID: Scalars['ID']['output'];
-  Int: Scalars['Int']['output'];
   Message: ResolversInterfaceTypes<ResolversParentTypes>['Message'];
   MessageInput: MessageInput;
   Mutation: {};
@@ -289,84 +288,84 @@ export type ResolversParentTypes = {
   User: User;
   VoiceMessage: VoiceMessage;
   VoiceMessageInput: VoiceMessageInput;
-};
+}>;
 
-export type ChatResolvers<ContextType = any, ParentType extends ResolversParentTypes['Chat'] = ResolversParentTypes['Chat']> = {
+export type ChatResolvers<ContextType = any, ParentType extends ResolversParentTypes['Chat'] = ResolversParentTypes['Chat']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   members?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   messages?: Resolver<Array<Maybe<ResolversTypes['Message']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type MessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message']> = {
+export type MessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message']> = ResolversObject<{
   __resolveType: TypeResolveFn<'PictureMessage' | 'TextMessage' | 'VoiceMessage', ParentType, ContextType>;
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   chat?: Resolver<ResolversTypes['Chat'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   read?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  timeStamp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-};
+  timeStamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+}>;
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createChat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<MutationCreateChatArgs, 'members'>>;
-  createPictureMessage?: Resolver<ResolversTypes['PictureMessage'], ParentType, ContextType, RequireFields<MutationCreatePictureMessageArgs, 'message'>>;
-  createTextMessage?: Resolver<ResolversTypes['TextMessage'], ParentType, ContextType, RequireFields<MutationCreateTextMessageArgs, 'message'>>;
+  createPictureMessage?: Resolver<Maybe<ResolversTypes['PictureMessage']>, ParentType, ContextType, RequireFields<MutationCreatePictureMessageArgs, 'message'>>;
+  createTextMessage?: Resolver<Maybe<ResolversTypes['TextMessage']>, ParentType, ContextType, RequireFields<MutationCreateTextMessageArgs, 'message'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
-  createVoiceMessage?: Resolver<ResolversTypes['VoiceMessage'], ParentType, ContextType, RequireFields<MutationCreateVoiceMessageArgs, 'message'>>;
-};
+  createVoiceMessage?: Resolver<Maybe<ResolversTypes['VoiceMessage']>, ParentType, ContextType, RequireFields<MutationCreateVoiceMessageArgs, 'message'>>;
+}>;
 
-export type PictureMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['PictureMessage'] = ResolversParentTypes['PictureMessage']> = {
+export type PictureMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['PictureMessage'] = ResolversParentTypes['PictureMessage']> = ResolversObject<{
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   chat?: Resolver<ResolversTypes['Chat'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   read?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  timeStamp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  timeStamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   chat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<QueryChatArgs, 'id'>>;
   findUser?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryFindUserArgs, 'payload'>>;
   findUserChats?: Resolver<Array<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<QueryFindUserChatsArgs, 'userId'>>;
   isEmailUsed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<QueryIsEmailUsedArgs, 'email'>>;
-};
+}>;
 
-export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
   chat?: SubscriptionResolver<ResolversTypes['Chat'], "chat", ParentType, ContextType, RequireFields<SubscriptionChatArgs, 'id'>>;
   chatList?: SubscriptionResolver<ResolversTypes['Chat'], "chatList", ParentType, ContextType, RequireFields<SubscriptionChatListArgs, 'userId'>>;
-};
+}>;
 
-export type TextMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['TextMessage'] = ResolversParentTypes['TextMessage']> = {
+export type TextMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['TextMessage'] = ResolversParentTypes['TextMessage']> = ResolversObject<{
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   chat?: Resolver<ResolversTypes['Chat'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   read?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  timeStamp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  timeStamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   firebaseId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   online?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   photoURL?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type VoiceMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['VoiceMessage'] = ResolversParentTypes['VoiceMessage']> = {
+export type VoiceMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['VoiceMessage'] = ResolversParentTypes['VoiceMessage']> = ResolversObject<{
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   chat?: Resolver<ResolversTypes['Chat'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   read?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  timeStamp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  timeStamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   voiceUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type Resolvers<ContextType = any> = {
+export type Resolvers<ContextType = any> = ResolversObject<{
   Chat?: ChatResolvers<ContextType>;
   Message?: MessageResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
@@ -376,5 +375,5 @@ export type Resolvers<ContextType = any> = {
   TextMessage?: TextMessageResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   VoiceMessage?: VoiceMessageResolvers<ContextType>;
-};
+}>;
 

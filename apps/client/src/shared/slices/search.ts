@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import type { FindUserQuery } from "graphql/graphql"
+import type { FindUserQuery } from "__generated__/graphql"
 
 interface SearchState {
-  result: FindUserQuery["findUser"]
+  items: FindUserQuery["findUser"]
   isLoading: boolean
 }
 
 const initialState: SearchState = {
-  result: [],
+  items: [],
   isLoading: false,
 }
 
@@ -15,8 +15,8 @@ const searchSlice = createSlice({
   name: "search",
   initialState,
   reducers: {
-    setResult: (state, action: PayloadAction<SearchState["result"]>) => {
-      state.result = action.payload
+    setSearchItems: (state, action: PayloadAction<SearchState["items"]>) => {
+      state.items = action.payload
     },
     setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload
@@ -24,6 +24,6 @@ const searchSlice = createSlice({
   },
 })
 
-export const { setResult, setIsLoading } = searchSlice.actions
+export const { setSearchItems, setIsLoading } = searchSlice.actions
 
 export default searchSlice.reducer

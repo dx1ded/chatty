@@ -7,7 +7,9 @@ export function Verification() {
         i
       </div>
       <Title className="mb-3">Verify your account</Title>
-      <Text className="max-w-72 tracking-wide">Verification letter with the code was sent to your e-mail</Text>
+      <Text className="max-w-72 tracking-wide">
+        Verification letter with the code was sent to your e-mail
+      </Text>
     </div>
   )
 }

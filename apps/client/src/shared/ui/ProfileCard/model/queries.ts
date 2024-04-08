@@ -1,12 +1,9 @@
-import { gql } from "@apollo/client"
-import { CHAT_FIELDS } from "shared/model"
+import { gql } from "__generated__"
 
-export const CREATE_CHAT = gql`
-  ${CHAT_FIELDS}
-
+export const CREATE_CHAT = gql(`
   mutation CreateChat($members: [ID!]!) {
     createChat(members: $members) {
       ...ChatFields
     }
   }
-`
+`)

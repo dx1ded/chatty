@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client"
+import { gql } from "__generated__"
 
-export const FIND_USER = gql`
+export const FIND_USER = gql(`
   query FindUser($payload: String!) {
     findUser(payload: $payload) {
       firebaseId
@@ -8,4 +8,4 @@ export const FIND_USER = gql`
       photoURL
     }
   }
-`
+`)

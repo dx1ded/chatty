@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client"
+import { gql } from "__generated__"
 
-export const MESSAGE_FIELDS = gql`
+export const MESSAGE_FIELDS = gql(`
   fragment MessageFields on Message {
     __typename
     id
@@ -25,11 +25,9 @@ export const MESSAGE_FIELDS = gql`
       imageUrl
     }
   }
-`
+`)
 
-export const CHAT_FIELDS = gql`
-  ${MESSAGE_FIELDS}
-
+export const CHAT_FIELDS = gql(`
   fragment ChatFields on Chat {
     id
     members {
@@ -42,4 +40,4 @@ export const CHAT_FIELDS = gql`
       ...MessageFields
     }
   }
-`
+`)

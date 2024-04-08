@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany } from "typeorm"
-import type { User as IUser } from "../modules/types"
+import type { User as IUser } from "../modules/__generated__"
 import { Message } from "./Message"
 import { Chat } from "./Chat"
 

@@ -3,7 +3,7 @@ interface Message {
   author: User!
   chat: Chat!
   # Time sent
-  timeStamp: Int!
+  timeStamp: String!
   # Whether read or not
   read: Boolean!
 }
@@ -12,7 +12,7 @@ type TextMessage implements Message {
   id: ID!
   author: User!
   chat: Chat!
-  timeStamp: Int!
+  timeStamp: String!
   read: Boolean!
   text: String!
 }
@@ -21,7 +21,7 @@ type VoiceMessage implements Message {
   id: ID!
   author: User!
   chat: Chat!
-  timeStamp: Int!
+  timeStamp: String!
   read: Boolean!
   voiceUrl: String!
 }
@@ -30,15 +30,15 @@ type PictureMessage implements Message {
   id: ID!
   author: User!
   chat: Chat!
-  timeStamp: Int!
+  timeStamp: String!
   read: Boolean!
   imageUrl: String!
 }
 
 type Mutation {
-  createTextMessage(message: TextMessageInput!): TextMessage!
-  createVoiceMessage(message: VoiceMessageInput!): VoiceMessage!
-  createPictureMessage(message: PictureMessageInput!): PictureMessage!
+  createTextMessage(message: TextMessageInput!): TextMessage
+  createVoiceMessage(message: VoiceMessageInput!): VoiceMessage
+  createPictureMessage(message: PictureMessageInput!): PictureMessage
 }
 
 input MessageInput {

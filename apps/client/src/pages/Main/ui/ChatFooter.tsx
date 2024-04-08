@@ -5,10 +5,12 @@ import {
   Send,
   SentimentSatisfiedOutlined,
 } from "@mui/icons-material"
-import type { CreateTextMessageMutation, CreateTextMessageMutationVariables } from "codegen/graphql"
+import type { CreateTextMessageMutation, CreateTextMessageMutationVariables } from "__generated__/graphql"
 import { useRef } from "react"
 import { Input } from "shared/ui/Input"
-import { useAppDispatch, useAppSelector } from "shared/model"
+import { MESSAGE_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
+import { addMessage } from "shared/slices/chat"
+import { getFragment } from "__generated__"
 import { SEND_TEXT_MESSAGE } from "../model/message.queries"
 
 export function ChatFooter() {
@@ -20,12 +22,12 @@ export function ChatFooter() {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const sendTextMessage = async () => {
-    const { value } = inputRef.current!
+    const input = inputRef.current!
 
     const req = await createTextMessage({
       variables: {
         message: {
-          text: value,
+          text: input.value,
           meta: {
             chat: chat.id,
           },
@@ -33,9 +35,13 @@ export function ChatFooter() {
       },
     })
 
-    const newMsg = req.data?.createTextMessage
+    const _fragment = req.data?.createTextMessage
+    const newMessage = getFragment(MESSAGE_FIELDS, _fragment)
 
-    if (!newMsg) return
+    if (!newMessage) return
+    dispatch(addMessage(newMessage))
+
+    input.value = ""
   }
 
   return (

@@ -5,13 +5,15 @@ import type {
   GetUserChatsQueryVariables,
   ChatListSubscription,
   ChatListSubscriptionVariables,
-} from "codegen/graphql"
+  ChatFieldsFragment,
+} from "__generated__/graphql"
 import Skeleton from "react-loading-skeleton"
-import { useAppDispatch, useAppSelector } from "shared/model"
+import { CHAT_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
 import { Text } from "shared/ui/Typography"
 import { ChatCard } from "shared/ui/ChatCard"
 import { ProfileCard } from "shared/ui/ProfileCard"
-import { setChats, setIsLoading } from "shared/slices/chatList"
+import { setChatList, setIsLoading } from "shared/slices/chatList"
+import { getFragment } from "__generated__"
 import { CHATS_SUBSCRIPTION, GET_CHATS } from "../model/chat.queries"
 import { Search } from "./Search"
 
@@ -25,8 +27,10 @@ export function Sidebar() {
     skip: !user?.uid,
     variables: { userId: user?.uid || "" },
     onCompleted(data) {
-      if (!data.findUserChats) return
-      dispatch(setChats(data.findUserChats))
+      // Did a casting here because for some reason getFragment always returns a ReadonlyArray which is supposed to be a bug - https://github.com/dotansimha/graphql-code-generator/issues/9803
+      const chats = getFragment(CHAT_FIELDS, data.findUserChats) as ChatFieldsFragment[]
+      if (!chats) return
+      dispatch(setChatList(chats))
       dispatch(setIsLoading(false))
     },
   })
@@ -34,9 +38,9 @@ export function Sidebar() {
   useSubscription<ChatListSubscription, ChatListSubscriptionVariables>(CHATS_SUBSCRIPTION, {
     variables: { userId: user?.uid || "" },
     onData(options) {
-      const data = options.data.data?.chatList
-      if (!data) return
-      dispatch(setChats([...chatList.chats, data]))
+      const newChat = getFragment(CHAT_FIELDS, options.data.data?.chatList)
+      if (!newChat) return
+      dispatch(setChatList([...chatList.items, newChat]))
     },
   })
 
@@ -55,8 +59,8 @@ export function Sidebar() {
       <div className="flex-1 overflow-y-auto">
         {chatList.isLoading || search.isLoading ? (
           <Skeleton count={3} height={54} inline containerClassName="flex flex-col gap-2.5 px-5" />
-        ) : search.result.length ? (
-          search.result.map((user) => (
+        ) : search.items.length ? (
+          search.items.map((user) => (
             <ProfileCard
               key={user.firebaseId}
               id={user.firebaseId}
@@ -65,7 +69,7 @@ export function Sidebar() {
             />
           ))
         ) : (
-          chatList.chats.map((chat) => <ChatCard key={chat!.id} chat={chat!} uid={user!.uid} />)
+          chatList.items.map((chat) => <ChatCard key={chat!.id} chat={chat!} uid={user!.uid} />)
         )}
       </div>
     </aside>

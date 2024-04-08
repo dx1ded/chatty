@@ -1,6 +1,6 @@
 import { Column, Entity } from "typeorm"
 import { Message } from "./Message"
-import { type PictureMessage as IPictureMessage } from "../modules/types"
+import { type PictureMessage as IPictureMessage } from "../modules/__generated__"
 import type { User } from "./User"
 import type { Chat } from "./Chat"
 
@@ -10,7 +10,7 @@ export class PictureMessage extends Message implements IPictureMessage {
   imageUrl: string
 
   constructor(imageUrl: string, author: User, chat: Chat) {
-    super("VOICE", author, chat)
+    super(author, chat)
     this.imageUrl = imageUrl
   }
 }

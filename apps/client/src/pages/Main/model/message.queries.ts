@@ -1,12 +1,9 @@
-import { gql } from "@apollo/client"
-import { MESSAGE_FIELDS } from "shared/model/fragments"
+import { gql } from "__generated__"
 
-export const SEND_TEXT_MESSAGE = gql`
-  ${MESSAGE_FIELDS}
-
+export const SEND_TEXT_MESSAGE = gql(`
   mutation CreateTextMessage($message: TextMessageInput!) {
     createTextMessage(message: $message) {
       ...MessageFields
     }
   }
-`
+`)

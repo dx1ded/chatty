@@ -1,5 +1,4 @@
 import dayjs from "dayjs"
-import { Message } from "graphql/graphql"
 
 export const generateAvatarByFullName = (fullName: string) => {
   const stringifiedName = fullName.split(" ").join("+")

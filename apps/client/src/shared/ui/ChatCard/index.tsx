@@ -1,7 +1,9 @@
 import { Done, DoneAll } from "@mui/icons-material"
 import { formatDate } from "shared/lib"
-import { ChatFieldsFragment } from "graphql/graphql"
+import { getFragment } from "__generated__"
+import { ChatFieldsFragment } from "__generated__/graphql"
 import { NavLink } from "react-router-dom"
+import { MESSAGE_FIELDS } from "shared/model"
 import { Text } from "../Typography"
 
 interface ChatCardProps {
@@ -10,7 +12,7 @@ interface ChatCardProps {
 }
 
 export function ChatCard({ chat, uid }: ChatCardProps) {
-  const message = chat.messages[0]
+  const message = getFragment(MESSAGE_FIELDS, chat.messages[0])
 
   const partner = chat.members.filter(({ firebaseId }) => firebaseId !== uid)[0]
   const sentByYou = message ? uid === message.author.firebaseId : false
@@ -23,7 +25,9 @@ export function ChatCard({ chat, uid }: ChatCardProps) {
         : "Picture"
     : "No messages"
 
-  const unreadMessagesCount = chat.messages.reduce((acc, msg) => {
+  const unreadMessagesCount = chat.messages.reduce((acc, _fragment) => {
+    const msg = getFragment(MESSAGE_FIELDS, _fragment)
+
     if (!msg?.read) {
       acc += 1
     }

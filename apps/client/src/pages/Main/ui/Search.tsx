@@ -2,9 +2,9 @@ import { useLazyQuery } from "@apollo/client"
 import { SearchOutlined } from "@mui/icons-material"
 import { Input } from "shared/ui/Input"
 import { useDebouncedCallback } from "use-debounce"
-import { FindUserQuery, FindUserQueryVariables } from "graphql/graphql"
+import { FindUserQuery, FindUserQueryVariables } from "__generated__/graphql"
 import { useAppDispatch } from "shared/model"
-import { setIsLoading, setResult } from "shared/slices/search"
+import { setIsLoading, setSearchItems } from "shared/slices/search"
 import { FIND_USER } from "../model/user.queries"
 
 export function Search() {
@@ -12,7 +12,7 @@ export function Search() {
   const [findUsers] = useLazyQuery<FindUserQuery, FindUserQueryVariables>(FIND_USER)
 
   const debouncedSearch = useDebouncedCallback(async (value: string) => {
-    if (!value) return dispatch(setResult([]))
+    if (!value) return dispatch(setSearchItems([]))
 
     dispatch(setIsLoading(true))
 
@@ -22,7 +22,7 @@ export function Search() {
 
     dispatch(setIsLoading(false))
     if (!query.data?.findUser) return
-    dispatch(setResult(query.data.findUser))
+    dispatch(setSearchItems(query.data.findUser))
   }, 500)
 
   return (

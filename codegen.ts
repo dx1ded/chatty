@@ -1,25 +1,29 @@
-import type { CodegenConfig } from "@graphql-codegen/cli"
+
+import type { CodegenConfig } from '@graphql-codegen/cli'
 
 const config: CodegenConfig = {
+  overwrite: true,
   schema: "apps/server/src/modules/**/*.graphql",
-  documents: ["apps/client/src/**/*.{ts,tsx}"],
+  documents: "apps/client/src/**/*.ts",
   ignoreNoDocuments: true,
   generates: {
-    "apps/server/src/modules/types.ts": {
+    "apps/server/src/modules/__generated__.ts": {
+      config: {
+        useIndexSignature: true,
+      },
       plugins: ["typescript", "typescript-resolvers"],
     },
-    "apps/client/src/codegen/": {
+    "apps/client/src/__generated__/": {
       preset: "client",
-      plugins: ["typescript", "typescript-operations"],
+      plugins: ["typescript"],
       presetConfig: {
         gqlTagName: "gql",
-        fragmentMasking: false,
-        avoidOptionals: true,
-        assumeValid: true,
-        strictScalars: false
-      },
+        fragmentMasking: {
+          unmaskFunctionName: "getFragment"
+        }
+      }
     }
-  },
-}
+  }
+};
 
 export default config

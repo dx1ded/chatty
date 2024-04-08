@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import type { Chat } from "codegen/graphql"
+import type { ChatFieldsFragment, MessageFieldsFragment } from "__generated__/graphql"
 
 interface ChatState {
-  chat: Chat
+  chat: ChatFieldsFragment
   isLoading: boolean
 }
 
 const initialState: ChatState = {
-  chat: {} as Chat,
+  chat: {} as ChatFieldsFragment,
   isLoading: false,
 }
 
@@ -15,10 +15,10 @@ const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    setChat: (state, action: PayloadAction<Chat>) => {
+    setChat: (state, action: PayloadAction<ChatFieldsFragment>) => {
       state.chat = action.payload
     },
-    addMessage: (state, action: PayloadAction<Chat["messages"][number]>) => {
+    addMessage: (state, action: PayloadAction<MessageFieldsFragment>) => {
       state.chat.messages = [...state.chat.messages, action.payload]
     },
     setIsLoading: (state, action: PayloadAction<boolean>) => {
@@ -27,6 +27,6 @@ const chatSlice = createSlice({
   },
 })
 
-export const { setChat, setIsLoading } = chatSlice.actions
+export const { setChat, addMessage, setIsLoading } = chatSlice.actions
 
 export default chatSlice.reducer

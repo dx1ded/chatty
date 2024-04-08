@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 import { Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from "typeorm"
-import type { Chat as IChat } from "../modules/types"
+import type { Chat as IChat } from "../modules/__generated__"
 import { User } from "./User"
 import { Message } from "./Message"
 

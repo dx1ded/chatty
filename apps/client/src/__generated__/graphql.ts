@@ -35,7 +35,7 @@ export type Message = {
   chat: Chat;
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
 };
 
 export type MessageInput = {
@@ -45,10 +45,10 @@ export type MessageInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createChat?: Maybe<Chat>;
-  createPictureMessage: PictureMessage;
-  createTextMessage: TextMessage;
+  createPictureMessage?: Maybe<PictureMessage>;
+  createTextMessage?: Maybe<TextMessage>;
   createUser: User;
-  createVoiceMessage: VoiceMessage;
+  createVoiceMessage?: Maybe<VoiceMessage>;
 };
 
 
@@ -83,7 +83,7 @@ export type PictureMessage = Message & {
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
 };
 
 export type PictureMessageInput = {
@@ -142,7 +142,7 @@ export type TextMessage = Message & {
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
   text: Scalars['String']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
 };
 
 export type TextMessageInput = {
@@ -165,7 +165,7 @@ export type VoiceMessage = Message & {
   chat: Chat;
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
   voiceUrl: Scalars['String']['output'];
 };
 
@@ -193,28 +193,40 @@ export type ChatQueryVariables = Exact<{
 }>;
 
 
-export type ChatQuery = { __typename?: 'Query', chat?: { __typename?: 'Chat', id: string, members: Array<{ __typename?: 'User', firebaseId: string, displayName: string, online: boolean, photoURL: string }>, messages: Array<{ __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | null> } | null };
+export type ChatQuery = { __typename?: 'Query', chat?: (
+    { __typename?: 'Chat' }
+    & { ' $fragmentRefs'?: { 'ChatFieldsFragment': ChatFieldsFragment } }
+  ) | null };
 
 export type GetUserChatsQueryVariables = Exact<{
   userId: Scalars['ID']['input'];
 }>;
 
 
-export type GetUserChatsQuery = { __typename?: 'Query', findUserChats: Array<{ __typename?: 'Chat', id: string, members: Array<{ __typename?: 'User', firebaseId: string, displayName: string, online: boolean, photoURL: string }>, messages: Array<{ __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | null> }> };
+export type GetUserChatsQuery = { __typename?: 'Query', findUserChats: Array<(
+    { __typename?: 'Chat' }
+    & { ' $fragmentRefs'?: { 'ChatFieldsFragment': ChatFieldsFragment } }
+  )> };
 
 export type ChatListSubscriptionVariables = Exact<{
   userId: Scalars['ID']['input'];
 }>;
 
 
-export type ChatListSubscription = { __typename?: 'Subscription', chatList: { __typename?: 'Chat', id: string, members: Array<{ __typename?: 'User', firebaseId: string, displayName: string, online: boolean, photoURL: string }>, messages: Array<{ __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | null> } };
+export type ChatListSubscription = { __typename?: 'Subscription', chatList: (
+    { __typename?: 'Chat' }
+    & { ' $fragmentRefs'?: { 'ChatFieldsFragment': ChatFieldsFragment } }
+  ) };
 
 export type CreateTextMessageMutationVariables = Exact<{
   message: TextMessageInput;
 }>;
 
 
-export type CreateTextMessageMutation = { __typename?: 'Mutation', createTextMessage: { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } };
+export type CreateTextMessageMutation = { __typename?: 'Mutation', createTextMessage?: (
+    { __typename?: 'TextMessage' }
+    & { ' $fragmentRefs'?: { 'MessageFields_TextMessage_Fragment': MessageFields_TextMessage_Fragment } }
+  ) | null };
 
 export type FindUserQueryVariables = Exact<{
   payload: Scalars['String']['input'];
@@ -223,22 +235,34 @@ export type FindUserQueryVariables = Exact<{
 
 export type FindUserQuery = { __typename?: 'Query', findUser: Array<{ __typename?: 'User', firebaseId: string, displayName: string, photoURL: string }> };
 
-type MessageFields_PictureMessage_Fragment = { __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } };
+type MessageFields_PictureMessage_Fragment = { __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: string, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } & { ' $fragmentName'?: 'MessageFields_PictureMessage_Fragment' };
 
-type MessageFields_TextMessage_Fragment = { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } };
+type MessageFields_TextMessage_Fragment = { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: string, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } & { ' $fragmentName'?: 'MessageFields_TextMessage_Fragment' };
 
-type MessageFields_VoiceMessage_Fragment = { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } };
+type MessageFields_VoiceMessage_Fragment = { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: string, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } & { ' $fragmentName'?: 'MessageFields_VoiceMessage_Fragment' };
 
 export type MessageFieldsFragment = MessageFields_PictureMessage_Fragment | MessageFields_TextMessage_Fragment | MessageFields_VoiceMessage_Fragment;
 
-export type ChatFieldsFragment = { __typename?: 'Chat', id: string, members: Array<{ __typename?: 'User', firebaseId: string, displayName: string, online: boolean, photoURL: string }>, messages: Array<{ __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | null> };
+export type ChatFieldsFragment = { __typename?: 'Chat', id: string, members: Array<{ __typename?: 'User', firebaseId: string, displayName: string, online: boolean, photoURL: string }>, messages: Array<(
+    { __typename?: 'PictureMessage' }
+    & { ' $fragmentRefs'?: { 'MessageFields_PictureMessage_Fragment': MessageFields_PictureMessage_Fragment } }
+  ) | (
+    { __typename?: 'TextMessage' }
+    & { ' $fragmentRefs'?: { 'MessageFields_TextMessage_Fragment': MessageFields_TextMessage_Fragment } }
+  ) | (
+    { __typename?: 'VoiceMessage' }
+    & { ' $fragmentRefs'?: { 'MessageFields_VoiceMessage_Fragment': MessageFields_VoiceMessage_Fragment } }
+  ) | null> } & { ' $fragmentName'?: 'ChatFieldsFragment' };
 
 export type CreateChatMutationVariables = Exact<{
   members: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
 }>;
 
 
-export type CreateChatMutation = { __typename?: 'Mutation', createChat?: { __typename?: 'Chat', id: string, members: Array<{ __typename?: 'User', firebaseId: string, displayName: string, online: boolean, photoURL: string }>, messages: Array<{ __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | null> } | null };
+export type CreateChatMutation = { __typename?: 'Mutation', createChat?: (
+    { __typename?: 'Chat' }
+    & { ' $fragmentRefs'?: { 'ChatFieldsFragment': ChatFieldsFragment } }
+  ) | null };
 
 export const MessageFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"MessageFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Message"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"firebaseId"}},{"kind":"Field","name":{"kind":"Name","value":"online"}},{"kind":"Field","name":{"kind":"Name","value":"photoURL"}}]}},{"kind":"Field","name":{"kind":"Name","value":"read"}},{"kind":"Field","name":{"kind":"Name","value":"timeStamp"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TextMessage"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"VoiceMessage"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"voiceUrl"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PictureMessage"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}}]}}]}}]} as unknown as DocumentNode<MessageFieldsFragment, unknown>;
 export const ChatFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ChatFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Chat"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"members"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firebaseId"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"online"}},{"kind":"Field","name":{"kind":"Name","value":"photoURL"}}]}},{"kind":"Field","name":{"kind":"Name","value":"messages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"MessageFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"MessageFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Message"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"firebaseId"}},{"kind":"Field","name":{"kind":"Name","value":"online"}},{"kind":"Field","name":{"kind":"Name","value":"photoURL"}}]}},{"kind":"Field","name":{"kind":"Name","value":"read"}},{"kind":"Field","name":{"kind":"Name","value":"timeStamp"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TextMessage"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"VoiceMessage"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"voiceUrl"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PictureMessage"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}}]}}]}}]} as unknown as DocumentNode<ChatFieldsFragment, unknown>;
@@ -278,7 +302,7 @@ export type Message = {
   chat: Chat;
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
 };
 
 export type MessageInput = {
@@ -288,10 +312,10 @@ export type MessageInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createChat?: Maybe<Chat>;
-  createPictureMessage: PictureMessage;
-  createTextMessage: TextMessage;
+  createPictureMessage?: Maybe<PictureMessage>;
+  createTextMessage?: Maybe<TextMessage>;
   createUser: User;
-  createVoiceMessage: VoiceMessage;
+  createVoiceMessage?: Maybe<VoiceMessage>;
 };
 
 
@@ -326,7 +350,7 @@ export type PictureMessage = Message & {
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
 };
 
 export type PictureMessageInput = {
@@ -385,7 +409,7 @@ export type TextMessage = Message & {
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
   text: Scalars['String']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
 };
 
 export type TextMessageInput = {
@@ -408,7 +432,7 @@ export type VoiceMessage = Message & {
   chat: Chat;
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['Int']['output'];
+  timeStamp: Scalars['String']['output'];
   voiceUrl: Scalars['String']['output'];
 };
 
@@ -416,69 +440,3 @@ export type VoiceMessageInput = {
   meta: MessageInput;
   voiceUrl: Scalars['String']['input'];
 };
-
-export type IsEmailUsedQueryVariables = Exact<{
-  email: Scalars['String']['input'];
-}>;
-
-
-export type IsEmailUsedQuery = { __typename?: 'Query', isEmailUsed: boolean };
-
-export type CreateUserMutationVariables = Exact<{
-  user: CreateUserInput;
-}>;
-
-
-export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', firebaseId: string } };
-
-export type ChatQueryVariables = Exact<{
-  chatId: Scalars['ID']['input'];
-}>;
-
-
-export type ChatQuery = { __typename?: 'Query', chat?: { __typename?: 'Chat', id: string, members: Array<{ __typename?: 'User', firebaseId: string, displayName: string, online: boolean, photoURL: string }>, messages: Array<{ __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | null> } | null };
-
-export type GetUserChatsQueryVariables = Exact<{
-  userId: Scalars['ID']['input'];
-}>;
-
-
-export type GetUserChatsQuery = { __typename?: 'Query', findUserChats: Array<{ __typename?: 'Chat', id: string, members: Array<{ __typename?: 'User', firebaseId: string, displayName: string, online: boolean, photoURL: string }>, messages: Array<{ __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | null> }> };
-
-export type ChatListSubscriptionVariables = Exact<{
-  userId: Scalars['ID']['input'];
-}>;
-
-
-export type ChatListSubscription = { __typename?: 'Subscription', chatList: { __typename?: 'Chat', id: string, members: Array<{ __typename?: 'User', firebaseId: string, displayName: string, online: boolean, photoURL: string }>, messages: Array<{ __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | null> } };
-
-export type CreateTextMessageMutationVariables = Exact<{
-  message: TextMessageInput;
-}>;
-
-
-export type CreateTextMessageMutation = { __typename?: 'Mutation', createTextMessage: { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } };
-
-export type FindUserQueryVariables = Exact<{
-  payload: Scalars['String']['input'];
-}>;
-
-
-export type FindUserQuery = { __typename?: 'Query', findUser: Array<{ __typename?: 'User', firebaseId: string, displayName: string, photoURL: string }> };
-
-type MessageFields_PictureMessage_Fragment = { __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } };
-
-type MessageFields_TextMessage_Fragment = { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } };
-
-type MessageFields_VoiceMessage_Fragment = { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } };
-
-export type MessageFieldsFragment = MessageFields_PictureMessage_Fragment | MessageFields_TextMessage_Fragment | MessageFields_VoiceMessage_Fragment;
-
-export type ChatFieldsFragment = { __typename?: 'Chat', id: string, members: Array<{ __typename?: 'User', firebaseId: string, displayName: string, online: boolean, photoURL: string }>, messages: Array<{ __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | null> };
-
-export type CreateChatMutationVariables = Exact<{
-  members: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
-}>;
-
-
-export type CreateChatMutation = { __typename?: 'Mutation', createChat?: { __typename?: 'Chat', id: string, members: Array<{ __typename?: 'User', firebaseId: string, displayName: string, online: boolean, photoURL: string }>, messages: Array<{ __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'TextMessage', text: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | { __typename: 'VoiceMessage', voiceUrl: string, id: string, read: boolean, timeStamp: number, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string } } | null> } | null };

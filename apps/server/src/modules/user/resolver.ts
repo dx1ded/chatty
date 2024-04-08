@@ -2,7 +2,7 @@ import { Raw } from "typeorm"
 import { userRepository } from "../../database"
 import type { ApolloContext } from ".."
 import { emailRegexp } from "../../utils"
-import type { Resolvers } from "../types"
+import type { Resolvers } from "../__generated__"
 import { User } from "../../entities/User"
 
 export default {

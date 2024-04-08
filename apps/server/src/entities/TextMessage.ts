@@ -1,6 +1,6 @@
 import { Column, Entity } from "typeorm"
 import { Message } from "./Message"
-import { type TextMessage as ITextMessage } from "../modules/types"
+import { type TextMessage as ITextMessage } from "../modules/__generated__"
 import type { User } from "./User"
 import type { Chat } from "./Chat"
 
@@ -10,7 +10,7 @@ export class TextMessage extends Message implements ITextMessage {
   text: string
 
   constructor(text: string, author: User, chat: Chat) {
-    super("TEXT", author, chat)
+    super(author, chat)
     this.text = text
   }
 }
