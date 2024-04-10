@@ -6,7 +6,7 @@ import { Message } from "./Message"
 
 @Entity()
 export class Chat implements IChat {
-  @PrimaryColumn("text")
+  @PrimaryColumn()
   id: string
 
   @ManyToMany(() => User, (user) => user.chats)

@@ -7,3 +7,11 @@ export const SEND_TEXT_MESSAGE = gql(`
     }
   }
 `)
+
+export const MESSAGE_SUBSCRIPTION = gql(`
+  subscription Message($userId: ID!) {
+    newMessage(userId: $userId) {
+      ...MessageFields
+    }
+  }
+`)

@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import "dotenv/config"
 import { createServer } from "http"
 import { WebSocketServer } from "ws"

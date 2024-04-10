@@ -1,24 +1,24 @@
 import { gql } from "__generated__"
 
 export const GET_CHAT = gql(`
-  query Chat($chatId: ID!) {
+  query GetChat($chatId: ID!) {
     chat(id: $chatId) {
       ...ChatFields
     }
   }
 `)
 
-export const GET_CHATS = gql(`
-  query GetUserChats($userId: ID!) {
+export const GET_CHAT_LIST = gql(`
+  query GetChatList($userId: ID!) {
     findUserChats(userId: $userId) {
       ...ChatFields
     }
   }
 `)
 
-export const CHATS_SUBSCRIPTION = gql(`
+export const CHAT_LIST_SUBSCRIPTION = gql(`
   subscription ChatList($userId: ID!) {
-    chatList(userId: $userId) {
+    newChat(userId: $userId) {
       ...ChatFields
     }
   }

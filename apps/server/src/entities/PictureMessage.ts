@@ -1,13 +1,19 @@
-import { Column, Entity } from "typeorm"
+import { ChildEntity, Column, ManyToOne } from "typeorm"
 import { Message } from "./Message"
 import { type PictureMessage as IPictureMessage } from "../modules/__generated__"
-import type { User } from "./User"
-import type { Chat } from "./Chat"
+import { User } from "./User"
+import { Chat } from "./Chat"
 
-@Entity()
+@ChildEntity()
 export class PictureMessage extends Message implements IPictureMessage {
-  @Column("text")
+  @Column()
   imageUrl: string
+
+  @ManyToOne(() => User, (user) => user.messages)
+  author: User
+
+  @ManyToOne(() => Chat, (chat) => chat.messages)
+  chat: Chat
 
   constructor(imageUrl: string, author: User, chat: Chat) {
     super(author, chat)

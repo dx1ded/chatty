@@ -1,12 +1,13 @@
 import { nanoid } from "nanoid"
-import { Entity, Column, PrimaryColumn, ManyToOne } from "typeorm"
+import { Entity, Column, PrimaryColumn, ManyToOne, TableInheritance } from "typeorm"
 import { Message as IMessage } from "../modules/__generated__"
 import { User } from "./User"
 import { Chat } from "./Chat"
 
 @Entity()
+@TableInheritance({ column: { type: "varchar", name: "type" } })
 export class Message implements IMessage {
-  @PrimaryColumn("text")
+  @PrimaryColumn()
   id: string
 
   @ManyToOne(() => User, (user) => user.messages)
@@ -15,10 +16,10 @@ export class Message implements IMessage {
   @ManyToOne(() => Chat, (chat) => chat.messages)
   chat: Chat
 
-  @Column("text")
+  @Column()
   timeStamp: string
 
-  @Column("boolean")
+  @Column()
   read: boolean
 
   constructor(author: User, chat: Chat) {

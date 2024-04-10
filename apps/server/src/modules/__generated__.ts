@@ -121,17 +121,17 @@ export type QueryIsEmailUsedArgs = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  chat: Chat;
-  chatList: Chat;
+  newChat: Chat;
+  newMessage: UMessage;
 };
 
 
-export type SubscriptionChatArgs = {
-  id: Scalars['ID']['input'];
+export type SubscriptionNewChatArgs = {
+  userId: Scalars['ID']['input'];
 };
 
 
-export type SubscriptionChatListArgs = {
+export type SubscriptionNewMessageArgs = {
   userId: Scalars['ID']['input'];
 };
 
@@ -149,6 +149,8 @@ export type TextMessageInput = {
   meta: MessageInput;
   text: Scalars['String']['input'];
 };
+
+export type UMessage = PictureMessage | TextMessage | VoiceMessage;
 
 export type User = {
   __typename?: 'User';
@@ -242,6 +244,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
+/** Mapping of union types */
+export type ResolversUnionTypes<RefType extends Record<string, unknown>> = ResolversObject<{
+  UMessage: ( PictureMessage ) | ( TextMessage ) | ( VoiceMessage );
+}>;
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = ResolversObject<{
@@ -264,6 +270,7 @@ export type ResolversTypes = ResolversObject<{
   Subscription: ResolverTypeWrapper<{}>;
   TextMessage: ResolverTypeWrapper<TextMessage>;
   TextMessageInput: TextMessageInput;
+  UMessage: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['UMessage']>;
   User: ResolverTypeWrapper<User>;
   VoiceMessage: ResolverTypeWrapper<VoiceMessage>;
   VoiceMessageInput: VoiceMessageInput;
@@ -285,6 +292,7 @@ export type ResolversParentTypes = ResolversObject<{
   Subscription: {};
   TextMessage: TextMessage;
   TextMessageInput: TextMessageInput;
+  UMessage: ResolversUnionTypes<ResolversParentTypes>['UMessage'];
   User: User;
   VoiceMessage: VoiceMessage;
   VoiceMessageInput: VoiceMessageInput;
@@ -332,8 +340,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 }>;
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
-  chat?: SubscriptionResolver<ResolversTypes['Chat'], "chat", ParentType, ContextType, RequireFields<SubscriptionChatArgs, 'id'>>;
-  chatList?: SubscriptionResolver<ResolversTypes['Chat'], "chatList", ParentType, ContextType, RequireFields<SubscriptionChatListArgs, 'userId'>>;
+  newChat?: SubscriptionResolver<ResolversTypes['Chat'], "newChat", ParentType, ContextType, RequireFields<SubscriptionNewChatArgs, 'userId'>>;
+  newMessage?: SubscriptionResolver<ResolversTypes['UMessage'], "newMessage", ParentType, ContextType, RequireFields<SubscriptionNewMessageArgs, 'userId'>>;
 }>;
 
 export type TextMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['TextMessage'] = ResolversParentTypes['TextMessage']> = ResolversObject<{
@@ -344,6 +352,10 @@ export type TextMessageResolvers<ContextType = any, ParentType extends Resolvers
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   timeStamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type UMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['UMessage'] = ResolversParentTypes['UMessage']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'PictureMessage' | 'TextMessage' | 'VoiceMessage', ParentType, ContextType>;
 }>;
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
@@ -373,6 +385,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   TextMessage?: TextMessageResolvers<ContextType>;
+  UMessage?: UMessageResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   VoiceMessage?: VoiceMessageResolvers<ContextType>;
 }>;

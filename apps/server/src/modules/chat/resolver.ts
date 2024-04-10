@@ -2,18 +2,12 @@ import { In } from "typeorm"
 import { withFilter } from "graphql-subscriptions"
 import type { ApolloContext } from ".."
 import { chatRepository, userRepository } from "../../database"
-import type {
-  Message,
-  Resolvers,
-  Subscription,
-  SubscriptionChatArgs,
-  SubscriptionChatListArgs,
-} from "../__generated__"
+import type { Resolvers, Subscription, SubscriptionNewChatArgs } from "../__generated__"
 import { Chat } from "../../entities/Chat"
 import { TextMessage } from "../../entities/TextMessage"
 import { VoiceMessage } from "../../entities/VoiceMessage"
 import { PictureMessage } from "../../entities/PictureMessage"
-import pubsub, { CHAT_CREATED, MESSAGE_SENT } from "../pubsub"
+import pubsub, { CHAT_CREATED } from "../pubsub"
 
 export default {
   Chat: {
@@ -34,23 +28,18 @@ export default {
     },
   },
   Query: {
-    async chat(_, { id }, { user }) {
+    chat(_, { id }, { user }) {
       if (!user) return null
 
-      const a = await chatRepository.findOne({
-        relations: ["members", "messages"],
+      return chatRepository.findOne({
+        relations: ["members", "messages", "messages.author", "messages.chat"],
         where: { id },
       })
-
-      console.log(a)
-
-      return a
     },
     async findUserChats(_, __, { user }) {
       if (!user) return []
 
       // TODO: make it with one query
-
       const items = await chatRepository.findBy({
         members: {
           firebaseId: user.uid,
@@ -58,7 +47,7 @@ export default {
       })
 
       return chatRepository.find({
-        relations: ["members", "messages"],
+        relations: ["members", "messages", "messages.author", "messages.chat"],
         where: {
           id: In(items.map((item) => item.id)),
         },
@@ -69,6 +58,19 @@ export default {
     async createChat(_, { members }, { user, pubsub }) {
       if (!user) return null
 
+      // const queryBuilder = chatRepository.createQueryBuilder("chat")
+      // members.forEach((member, index) => {
+      //   const alias = `member${index}` // Create dynamic alias
+      //   queryBuilder
+      //     .innerJoin(`chat.members`, alias)
+      //     .andWhere(`${alias}.firebaseId = :memberId_${index}`, { [`memberId_${index}`]: member })
+      // })
+      // const chatExists = await queryBuilder
+      //   .groupBy("chat.id") // Ensure uniqueness of chat
+      //   .having(`COUNT(DISTINCT member0.id) = :totalMembers`, { totalMembers: members.length })
+      //   .getOne()
+
+      // console.log(chatExists)
       const chatExists = await chatRepository.findOne({
         relations: ["members", "messages"],
         where: {
@@ -77,6 +79,17 @@ export default {
           },
         },
       })
+
+      // const chatExists = await chatRepository
+      //   .createQueryBuilder("chat")
+      //   .innerJoinAndSelect("chat.messages", "message")
+      //   .innerJoinAndSelect("message.author", "author")
+      //   .innerJoinAndSelect("message.chat", "messageChat")
+      //   .innerJoinAndSelect("chat.members", "member")
+      //   .where("member.firebaseId IN (:...members)", { members })
+      //   .groupBy("chat.id, message.id, author.id, messageChat.id, member.id")
+      //   .having("COUNT(member.id) = :count", { count: members.length })
+      //   .getOne()
 
       if (chatExists) return chatExists
 
@@ -89,29 +102,19 @@ export default {
       const savedChat = await chatRepository.save(chat)
 
       await pubsub.publish(CHAT_CREATED, {
-        chatList: savedChat,
+        newChat: savedChat,
       })
 
       return savedChat
     },
   },
   Subscription: {
-    chatList: {
-      subscribe: (_, args: SubscriptionChatListArgs) => ({
+    newChat: {
+      subscribe: (_, args: SubscriptionNewChatArgs) => ({
         [Symbol.asyncIterator]: withFilter(
           () => pubsub.asyncIterator(CHAT_CREATED),
-          (payload: Pick<Subscription, "chatList">) => {
-            return payload.chatList.members.some((member) => member.firebaseId === args.userId)
-          },
-        ),
-      }),
-    },
-    chat: {
-      subscribe: () => ({
-        [Symbol.asyncIterator]: withFilter(
-          () => pubsub.asyncIterator([MESSAGE_SENT]),
-          (payload: Message, variables: SubscriptionChatArgs) => {
-            return payload.chat.id === variables.id
+          (payload: Pick<Subscription, "newChat">) => {
+            return payload.newChat.members.some((member) => member.firebaseId === args.userId)
           },
         ),
       }),

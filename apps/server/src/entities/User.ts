@@ -8,19 +8,19 @@ export class User implements IUser {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column("text")
+  @Column()
   firebaseId: string
 
-  @Column("text")
+  @Column()
   displayName: string
 
-  @Column("text")
+  @Column()
   email: string
 
-  @Column("text")
+  @Column()
   photoURL: string
 
-  @Column("boolean")
+  @Column()
   online: boolean
 
   @OneToMany(() => Message, (message) => message.author)

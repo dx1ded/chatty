@@ -1,20 +1,20 @@
 import { useQuery, useSubscription } from "@apollo/client"
 import { GroupOutlined, LaunchOutlined } from "@mui/icons-material"
 import type {
-  GetUserChatsQuery,
-  GetUserChatsQueryVariables,
+  GetChatListQuery,
+  GetChatListQueryVariables,
   ChatListSubscription,
   ChatListSubscriptionVariables,
   ChatFieldsFragment,
 } from "__generated__/graphql"
 import Skeleton from "react-loading-skeleton"
-import { CHAT_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
+import { CHAT_FIELDS, MESSAGE_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
 import { Text } from "shared/ui/Typography"
 import { ChatCard } from "shared/ui/ChatCard"
 import { ProfileCard } from "shared/ui/ProfileCard"
 import { setChatList, setIsLoading } from "shared/slices/chatList"
 import { getFragment } from "__generated__"
-import { CHATS_SUBSCRIPTION, GET_CHATS } from "../model/chat.queries"
+import { CHAT_LIST_SUBSCRIPTION, GET_CHAT_LIST } from "../model/chat.queries"
 import { Search } from "./Search"
 
 export function Sidebar() {
@@ -23,9 +23,10 @@ export function Sidebar() {
   const chatList = useAppSelector((state) => state.chatList)
   const dispatch = useAppDispatch()
 
-  useQuery<GetUserChatsQuery, GetUserChatsQueryVariables>(GET_CHATS, {
+  useQuery<GetChatListQuery, GetChatListQueryVariables>(GET_CHAT_LIST, {
     skip: !user?.uid,
     variables: { userId: user?.uid || "" },
+    fetchPolicy: "no-cache",
     onCompleted(data) {
       // Did a casting here because for some reason getFragment always returns a ReadonlyArray which is supposed to be a bug - https://github.com/dotansimha/graphql-code-generator/issues/9803
       const chats = getFragment(CHAT_FIELDS, data.findUserChats) as ChatFieldsFragment[]
@@ -35,12 +36,12 @@ export function Sidebar() {
     },
   })
 
-  useSubscription<ChatListSubscription, ChatListSubscriptionVariables>(CHATS_SUBSCRIPTION, {
+  useSubscription<ChatListSubscription, ChatListSubscriptionVariables>(CHAT_LIST_SUBSCRIPTION, {
     variables: { userId: user?.uid || "" },
     onData(options) {
-      const newChat = getFragment(CHAT_FIELDS, options.data.data?.chatList)
-      if (!newChat) return
-      dispatch(setChatList([...chatList.items, newChat]))
+      const chat = getFragment(CHAT_FIELDS, options.data.data?.newChat)
+      if (!chat) return
+      dispatch(setChatList([...chatList.items, chat]))
     },
   })
 
@@ -49,7 +50,7 @@ export function Sidebar() {
       <div className="mb-5 flex h-14 items-center justify-between border-b border-[#F7F7F7] px-5">
         <div className="flex items-center gap-2">
           <GroupOutlined className="text-dark" />
-          <Text className="font-normal tracking-wide">Chats List</Text>
+          <Text className="font-normal tracking-wide">Chat List</Text>
         </div>
         <button type="button" className="flex h-5 w-5 items-center">
           <LaunchOutlined className="text-dark" sx={{ width: "100%", height: "100%" }} />
@@ -69,7 +70,14 @@ export function Sidebar() {
             />
           ))
         ) : (
-          chatList.items.map((chat) => <ChatCard key={chat!.id} chat={chat!} uid={user!.uid} />)
+          [...chatList.items]
+            .sort((_a, _b) => {
+              const a = getFragment(MESSAGE_FIELDS, _a.messages.at(-1))
+              const b = getFragment(MESSAGE_FIELDS, _b.messages.at(-1))
+
+              return Number(a?.timeStamp) - Number(b?.timeStamp)
+            })
+            .map((chat) => <ChatCard key={chat!.id} chat={chat!} uid={user!.uid} />)
         )}
       </div>
     </aside>

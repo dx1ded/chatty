@@ -33,6 +33,7 @@
         "no-param-reassign": "off",
         "consistent-return": "off",
         "no-underscore-dangle": "off",
+        "no-plusplus": "off",
         "import/no-cycle": "off",
         "import/order": [
           "error",

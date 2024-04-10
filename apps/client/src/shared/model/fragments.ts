@@ -10,6 +10,9 @@ export const MESSAGE_FIELDS = gql(`
       online
       photoURL
     }
+    chat {
+      id
+    }
     read
     timeStamp
 
@@ -29,6 +32,7 @@ export const MESSAGE_FIELDS = gql(`
 
 export const CHAT_FIELDS = gql(`
   fragment ChatFields on Chat {
+    __typename
     id
     members {
       firebaseId

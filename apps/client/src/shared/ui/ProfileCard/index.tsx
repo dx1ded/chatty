@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import type { CreateChatMutation, CreateChatMutationVariables } from "__generated__/graphql"
 import { CHAT_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
 import { setIsLoading, setChat } from "shared/slices/chat"
+import { setSearchItems } from "shared/slices/search"
 import { getFragment } from "__generated__"
 import { Text } from "../Typography"
 import { CREATE_CHAT } from "./model"
@@ -20,13 +21,11 @@ export function ProfileCard({ id, name, profilePic }: ProfileCardProps) {
   const [createChat] = useMutation<CreateChatMutation, CreateChatMutationVariables>(CREATE_CHAT)
 
   const clickHandler = async () => {
-    if (!user) return
-
     dispatch(setIsLoading(true))
 
     const query = await createChat({
       variables: {
-        members: [id, user.uid],
+        members: [id, user!.uid],
       },
     })
 
@@ -34,6 +33,7 @@ export function ProfileCard({ id, name, profilePic }: ProfileCardProps) {
     if (!result) return
 
     dispatch(setChat(result))
+    dispatch(setSearchItems([]))
     dispatch(setIsLoading(false))
 
     navigate(`/chat/${result.id}`)

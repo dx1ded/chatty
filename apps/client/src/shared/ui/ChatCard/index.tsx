@@ -1,5 +1,5 @@
 import { Done, DoneAll } from "@mui/icons-material"
-import { formatDate } from "shared/lib"
+import { formatChatListDate } from "shared/lib"
 import { getFragment } from "__generated__"
 import { ChatFieldsFragment } from "__generated__/graphql"
 import { NavLink } from "react-router-dom"
@@ -12,7 +12,7 @@ interface ChatCardProps {
 }
 
 export function ChatCard({ chat, uid }: ChatCardProps) {
-  const message = getFragment(MESSAGE_FIELDS, chat.messages[0])
+  const message = getFragment(MESSAGE_FIELDS, chat.messages.at(-1))
 
   const partner = chat.members.filter(({ firebaseId }) => firebaseId !== uid)[0]
   const sentByYou = message ? uid === message.author.firebaseId : false
@@ -48,7 +48,7 @@ export function ChatCard({ chat, uid }: ChatCardProps) {
       <div className="flex-1">
         <div className="mb-0.5 flex items-center justify-between">
           <Text className="font-medium">{partner.displayName}</Text>
-          {message && <span className="text-grayish text-xs">{formatDate(message.timeStamp)}</span>}
+          {message && <span className="text-grayish text-xs">{formatChatListDate(+message.timeStamp)}</span>}
         </div>
         <div className="flex items-center justify-between">
           <Text className="max-w-[17rem] truncate text-gray-400">{previewMessage}</Text>

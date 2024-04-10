@@ -8,14 +8,13 @@ import {
 import type { CreateTextMessageMutation, CreateTextMessageMutationVariables } from "__generated__/graphql"
 import { useRef } from "react"
 import { Input } from "shared/ui/Input"
-import { MESSAGE_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
-import { addMessage } from "shared/slices/chat"
+import { MESSAGE_FIELDS, useAppSelector } from "shared/model"
 import { getFragment } from "__generated__"
+import { handleEnter } from "shared/lib"
 import { SEND_TEXT_MESSAGE } from "../model/message.queries"
 
 export function ChatFooter() {
   const { chat } = useAppSelector((state) => state.chat)
-  const dispatch = useAppDispatch()
   const [createTextMessage] = useMutation<CreateTextMessageMutation, CreateTextMessageMutationVariables>(
     SEND_TEXT_MESSAGE,
   )
@@ -23,6 +22,8 @@ export function ChatFooter() {
 
   const sendTextMessage = async () => {
     const input = inputRef.current!
+
+    if (!input.value) return
 
     const req = await createTextMessage({
       variables: {
@@ -39,7 +40,6 @@ export function ChatFooter() {
     const newMessage = getFragment(MESSAGE_FIELDS, _fragment)
 
     if (!newMessage) return
-    dispatch(addMessage(newMessage))
 
     input.value = ""
   }
@@ -49,7 +49,12 @@ export function ChatFooter() {
       <button type="button" className="text-grayish h-7 w-6">
         <SentimentSatisfiedOutlined sx={{ width: "100%", height: "100%" }} />
       </button>
-      <Input ref={inputRef} className="flex-1 border-none text-sm" placeholder="Write a message..." />
+      <Input
+        ref={inputRef}
+        className="flex-1 border-none text-sm"
+        placeholder="Write a message..."
+        onKeyDown={handleEnter(sendTextMessage)}
+      />
       <button type="button" className="text-grayish h-6 w-6">
         <CameraAltOutlined sx={{ width: "100%", height: "100%" }} />
       </button>
