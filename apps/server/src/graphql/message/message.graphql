@@ -2,7 +2,7 @@ interface Message {
   id: ID!
   author: User!
   chat: Chat!
-  timeStamp: String!
+  timeStamp: Date!
   read: Boolean!
 }
 
@@ -10,7 +10,7 @@ type TextMessage implements Message {
   id: ID!
   author: User!
   chat: Chat!
-  timeStamp: String!
+  timeStamp: Date!
   read: Boolean!
   text: String!
 }
@@ -19,7 +19,7 @@ type VoiceMessage implements Message {
   id: ID!
   author: User!
   chat: Chat!
-  timeStamp: String!
+  timeStamp: Date!
   read: Boolean!
   voiceUrl: String!
 }
@@ -28,7 +28,7 @@ type PictureMessage implements Message {
   id: ID!
   author: User!
   chat: Chat!
-  timeStamp: String!
+  timeStamp: Date!
   read: Boolean!
   imageUrl: String!
 }

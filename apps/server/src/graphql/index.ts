@@ -6,8 +6,8 @@ import { loadFilesSync } from "@graphql-tools/load-files"
 import { makeExecutableSchema } from "@graphql-tools/schema"
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge"
 import type { PubSub } from "graphql-subscriptions"
-
 import type { Auth, DecodedIdToken } from "firebase-admin/auth"
+import { dateScalar } from "./__scalars__/Date"
 
 const typeDefs = loadSchemaSync("./**/*.graphql", {
   loaders: [new GraphQLFileLoader()],
@@ -23,5 +23,8 @@ export interface ApolloContext {
 
 export const schema = makeExecutableSchema<ApolloContext>({
   typeDefs: mergeTypeDefs(typeDefs),
-  resolvers: mergeResolvers(resolvers),
+  resolvers: {
+    ...mergeResolvers(resolvers),
+    Date: dateScalar,
+  },
 })

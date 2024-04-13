@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany } from "typeorm"
-import type { User as IUser } from "../modules/__generated__"
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, Relation } from "typeorm"
+import type { User as IUser } from "../graphql/__generated__"
 import { Message } from "./Message"
 import { Chat } from "./Chat"
 
@@ -24,10 +24,10 @@ export class User implements IUser {
   online: boolean
 
   @OneToMany(() => Message, (message) => message.author)
-  messages: Message[]
+  messages: Relation<Message>[]
 
   @ManyToMany(() => Chat, (chat) => chat.members)
-  chats: Chat[]
+  chats: Relation<Chat>[]
 
   constructor(firebaseId: string, displayName: string, email: string, photoURL: string, online = false) {
     this.firebaseId = firebaseId

@@ -1,20 +1,18 @@
 import { Done, DoneAll } from "@mui/icons-material"
 import { formatChatListDate } from "shared/lib"
-import { getFragment } from "__generated__"
-import { ChatFieldsFragment } from "__generated__/graphql"
+import { PreviewChatFieldsFragment } from "__generated__/graphql"
 import { NavLink } from "react-router-dom"
-import { MESSAGE_FIELDS } from "shared/model"
 import { Text } from "../Typography"
 
 interface ChatCardProps {
-  chat: ChatFieldsFragment
+  chat: PreviewChatFieldsFragment
   uid: string
 }
 
 export function ChatCard({ chat, uid }: ChatCardProps) {
-  const message = getFragment(MESSAGE_FIELDS, chat.messages.at(-1))
+  const message = chat.messages[0]
 
-  const partner = chat.members.filter(({ firebaseId }) => firebaseId !== uid)[0]
+  const partner = chat.members.find(({ firebaseId }) => firebaseId !== uid)!
   const sentByYou = message ? uid === message.author.firebaseId : false
 
   const previewMessage = message
@@ -24,16 +22,6 @@ export function ChatCard({ chat, uid }: ChatCardProps) {
         ? "Voice"
         : "Picture"
     : "No messages"
-
-  const unreadMessagesCount = chat.messages.reduce((acc, _fragment) => {
-    const msg = getFragment(MESSAGE_FIELDS, _fragment)
-
-    if (!msg?.read) {
-      acc += 1
-    }
-
-    return acc
-  }, 0)
 
   return (
     <NavLink
@@ -48,14 +36,14 @@ export function ChatCard({ chat, uid }: ChatCardProps) {
       <div className="flex-1">
         <div className="mb-0.5 flex items-center justify-between">
           <Text className="font-medium">{partner.displayName}</Text>
-          {message && <span className="text-grayish text-xs">{formatChatListDate(+message.timeStamp)}</span>}
+          {message && <span className="text-grayish text-xs">{formatChatListDate(message.timeStamp)}</span>}
         </div>
         <div className="flex items-center justify-between">
           <Text className="max-w-[17rem] truncate text-gray-400">{previewMessage}</Text>
           {message &&
-            (unreadMessagesCount ? (
+            (chat.newMessagesCount ? (
               <span className="bg-secondary flex h-[1.125rem] w-[1.125rem] items-center justify-center rounded-full text-[0.625rem] font-bold text-white">
-                {unreadMessagesCount}
+                {chat.newMessagesCount}
               </span>
             ) : !sentByYou && message.read ? (
               <div />

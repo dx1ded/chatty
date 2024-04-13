@@ -44,7 +44,7 @@ export function Message({ message, uid }: MessageProps) {
         <Text className={`font-normal ${sentByYou ? "text-dark" : "text-white"}`}>{messagePreview}</Text>
         <span
           className={`text-grayish absolute -bottom-6 whitespace-nowrap text-nowrap text-xs ${sentByYou ? "right-0" : "left-0"}`}>
-          {formatMessageDate(+message.timeStamp)}
+          {formatMessageDate(message.timeStamp)}
         </span>
       </div>
     </div>

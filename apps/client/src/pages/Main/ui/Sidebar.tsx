@@ -1,14 +1,15 @@
 import { useQuery, useSubscription } from "@apollo/client"
 import { GroupOutlined, LaunchOutlined } from "@mui/icons-material"
+import { useRef } from "react"
 import type {
   GetChatListQuery,
   GetChatListQueryVariables,
   ChatListSubscription,
   ChatListSubscriptionVariables,
-  ChatFieldsFragment,
+  PreviewChatFieldsFragment,
 } from "__generated__/graphql"
 import Skeleton from "react-loading-skeleton"
-import { CHAT_FIELDS, MESSAGE_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
+import { PREVIEW_CHAT_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
 import { Text } from "shared/ui/Typography"
 import { ChatCard } from "shared/ui/ChatCard"
 import { ProfileCard } from "shared/ui/ProfileCard"
@@ -22,15 +23,15 @@ export function Sidebar() {
   const search = useAppSelector((state) => state.search)
   const chatList = useAppSelector((state) => state.chatList)
   const dispatch = useAppDispatch()
+  const searchRef = useRef<HTMLInputElement>(null)
 
   useQuery<GetChatListQuery, GetChatListQueryVariables>(GET_CHAT_LIST, {
     skip: !user?.uid,
     variables: { userId: user?.uid || "" },
     fetchPolicy: "no-cache",
     onCompleted(data) {
+      const chats = getFragment(PREVIEW_CHAT_FIELDS, data.findUserChats) as PreviewChatFieldsFragment[]
       // Did a casting here because for some reason getFragment always returns a ReadonlyArray which is supposed to be a bug - https://github.com/dotansimha/graphql-code-generator/issues/9803
-      const chats = getFragment(CHAT_FIELDS, data.findUserChats) as ChatFieldsFragment[]
-      if (!chats) return
       dispatch(setChatList(chats))
       dispatch(setIsLoading(false))
     },
@@ -39,7 +40,7 @@ export function Sidebar() {
   useSubscription<ChatListSubscription, ChatListSubscriptionVariables>(CHAT_LIST_SUBSCRIPTION, {
     variables: { userId: user?.uid || "" },
     onData(options) {
-      const chat = getFragment(CHAT_FIELDS, options.data.data?.newChat)
+      const chat = getFragment(PREVIEW_CHAT_FIELDS, options.data.data?.newChat)
       if (!chat) return
       dispatch(setChatList([...chatList.items, chat]))
     },
@@ -56,7 +57,7 @@ export function Sidebar() {
           <LaunchOutlined className="text-dark" sx={{ width: "100%", height: "100%" }} />
         </button>
       </div>
-      <Search />
+      <Search ref={searchRef} />
       <div className="flex-1 overflow-y-auto">
         {chatList.isLoading || search.isLoading ? (
           <Skeleton count={3} height={54} inline containerClassName="flex flex-col gap-2.5 px-5" />
@@ -67,16 +68,12 @@ export function Sidebar() {
               id={user.firebaseId}
               name={user.displayName}
               profilePic={user.photoURL}
+              searchRef={searchRef}
             />
           ))
         ) : (
           [...chatList.items]
-            .sort((_a, _b) => {
-              const a = getFragment(MESSAGE_FIELDS, _a.messages.at(-1))
-              const b = getFragment(MESSAGE_FIELDS, _b.messages.at(-1))
-
-              return Number(a?.timeStamp) - Number(b?.timeStamp)
-            })
+            .sort((a, b) => Number(b.messages.at(-1)?.timeStamp) - Number(a.messages.at(-1)?.timeStamp))
             .map((chat) => <ChatCard key={chat!.id} chat={chat!} uid={user!.uid} />)
         )}
       </div>

@@ -1,22 +1,21 @@
 import { nanoid } from "nanoid"
-import { Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from "typeorm"
-import type { Chat as IChat } from "../modules/__generated__"
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn, Relation } from "typeorm"
+import type { Chat as IChat } from "../graphql/__generated__"
 import { User } from "./User"
 import { Message } from "./Message"
 
 @Entity()
 export class Chat implements IChat {
-  @PrimaryColumn()
+  @PrimaryColumn({ default: nanoid(8) })
   id: string
 
   @ManyToMany(() => User, (user) => user.chats)
   @JoinTable()
-  members: User[]
+  members: Relation<User>[]
 
   @OneToMany(() => Message, (message) => message.chat)
-  messages: Message[]
+  messages: Relation<Message>[]
 
-  constructor() {
-    this.id = nanoid(8)
-  }
+  @Column({ nullable: true, select: false })
+  newMessagesCount: number
 }

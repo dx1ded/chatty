@@ -1,0 +1,30 @@
+type Chat {
+  id: ID!
+  members: [User!]!
+  messages: [Message!]!
+}
+
+"""
+I guess it's not a good solution however it significantly reduces the data
+Chat list needs only the first message. At the same time it displays how many new messages are there
+There's no point of retrieving all messages, it's much better to use the `newMessagesCount` field
+"""
+type PreviewChat {
+  id: ID!
+  members: [User!]!
+  messages: [Message!]!
+  newMessagesCount: Int!
+}
+
+type Query {
+  chat(id: ID!): Chat
+  findUserChats(userId: ID!): [PreviewChat!]!
+}
+
+type Mutation {
+  createChat(members: [ID!]!): Chat
+}
+
+type Subscription {
+  newChat(userId: ID!): PreviewChat!
+}

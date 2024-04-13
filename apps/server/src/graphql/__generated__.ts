@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -14,13 +14,14 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  Date: { input: any; output: any; }
 };
 
 export type Chat = {
   __typename?: 'Chat';
   id: Scalars['ID']['output'];
   members: Array<User>;
-  messages: Array<Maybe<Message>>;
+  messages: Array<Message>;
 };
 
 export type CreateUserInput = {
@@ -35,7 +36,7 @@ export type Message = {
   chat: Chat;
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['String']['output'];
+  timeStamp: Scalars['Date']['output'];
 };
 
 export type MessageInput = {
@@ -83,7 +84,7 @@ export type PictureMessage = Message & {
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['String']['output'];
+  timeStamp: Scalars['Date']['output'];
 };
 
 export type PictureMessageInput = {
@@ -91,11 +92,24 @@ export type PictureMessageInput = {
   meta: MessageInput;
 };
 
+/**
+ * I guess it's not a good solution however it significantly reduces the data
+ * Chat list needs only the first message. At the same time it displays how many new messages are there
+ * There's no point of retrieving all messages, it's much better to use the `newMessagesCount` field
+ */
+export type PreviewChat = {
+  __typename?: 'PreviewChat';
+  id: Scalars['ID']['output'];
+  members: Array<User>;
+  messages: Array<Message>;
+  newMessagesCount: Scalars['Int']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   chat?: Maybe<Chat>;
   findUser: Array<User>;
-  findUserChats: Array<Chat>;
+  findUserChats: Array<PreviewChat>;
   isEmailUsed: Scalars['Boolean']['output'];
 };
 
@@ -121,7 +135,7 @@ export type QueryIsEmailUsedArgs = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  newChat: Chat;
+  newChat: PreviewChat;
   newMessage: UMessage;
 };
 
@@ -142,7 +156,7 @@ export type TextMessage = Message & {
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
   text: Scalars['String']['output'];
-  timeStamp: Scalars['String']['output'];
+  timeStamp: Scalars['Date']['output'];
 };
 
 export type TextMessageInput = {
@@ -167,7 +181,7 @@ export type VoiceMessage = Message & {
   chat: Chat;
   id: Scalars['ID']['output'];
   read: Scalars['Boolean']['output'];
-  timeStamp: Scalars['String']['output'];
+  timeStamp: Scalars['Date']['output'];
   voiceUrl: Scalars['String']['output'];
 };
 
@@ -259,12 +273,15 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Chat: ResolverTypeWrapper<Chat>;
   CreateUserInput: CreateUserInput;
+  Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Message: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Message']>;
   MessageInput: MessageInput;
   Mutation: ResolverTypeWrapper<{}>;
   PictureMessage: ResolverTypeWrapper<PictureMessage>;
   PictureMessageInput: PictureMessageInput;
+  PreviewChat: ResolverTypeWrapper<PreviewChat>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Subscription: ResolverTypeWrapper<{}>;
@@ -281,12 +298,15 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   Chat: Chat;
   CreateUserInput: CreateUserInput;
+  Date: Scalars['Date']['output'];
   ID: Scalars['ID']['output'];
+  Int: Scalars['Int']['output'];
   Message: ResolversInterfaceTypes<ResolversParentTypes>['Message'];
   MessageInput: MessageInput;
   Mutation: {};
   PictureMessage: PictureMessage;
   PictureMessageInput: PictureMessageInput;
+  PreviewChat: PreviewChat;
   Query: {};
   String: Scalars['String']['output'];
   Subscription: {};
@@ -301,9 +321,13 @@ export type ResolversParentTypes = ResolversObject<{
 export type ChatResolvers<ContextType = any, ParentType extends ResolversParentTypes['Chat'] = ResolversParentTypes['Chat']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   members?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
-  messages?: Resolver<Array<Maybe<ResolversTypes['Message']>>, ParentType, ContextType>;
+  messages?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
+
+export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+  name: 'Date';
+}
 
 export type MessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message']> = ResolversObject<{
   __resolveType: TypeResolveFn<'PictureMessage' | 'TextMessage' | 'VoiceMessage', ParentType, ContextType>;
@@ -311,7 +335,7 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
   chat?: Resolver<ResolversTypes['Chat'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   read?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  timeStamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  timeStamp?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
@@ -328,19 +352,27 @@ export type PictureMessageResolvers<ContextType = any, ParentType extends Resolv
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   read?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  timeStamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  timeStamp?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type PreviewChatResolvers<ContextType = any, ParentType extends ResolversParentTypes['PreviewChat'] = ResolversParentTypes['PreviewChat']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  members?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  messages?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>;
+  newMessagesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   chat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<QueryChatArgs, 'id'>>;
   findUser?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryFindUserArgs, 'payload'>>;
-  findUserChats?: Resolver<Array<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<QueryFindUserChatsArgs, 'userId'>>;
+  findUserChats?: Resolver<Array<ResolversTypes['PreviewChat']>, ParentType, ContextType, RequireFields<QueryFindUserChatsArgs, 'userId'>>;
   isEmailUsed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<QueryIsEmailUsedArgs, 'email'>>;
 }>;
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
-  newChat?: SubscriptionResolver<ResolversTypes['Chat'], "newChat", ParentType, ContextType, RequireFields<SubscriptionNewChatArgs, 'userId'>>;
+  newChat?: SubscriptionResolver<ResolversTypes['PreviewChat'], "newChat", ParentType, ContextType, RequireFields<SubscriptionNewChatArgs, 'userId'>>;
   newMessage?: SubscriptionResolver<ResolversTypes['UMessage'], "newMessage", ParentType, ContextType, RequireFields<SubscriptionNewMessageArgs, 'userId'>>;
 }>;
 
@@ -350,7 +382,7 @@ export type TextMessageResolvers<ContextType = any, ParentType extends Resolvers
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   read?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  timeStamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  timeStamp?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -372,16 +404,18 @@ export type VoiceMessageResolvers<ContextType = any, ParentType extends Resolver
   chat?: Resolver<ResolversTypes['Chat'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   read?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  timeStamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  timeStamp?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   voiceUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   Chat?: ChatResolvers<ContextType>;
+  Date?: GraphQLScalarType;
   Message?: MessageResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   PictureMessage?: PictureMessageResolvers<ContextType>;
+  PreviewChat?: PreviewChatResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   TextMessage?: TextMessageResolvers<ContextType>;

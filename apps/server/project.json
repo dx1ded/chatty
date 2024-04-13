@@ -5,59 +5,38 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/esbuild:esbuild",
+      "executor": "@nx/js:swc",
       "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
       "options": {
-        "platform": "node",
         "outputPath": "dist/apps/server",
-        "format": ["cjs"],
-        "bundle": false,
         "main": "apps/server/src/main.ts",
         "tsConfig": "apps/server/tsconfig.app.json",
         "assets": [],
-        "generatePackageJson": true,
-        "esbuildOptions": {
-          "sourcemap": true,
-          "outExtension": {
-            ".js": ".js"
-          }
-        }
+        "swcrc": "apps/server/swc-config/prod/.swcrc"
       },
       "configurations": {
-        "development": {},
-        "production": {
-          "esbuildOptions": {
-            "sourcemap": false,
-            "outExtension": {
-              ".js": ".js"
-            }
-          }
+        "development": {
+          "swcrc": "apps/server/swc-config/dev/.swcrc"
         }
       }
     },
     "serve": {
       "executor": "@nx/js:node",
-      "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "server:build"
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "server:build:development"
-        },
-        "production": {
-          "buildTarget": "server:build:production"
-        }
+        "buildTarget": "server:build:development"
+      }
+    },
+    "serve-graphql-types": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "graphql-codegen --watch"
       }
     },
     "build-graphql-types": {
-      "command": "graphql-codegen",
-      "dependsOn": ["^build"]
-    },
-    "serve-graphql-types": {
-      "command": "graphql-codegen --watch",
-      "dependsOn": ["^serve"]
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "graphql-codegen"
+      }
     }
   },
   "tags": []

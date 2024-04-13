@@ -11,7 +11,7 @@ export const GET_CHAT = gql(`
 export const GET_CHAT_LIST = gql(`
   query GetChatList($userId: ID!) {
     findUserChats(userId: $userId) {
-      ...ChatFields
+      ...PreviewChatFields
     }
   }
 `)
@@ -19,7 +19,7 @@ export const GET_CHAT_LIST = gql(`
 export const CHAT_LIST_SUBSCRIPTION = gql(`
   subscription ChatList($userId: ID!) {
     newChat(userId: $userId) {
-      ...ChatFields
+      ...PreviewChatFields
     }
   }
 `)

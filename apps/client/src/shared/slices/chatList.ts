@@ -1,10 +1,8 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import type { ChatFieldsFragment, MessageFieldsFragment } from "__generated__/graphql"
-
-type Chats = ChatFieldsFragment[]
+import type { PreviewChatFieldsFragment, MessageFieldsFragment } from "__generated__/graphql"
 
 interface ChatListState {
-  items: Chats
+  items: PreviewChatFieldsFragment[]
   isLoading: boolean
 }
 
@@ -17,12 +15,14 @@ const chatListSlice = createSlice({
   name: "chatList",
   initialState,
   reducers: {
-    setChatList: (state, action: PayloadAction<Chats>) => {
+    setChatList: (state, action: PayloadAction<PreviewChatFieldsFragment[]>) => {
       state.items = action.payload
     },
     updateChatList: (state, { payload }: PayloadAction<MessageFieldsFragment>) => {
       state.items = state.items.map((chat) =>
-        chat.id === payload.chat.id ? { ...chat, messages: [...chat.messages, payload] } : chat,
+        chat.id === payload.chat.id
+          ? { ...chat, messages: [...chat.messages, payload], newMessagesCount: chat.newMessagesCount + 1 }
+          : chat,
       )
     },
     setIsLoading: (state, action: PayloadAction<boolean>) => {

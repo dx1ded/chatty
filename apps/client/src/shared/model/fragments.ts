@@ -45,3 +45,31 @@ export const CHAT_FIELDS = gql(`
     }
   }
 `)
+
+export const PREVIEW_CHAT_FIELDS = gql(`
+  fragment PreviewChatFields on PreviewChat {
+    id
+    newMessagesCount
+    members {
+      firebaseId
+      photoURL
+      online
+      displayName
+    }
+    messages {
+      __typename
+      timeStamp
+      read
+      author {
+        firebaseId
+        online
+        photoURL
+        displayName
+      }
+
+      ... on TextMessage {
+        text
+      }
+    }
+  }
+`)

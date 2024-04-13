@@ -1,6 +1,6 @@
 import { ChildEntity, Column } from "typeorm"
 import { Message } from "./Message"
-import { type TextMessage as ITextMessage } from "../modules/__generated__"
+import { type TextMessage as ITextMessage } from "../graphql/__generated__"
 import type { User } from "./User"
 import type { Chat } from "./Chat"
 

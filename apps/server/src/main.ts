@@ -1,4 +1,3 @@
-import "reflect-metadata"
 import "dotenv/config"
 import { createServer } from "http"
 import { WebSocketServer } from "ws"
@@ -13,8 +12,8 @@ import { useServer } from "graphql-ws/lib/use/ws"
 
 import { initializeApp, cert } from "firebase-admin/app"
 import { getAuth, type DecodedIdToken } from "firebase-admin/auth"
-import { schema } from "./modules"
-import pubsub from "./modules/pubsub"
+import { schema } from "./graphql"
+import pubsub from "./graphql/pubsub"
 import firebaseCredentials from "./credentials"
 
 async function start() {

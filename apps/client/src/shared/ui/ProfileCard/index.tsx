@@ -2,9 +2,10 @@ import { useMutation } from "@apollo/client"
 import { useNavigate } from "react-router-dom"
 import type { CreateChatMutation, CreateChatMutationVariables } from "__generated__/graphql"
 import { CHAT_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
-import { setIsLoading, setChat } from "shared/slices/chat"
+import { setIsLoading } from "shared/slices/chat"
 import { setSearchItems } from "shared/slices/search"
 import { getFragment } from "__generated__"
+import type { RefObject } from "react"
 import { Text } from "../Typography"
 import { CREATE_CHAT } from "./model"
 
@@ -12,9 +13,10 @@ interface ProfileCardProps {
   id: string
   name: string
   profilePic: string
+  searchRef: RefObject<HTMLInputElement>
 }
 
-export function ProfileCard({ id, name, profilePic }: ProfileCardProps) {
+export function ProfileCard({ id, name, profilePic, searchRef }: ProfileCardProps) {
   const navigate = useNavigate()
   const { user } = useAppSelector((state) => state.firebase)
   const dispatch = useAppDispatch()
@@ -25,14 +27,15 @@ export function ProfileCard({ id, name, profilePic }: ProfileCardProps) {
 
     const query = await createChat({
       variables: {
-        members: [id, user!.uid],
+        members: [id, user?.uid || ""],
       },
     })
 
     const result = getFragment(CHAT_FIELDS, query.data?.createChat)
-    if (!result) return
+    if (!result || !searchRef.current) return
 
-    dispatch(setChat(result))
+    searchRef.current.value = ""
+
     dispatch(setSearchItems([]))
     dispatch(setIsLoading(false))
 

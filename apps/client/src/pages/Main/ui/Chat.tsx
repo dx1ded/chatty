@@ -1,17 +1,10 @@
-import { useQuery, useSubscription } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import { useParams } from "react-router-dom"
-import {
-  GetChatQuery,
-  GetChatQueryVariables,
-  MessageSubscription,
-  MessageSubscriptionVariables,
-} from "__generated__/graphql"
+import { GetChatQuery, GetChatQueryVariables } from "__generated__/graphql"
 import { getFragment } from "__generated__"
-import { useAppDispatch, useAppSelector, CHAT_FIELDS, MESSAGE_FIELDS } from "shared/model"
-import { setIsLoading, setChat, addMessage } from "shared/slices/chat"
-import { updateChatList } from "shared/slices/chatList"
+import { useAppDispatch, useAppSelector, CHAT_FIELDS } from "shared/model"
+import { setIsLoading, setChat } from "shared/slices/chat"
 import { GET_CHAT } from "../model/chat.queries"
-import { MESSAGE_SUBSCRIPTION } from "../model/message.queries"
 import { ChatHeader } from "./ChatHeader"
 import { ChatFooter } from "./ChatFooter"
 import { MessageList } from "./MessageList"
@@ -31,20 +24,6 @@ export function Chat() {
       if (!chat) return
       dispatch(setChat(chat))
       dispatch(setIsLoading(false))
-    },
-  })
-
-  useSubscription<MessageSubscription, MessageSubscriptionVariables>(MESSAGE_SUBSCRIPTION, {
-    variables: { userId: user!.uid },
-    onData(options) {
-      const message = getFragment(MESSAGE_FIELDS, options.data.data?.newMessage)
-      if (!message) return
-
-      if (message.chat.id === chat?.id) {
-        dispatch(addMessage(message))
-      }
-
-      dispatch(updateChatList(message))
     },
   })
 

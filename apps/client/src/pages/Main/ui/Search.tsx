@@ -5,9 +5,10 @@ import { useDebouncedCallback } from "use-debounce"
 import { FindUserQuery, FindUserQueryVariables } from "__generated__/graphql"
 import { useAppDispatch } from "shared/model"
 import { setIsLoading, setSearchItems } from "shared/slices/search"
+import { forwardRef } from "react"
 import { FIND_USER } from "../model/user.queries"
 
-export function Search() {
+export const Search = forwardRef<HTMLInputElement>(function Search(_, ref) {
   const dispatch = useAppDispatch()
   const [findUsers] = useLazyQuery<FindUserQuery, FindUserQueryVariables>(FIND_USER)
 
@@ -33,6 +34,7 @@ export function Search() {
           sx={{ width: "1.3rem", height: "1.3rem" }}
         />
         <Input
+          ref={ref}
           variant="secondary"
           placeholder="Search people"
           className="py-2 pl-9 pr-5 text-sm tracking-wide"
@@ -41,4 +43,4 @@ export function Search() {
       </div>
     </div>
   )
-}
+})
