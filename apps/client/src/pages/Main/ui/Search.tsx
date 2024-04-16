@@ -10,7 +10,7 @@ import { FIND_USER } from "../model/user.queries"
 
 export const Search = forwardRef<HTMLInputElement>(function Search(_, ref) {
   const dispatch = useAppDispatch()
-  const [findUsers] = useLazyQuery<FindUserQuery, FindUserQueryVariables>(FIND_USER)
+  const [findUsers, { loading }] = useLazyQuery<FindUserQuery, FindUserQueryVariables>(FIND_USER)
 
   const debouncedSearch = useDebouncedCallback(async (value: string) => {
     if (!value) return dispatch(setSearchItems([]))
@@ -30,11 +30,12 @@ export const Search = forwardRef<HTMLInputElement>(function Search(_, ref) {
     <div className="mb-6 px-5">
       <div className="relative">
         <SearchOutlined
-          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#CBCBCB]"
+          className="pointer-events-none absolute left-2.5 top-1/2 z-10 -translate-y-1/2 text-[#CBCBCB]"
           sx={{ width: "1.3rem", height: "1.3rem" }}
         />
         <Input
           ref={ref}
+          isLoading={loading}
           variant="secondary"
           placeholder="Search people"
           className="py-2 pl-9 pr-5 text-sm tracking-wide"
