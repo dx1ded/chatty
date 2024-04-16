@@ -15,9 +15,9 @@ export function MessageList({ data }: MessageListProps) {
   return (
     <div className="flex max-h-full flex-1 flex-col-reverse overflow-y-auto px-9 py-8">
       <div className="flex flex-col gap-10">
-        {messages.map((message) => {
-          return <Message key={message!.id} message={message!} uid={user!.uid} />
-        })}
+        {messages.map((message) => (
+          <Message key={message.id} message={message} uid={user!.uid} />
+        ))}
       </div>
     </div>
   )

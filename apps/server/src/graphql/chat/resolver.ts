@@ -43,12 +43,6 @@ export default {
     findUserChats(_, __, { user }) {
       if (!user) return []
 
-      // TODO: find chats where id is in items.id. Select only the last message (where timeStamp is the greatest).
-      // Also, return the number of unread messages
-      // TODO: Now i have custom scalar Date which is a Number so there's no need to say +timeStamp in the Front-End
-      // TODO: Changed some null / not-null values in the graphql schemas so check if there's excessive optional chaining
-      // TODO: Change ID in mutations to can be null because user?.id from Firebase can be null
-
       return chatRepository
         .createQueryBuilder("chat")
         .leftJoinAndSelect("chat.members", "member")

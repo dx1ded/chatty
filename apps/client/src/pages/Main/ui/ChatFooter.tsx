@@ -36,8 +36,7 @@ export function ChatFooter() {
       },
     })
 
-    const _fragment = req.data?.createTextMessage
-    const newMessage = getFragment(MESSAGE_FIELDS, _fragment)
+    const newMessage = getFragment(MESSAGE_FIELDS, req.data?.createTextMessage)
 
     if (!newMessage) return
 

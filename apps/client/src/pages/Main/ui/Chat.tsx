@@ -4,6 +4,7 @@ import { GetChatQuery, GetChatQueryVariables } from "__generated__/graphql"
 import { getFragment } from "__generated__"
 import { useAppDispatch, useAppSelector, CHAT_FIELDS } from "shared/model"
 import { setIsLoading, setChat } from "shared/slices/chat"
+import { Loader } from "shared/ui/Loader"
 import { GET_CHAT } from "../model/chat.queries"
 import { ChatHeader } from "./ChatHeader"
 import { ChatFooter } from "./ChatFooter"
@@ -17,7 +18,7 @@ export function Chat() {
 
   useQuery<GetChatQuery, GetChatQueryVariables>(GET_CHAT, {
     skip: chat?.id === id,
-    variables: { chatId: id! },
+    variables: { chatId: id || "" },
     fetchPolicy: "no-cache",
     onCompleted(data) {
       const chat = getFragment(CHAT_FIELDS, data.chat)
@@ -27,7 +28,7 @@ export function Chat() {
     },
   })
 
-  if (isLoading || !user || !chat?.id) return "Loading ..."
+  if (isLoading || !user || !chat?.id) return <Loader />
 
   const chatWith = chat.members.find((member) => member.firebaseId !== user.uid)!
 
