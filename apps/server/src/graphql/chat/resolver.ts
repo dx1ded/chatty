@@ -70,8 +70,7 @@ export default {
         .loadRelationCountAndMap("chat.newMessagesCount", "chat.messages", "message", (qb) =>
           qb
             .innerJoin("message.author", "author")
-            .andWhere("message.read = FALSE AND author.firebaseId <> :userId", { userId: user.uid })
-            .groupBy("message.id"),
+            .andWhere("message.read = FALSE AND author.firebaseId <> :userId", { userId: user.uid }),
         )
         .groupBy("chat.id, member.id, message.id, author.id")
         .getMany()
