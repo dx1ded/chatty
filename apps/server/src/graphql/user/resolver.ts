@@ -20,7 +20,7 @@ export default {
       return exists
     },
     findUser(_, { payload }, { user }) {
-      if (!user) return []
+      if (!user) return null
 
       const isEmail = emailRegexp.test(payload)
 

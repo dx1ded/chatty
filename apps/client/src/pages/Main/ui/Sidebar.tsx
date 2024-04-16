@@ -59,9 +59,9 @@ export function Sidebar() {
       </div>
       <Search ref={searchRef} />
       <div className="flex-1 overflow-y-auto">
-        {chatList.isLoading || search.isLoading ? (
+        {chatList.isLoading ? (
           <Skeleton count={3} height={54} inline containerClassName="flex flex-col gap-2.5 px-5" />
-        ) : search.items.length ? (
+        ) : search.items ? (
           search.items.map((user) => (
             <ProfileCard
               key={user.firebaseId}

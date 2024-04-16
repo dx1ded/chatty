@@ -108,7 +108,7 @@ export type PreviewChat = {
 export type Query = {
   __typename?: 'Query';
   chat?: Maybe<Chat>;
-  findUser: Array<User>;
+  findUser?: Maybe<Array<User>>;
   findUserChats: Array<PreviewChat>;
   isEmailUsed: Scalars['Boolean']['output'];
 };
@@ -265,7 +265,7 @@ export type FindUserQueryVariables = Exact<{
 }>;
 
 
-export type FindUserQuery = { __typename?: 'Query', findUser: Array<{ __typename?: 'User', firebaseId: string, displayName: string, photoURL: string }> };
+export type FindUserQuery = { __typename?: 'Query', findUser?: Array<{ __typename?: 'User', firebaseId: string, displayName: string, photoURL: string }> | null };
 
 type MessageFields_PictureMessage_Fragment = { __typename: 'PictureMessage', imageUrl: string, id: string, read: boolean, timeStamp: any, author: { __typename?: 'User', displayName: string, firebaseId: string, online: boolean, photoURL: string }, chat: { __typename?: 'Chat', id: string } } & { ' $fragmentName'?: 'MessageFields_PictureMessage_Fragment' };
 
@@ -411,7 +411,7 @@ export type PreviewChat = {
 export type Query = {
   __typename?: 'Query';
   chat?: Maybe<Chat>;
-  findUser: Array<User>;
+  findUser?: Maybe<Array<User>>;
   findUserChats: Array<PreviewChat>;
   isEmailUsed: Scalars['Boolean']['output'];
 };

@@ -108,7 +108,7 @@ export type PreviewChat = {
 export type Query = {
   __typename?: 'Query';
   chat?: Maybe<Chat>;
-  findUser: Array<User>;
+  findUser?: Maybe<Array<User>>;
   findUserChats: Array<PreviewChat>;
   isEmailUsed: Scalars['Boolean']['output'];
 };
@@ -366,7 +366,7 @@ export type PreviewChatResolvers<ContextType = any, ParentType extends Resolvers
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   chat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<QueryChatArgs, 'id'>>;
-  findUser?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryFindUserArgs, 'payload'>>;
+  findUser?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType, RequireFields<QueryFindUserArgs, 'payload'>>;
   findUserChats?: Resolver<Array<ResolversTypes['PreviewChat']>, ParentType, ContextType, RequireFields<QueryFindUserChatsArgs, 'userId'>>;
   isEmailUsed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<QueryIsEmailUsedArgs, 'email'>>;
 }>;

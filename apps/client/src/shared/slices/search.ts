@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import type { FindUserQuery } from "__generated__/graphql"
 
 interface SearchState {
-  items: FindUserQuery["findUser"]
+  items: FindUserQuery["findUser"] | null
   isLoading: boolean
 }
 
 const initialState: SearchState = {
-  items: [],
+  items: null,
   isLoading: false,
 }
 
