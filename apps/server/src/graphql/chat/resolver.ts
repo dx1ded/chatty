@@ -84,7 +84,7 @@ export default {
 
       if (existedChat) {
         return chatRepository.findOne({
-          relations: ["members", "messages", "messages.author"],
+          relations: ["members", "messages", "messages.author", "messages.chat"],
           where: { id: existedChat.id },
         })
       }

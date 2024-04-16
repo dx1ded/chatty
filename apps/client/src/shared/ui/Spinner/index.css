@@ -1,4 +1,4 @@
-.loader {
+.iphone-spinner {
   aspect-ratio: 1;
   display: grid;
   border-radius: 50%;
@@ -8,8 +8,9 @@
   background-repeat: no-repeat;
   animation: l23 1s infinite steps(12);
 }
-.loader::before,
-.loader::after {
+
+.iphone-spinner::before,
+.iphone-spinner::after {
   content: "";
   grid-area: 1/1;
   border-radius: 50%;
@@ -17,10 +18,24 @@
   opacity: 0.915;
   transform: rotate(30deg);
 }
-.loader::after {
+
+.iphone-spinner::after {
   opacity: 0.83;
   transform: rotate(60deg);
 }
+
 @keyframes l23 {
   100% {transform: rotate(1turn)}
+}
+
+.round-spinner {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(#0000 10%,#3674FF);
+  -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
+  animation: s3 1s infinite linear;
+}
+
+@keyframes s3 {
+  to{transform: rotate(1turn)}
 }

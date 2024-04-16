@@ -17,10 +17,14 @@ interface InputProps extends ComponentPropsWithoutRef<"input"> {
    * Adds spinning wheel while isLoading
    */
   isLoading?: boolean
+  /**
+   * Container class name
+   */
+  containerClassName?: string
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { className, variant = "primary", isCorrect, isLoading, ...props }: InputProps,
+  { className, containerClassName, variant = "primary", isCorrect, isLoading, ...props }: InputProps,
   ref,
 ) {
   const inputClassName = `rounded w-full border outline-none ${inputVariants[variant]} ${className || ""}`
@@ -29,7 +33,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   const extrasClassName = isCorrect ? "bg-green-500" : "bg-red-500"
 
   return (
-    <div className="relative">
+    <div className={`relative ${containerClassName || ""}`}>
       <div
         className={`pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 ${isCorrectSet ? `flex items-center justify-center rounded-full text-white ${extrasClassName}` : ""}`}>
         {isLoading ? <Spinner size={1} /> : isCorrectSet ? <ExtrasIcon sx={{ width: "0.75rem" }} /> : false}

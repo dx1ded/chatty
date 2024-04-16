@@ -36,7 +36,7 @@ export function ProfileCard({ id, name, profilePic, searchRef }: ProfileCardProp
 
     searchRef.current.value = ""
 
-    dispatch(setSearchItems([]))
+    dispatch(setSearchItems(null))
     dispatch(setIsLoading(false))
 
     navigate(`/chat/${result.id}`)

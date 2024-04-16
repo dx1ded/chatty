@@ -41,7 +41,6 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
     if (!isValid) return
 
     const isUsed = await sendIsEmailUsed({ variables: { email } })
-
     if (!isUsed.data?.isEmailUsed) return
 
     setError("email", { message: "E-mail is already used" })
