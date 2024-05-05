@@ -32,13 +32,17 @@ export default {
     return acc
   }, {}),
   Query: {
-    chat(_, { id }, { user }) {
+    async chat(_, { id }, { user }) {
       if (!user) return null
 
-      return chatRepository.findOne({
-        relations: ["members", "messages", "messages.author", "messages.chat"],
+      const chat = await chatRepository.findOne({
+        relations: ["members"],
         where: { id },
       })
+
+      chat.messages = []
+
+      return chat
     },
     findUserChats(_, __, { user }) {
       if (!user) return []

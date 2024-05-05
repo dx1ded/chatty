@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from "react"
+import { forwardRef, type ComponentPropsWithoutRef } from "react"
 import "./index.css"
 
 const types = {
@@ -17,6 +17,16 @@ interface SpinnerProps extends ComponentPropsWithoutRef<"div"> {
   type?: keyof typeof types
 }
 
-export function Spinner({ size = 2, type = "iphone", className, ...props }: SpinnerProps) {
-  return <div {...props} className={`${types[type]} ${className || ""}`} style={{ width: `${size}rem` }} />
-}
+export const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(function Spinner(
+  { size = 2, type = "iphone", className, ...props }: SpinnerProps,
+  ref,
+) {
+  return (
+    <div
+      ref={ref}
+      {...props}
+      className={`${types[type]} ${className || ""}`}
+      style={{ width: `${size}rem` }}
+    />
+  )
+})

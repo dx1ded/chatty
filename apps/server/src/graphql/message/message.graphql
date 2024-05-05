@@ -35,6 +35,10 @@ type PictureMessage implements Message {
 
 union UMessage = TextMessage | VoiceMessage | PictureMessage
 
+type Query {
+  messages(chatId: ID!, take: Int, skip: Int): [Message!]
+}
+
 type Mutation {
   createTextMessage(message: TextMessageInput!): TextMessage
   createVoiceMessage(message: VoiceMessageInput!): VoiceMessage

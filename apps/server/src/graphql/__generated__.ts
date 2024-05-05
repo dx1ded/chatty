@@ -111,6 +111,7 @@ export type Query = {
   findUser?: Maybe<Array<User>>;
   findUserChats: Array<PreviewChat>;
   isEmailUsed: Scalars['Boolean']['output'];
+  messages?: Maybe<Array<Message>>;
 };
 
 
@@ -131,6 +132,13 @@ export type QueryFindUserChatsArgs = {
 
 export type QueryIsEmailUsedArgs = {
   email: Scalars['String']['input'];
+};
+
+
+export type QueryMessagesArgs = {
+  chatId: Scalars['ID']['input'];
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Subscription = {
@@ -369,6 +377,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   findUser?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType, RequireFields<QueryFindUserArgs, 'payload'>>;
   findUserChats?: Resolver<Array<ResolversTypes['PreviewChat']>, ParentType, ContextType, RequireFields<QueryFindUserChatsArgs, 'userId'>>;
   isEmailUsed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<QueryIsEmailUsedArgs, 'email'>>;
+  messages?: Resolver<Maybe<Array<ResolversTypes['Message']>>, ParentType, ContextType, RequireFields<QueryMessagesArgs, 'chatId'>>;
 }>;
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{

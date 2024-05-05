@@ -18,6 +18,7 @@ const documents = {
     "\n  query GetChat($chatId: ID!) {\n    chat(id: $chatId) {\n      ...ChatFields\n    }\n  }\n": types.GetChatDocument,
     "\n  query GetChatList($userId: ID!) {\n    findUserChats(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n": types.GetChatListDocument,
     "\n  subscription ChatList($userId: ID!) {\n    newChat(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n": types.ChatListDocument,
+    "\n  query GetMessages($chatId: ID!, $take: Int, $skip: Int) {\n    messages(chatId: $chatId, take: $take, skip: $skip) {\n      ...MessageFields\n    }\n  }\n": types.GetMessagesDocument,
     "\n  mutation CreateTextMessage($message: TextMessageInput!) {\n    createTextMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n": types.CreateTextMessageDocument,
     "\n  subscription Message($userId: ID!) {\n    newMessage(userId: $userId) {\n      ...MessageFields\n    }\n  }\n": types.MessageDocument,
     "\n  query FindUser($payload: String!) {\n    findUser(payload: $payload) {\n      firebaseId\n      displayName\n      photoURL\n    }\n  }\n": types.FindUserDocument,
@@ -61,6 +62,10 @@ export function gql(source: "\n  query GetChatList($userId: ID!) {\n    findUser
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  subscription ChatList($userId: ID!) {\n    newChat(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n"): (typeof documents)["\n  subscription ChatList($userId: ID!) {\n    newChat(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetMessages($chatId: ID!, $take: Int, $skip: Int) {\n    messages(chatId: $chatId, take: $take, skip: $skip) {\n      ...MessageFields\n    }\n  }\n"): (typeof documents)["\n  query GetMessages($chatId: ID!, $take: Int, $skip: Int) {\n    messages(chatId: $chatId, take: $take, skip: $skip) {\n      ...MessageFields\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

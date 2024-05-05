@@ -1,7 +1,8 @@
 import "reflect-metadata"
-import { DataSource } from "typeorm"
+import { DataSource, type Repository } from "typeorm"
 import { User } from "./entities/User"
 import { Chat } from "./entities/Chat"
+import { Message } from "./entities/Message"
 import { TextMessage } from "./entities/TextMessage"
 import { VoiceMessage } from "./entities/VoiceMessage"
 import { PictureMessage } from "./entities/PictureMessage"
@@ -19,6 +20,9 @@ export const AppDataSource = new DataSource({
 
 export const userRepository = AppDataSource.getRepository(User)
 export const chatRepository = AppDataSource.getRepository(Chat)
+export const messageRepository = AppDataSource.getRepository(Message) as Repository<
+  TextMessage | VoiceMessage | PictureMessage
+>
 export const textMessageRepository = AppDataSource.getRepository(TextMessage)
 export const voiceMessageRepository = AppDataSource.getRepository(VoiceMessage)
 export const pictureMessageRepository = AppDataSource.getRepository(PictureMessage)

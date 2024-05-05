@@ -2,6 +2,7 @@ import { withFilter } from "graphql-subscriptions"
 import type { ApolloContext } from ".."
 import {
   chatRepository,
+  messageRepository,
   pictureMessageRepository,
   textMessageRepository,
   userRepository,
@@ -14,6 +15,35 @@ import pubsub, { NEW_MESSAGE } from "../pubsub"
 import type { Subscription, Resolvers, SubscriptionNewMessageArgs } from "../__generated__"
 
 export default {
+  Query: {
+    async messages(_, { chatId, skip = 0, take = 15 }, { user }) {
+      if (!user) return null
+
+      const messages = await messageRepository
+        .createQueryBuilder("message")
+        .leftJoinAndSelect("message.chat", "chat")
+        .leftJoinAndSelect("message.author", "author")
+        .orderBy("message.timeStamp", "DESC")
+        .where("chat.id = :chatId", { chatId })
+        .skip(skip * take)
+        .take(take)
+        .getMany()
+
+      return messages.map((message) => {
+        if (message instanceof TextMessage) {
+          return { __typename: "TextMessage", ...message }
+        }
+        if (message instanceof VoiceMessage) {
+          return { __typename: "VoiceMessage", ...message }
+        }
+        if (message instanceof PictureMessage) {
+          return { __typename: "PictureMessage", ...message }
+        }
+
+        return message
+      })
+    },
+  },
   Mutation: {
     async createTextMessage(_, { message }, { user }) {
       if (!user) return null
