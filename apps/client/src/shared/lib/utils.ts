@@ -1,10 +1,19 @@
 import dayjs from "dayjs"
 import type { KeyboardEvent } from "react"
 
-export const generateAvatarByFullName = (fullName: string) => {
-  const stringifiedName = fullName.split(" ").join("+")
+/**
+ * Returns a random number between min (inclusive) and max (exclusive)
+ */
+export const getRandomArbitrary = (min: number, max: number) => {
+  return Math.random() * (max - min) + min
+}
 
-  return `https://ui-avatars.com/api/?name=${stringifiedName}&background=00B3FF&color=fff&rounded=true&format=svg`
+export const generateAvatarByFullName = (fullName: string) => {
+  const bgColors = ["00B3FF", "C04C46", "D36E21", "7461C7", "43AA2E"]
+  const stringifiedName = fullName.split(" ").join("+")
+  const randomBg = getRandomArbitrary(0, bgColors.length)
+
+  return `https://ui-avatars.com/api/?name=${stringifiedName}&background=${bgColors[randomBg]}&color=fff&rounded=true&format=svg`
 }
 
 export const formatChatListDate = (timeStamp: number) => {
