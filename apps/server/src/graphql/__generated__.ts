@@ -45,11 +45,17 @@ export type MessageInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  changeOnlineStatus?: Maybe<User>;
   createChat?: Maybe<Chat>;
   createPictureMessage?: Maybe<PictureMessage>;
   createTextMessage?: Maybe<TextMessage>;
   createUser: User;
   createVoiceMessage?: Maybe<VoiceMessage>;
+};
+
+
+export type MutationChangeOnlineStatusArgs = {
+  status: Scalars['Boolean']['input'];
 };
 
 
@@ -145,6 +151,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   newChat: PreviewChat;
   newMessage: UMessage;
+  onlineStatus: User;
 };
 
 
@@ -154,6 +161,11 @@ export type SubscriptionNewChatArgs = {
 
 
 export type SubscriptionNewMessageArgs = {
+  userId: Scalars['ID']['input'];
+};
+
+
+export type SubscriptionOnlineStatusArgs = {
   userId: Scalars['ID']['input'];
 };
 
@@ -176,9 +188,11 @@ export type UMessage = PictureMessage | TextMessage | VoiceMessage;
 
 export type User = {
   __typename?: 'User';
+  chats: Array<Chat>;
   displayName: Scalars['String']['output'];
   email: Scalars['String']['output'];
   firebaseId: Scalars['ID']['output'];
+  messages: Array<Message>;
   online: Scalars['Boolean']['output'];
   photoURL: Scalars['String']['output'];
 };
@@ -347,6 +361,7 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  changeOnlineStatus?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationChangeOnlineStatusArgs, 'status'>>;
   createChat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<MutationCreateChatArgs, 'members'>>;
   createPictureMessage?: Resolver<Maybe<ResolversTypes['PictureMessage']>, ParentType, ContextType, RequireFields<MutationCreatePictureMessageArgs, 'message'>>;
   createTextMessage?: Resolver<Maybe<ResolversTypes['TextMessage']>, ParentType, ContextType, RequireFields<MutationCreateTextMessageArgs, 'message'>>;
@@ -383,6 +398,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
   newChat?: SubscriptionResolver<ResolversTypes['PreviewChat'], "newChat", ParentType, ContextType, RequireFields<SubscriptionNewChatArgs, 'userId'>>;
   newMessage?: SubscriptionResolver<ResolversTypes['UMessage'], "newMessage", ParentType, ContextType, RequireFields<SubscriptionNewMessageArgs, 'userId'>>;
+  onlineStatus?: SubscriptionResolver<ResolversTypes['User'], "onlineStatus", ParentType, ContextType, RequireFields<SubscriptionOnlineStatusArgs, 'userId'>>;
 }>;
 
 export type TextMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['TextMessage'] = ResolversParentTypes['TextMessage']> = ResolversObject<{
@@ -400,9 +416,11 @@ export type UMessageResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
+  chats?: Resolver<Array<ResolversTypes['Chat']>, ParentType, ContextType>;
   displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   firebaseId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  messages?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>;
   online?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   photoURL?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

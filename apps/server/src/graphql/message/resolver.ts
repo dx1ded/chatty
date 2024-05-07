@@ -11,7 +11,7 @@ import {
 import { TextMessage } from "../../entities/TextMessage"
 import { VoiceMessage } from "../../entities/VoiceMessage"
 import { PictureMessage } from "../../entities/PictureMessage"
-import pubsub, { NEW_MESSAGE } from "../pubsub"
+import pubsub, { EVENT } from "../pubsub"
 import type { Subscription, Resolvers, SubscriptionNewMessageArgs } from "../__generated__"
 
 export default {
@@ -57,7 +57,7 @@ export default {
       const newTextMessage = new TextMessage(message.text, author, chat)
       const savedTextMessage = await textMessageRepository.save(newTextMessage)
 
-      pubsub.publish(NEW_MESSAGE, {
+      pubsub.publish(EVENT.NEW_MESSAGE, {
         newMessage: {
           __typename: "TextMessage",
           ...savedTextMessage,
@@ -75,7 +75,7 @@ export default {
       const newVoiceMessage = new VoiceMessage(message.voiceUrl, author, chat)
       const savedVoiceMessage = await voiceMessageRepository.save(newVoiceMessage)
 
-      pubsub.publish(NEW_MESSAGE, {
+      pubsub.publish(EVENT.NEW_MESSAGE, {
         newMessage: {
           __typename: "VoiceMessage",
           ...newVoiceMessage,
@@ -93,7 +93,7 @@ export default {
       const newPictureMessage = new PictureMessage(message.imageUrl, author, chat)
       const savedPictureMessage = await pictureMessageRepository.save(newPictureMessage)
 
-      pubsub.publish(NEW_MESSAGE, {
+      pubsub.publish(EVENT.NEW_MESSAGE, {
         newMessage: {
           __typename: "PictureMessage",
           ...savedPictureMessage,
@@ -107,7 +107,7 @@ export default {
     newMessage: {
       subscribe: (_, args: SubscriptionNewMessageArgs) => ({
         [Symbol.asyncIterator]: withFilter(
-          () => pubsub.asyncIterator(NEW_MESSAGE),
+          () => pubsub.asyncIterator(EVENT.NEW_MESSAGE),
           (payload: Pick<Subscription, "newMessage">) => {
             return payload.newMessage.chat.members.some((member) => member.firebaseId === args.userId)
           },

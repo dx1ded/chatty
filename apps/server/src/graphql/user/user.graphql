@@ -4,6 +4,8 @@ type User {
   email: String!
   photoURL: String!
   online: Boolean!
+  messages: [Message!]!
+  chats: [Chat!]!
 }
 
 type Query {
@@ -13,6 +15,11 @@ type Query {
 
 type Mutation {
   createUser(user: CreateUserInput!): User!
+  changeOnlineStatus(status: Boolean!): User
+}
+
+type Subscription {
+  onlineStatus(userId: ID!): User!
 }
 
 input CreateUserInput {

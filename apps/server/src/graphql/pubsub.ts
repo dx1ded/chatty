@@ -2,5 +2,8 @@ import { PubSub } from "graphql-subscriptions"
 
 export default new PubSub()
 
-export const CHAT_CREATED = "CHAT_CREATED"
-export const NEW_MESSAGE = "NEW_MESSAGE"
+export enum EVENT {
+  CHAT_CREATED = "CHAT_CREATED",
+  NEW_MESSAGE = "NEW_MESSAGE",
+  STATUS_CHANGE = "STATUS_CHANGE",
+}

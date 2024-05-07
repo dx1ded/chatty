@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import type { ChatFieldsFragment, MessageFieldsFragment } from "__generated__/graphql"
+import type {
+  ChatFieldsFragment,
+  MessageFieldsFragment,
+  OnlineStatusSubscription,
+} from "__generated__/graphql"
 
 interface ChatState {
   chat: ChatFieldsFragment
@@ -33,6 +37,11 @@ const chatSlice = createSlice({
     addMessage: (state, action: PayloadAction<MessageFieldsFragment>) => {
       state.chat.messages = [...state.chat.messages, action.payload]
     },
+    updateChatOnlineStatus: (state, { payload }: PayloadAction<OnlineStatusSubscription["onlineStatus"]>) => {
+      state.chat.members = state.chat.members.map((member) =>
+        member.firebaseId === payload.firebaseId ? { ...member, online: payload.online } : member,
+      )
+    },
     setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload
     },
@@ -50,6 +59,7 @@ export const {
   setChat,
   setMessages,
   addMessage,
+  updateChatOnlineStatus,
   setIsLoading,
   setMessagesLoading,
   setNoMoreMessages,

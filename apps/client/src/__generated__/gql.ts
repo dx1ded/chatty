@@ -22,6 +22,8 @@ const documents = {
     "\n  mutation CreateTextMessage($message: TextMessageInput!) {\n    createTextMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n": types.CreateTextMessageDocument,
     "\n  subscription Message($userId: ID!) {\n    newMessage(userId: $userId) {\n      ...MessageFields\n    }\n  }\n": types.MessageDocument,
     "\n  query FindUser($payload: String!) {\n    findUser(payload: $payload) {\n      firebaseId\n      displayName\n      photoURL\n    }\n  }\n": types.FindUserDocument,
+    "\n  mutation ChangeOnlineStatus($status: Boolean!) {\n    changeOnlineStatus(status: $status) {\n      firebaseId\n    }\n  }\n": types.ChangeOnlineStatusDocument,
+    "\n  subscription OnlineStatus($userId: ID!) {\n    onlineStatus(userId: $userId) {\n      firebaseId\n      online\n    }\n  }\n": types.OnlineStatusDocument,
     "\n  fragment MessageFields on Message {\n    __typename\n    id\n    author {\n      displayName\n      firebaseId\n      online\n      photoURL\n    }\n    chat {\n      id\n    }\n    read\n    timeStamp\n\n    ... on TextMessage {\n      text\n    }\n\n    ... on VoiceMessage {\n      voiceUrl\n    }\n\n    ... on PictureMessage {\n      imageUrl\n    }\n  }\n": types.MessageFieldsFragmentDoc,
     "\n  fragment ChatFields on Chat {\n    __typename\n    id\n    members {\n      firebaseId\n      displayName\n      online\n      photoURL\n    }\n    messages {\n      ...MessageFields\n    }\n  }\n": types.ChatFieldsFragmentDoc,
     "\n  fragment PreviewChatFields on PreviewChat {\n    id\n    newMessagesCount\n    members {\n      firebaseId\n      photoURL\n      online\n      displayName\n    }\n    messages {\n      __typename\n      timeStamp\n      read\n      author {\n        firebaseId\n        online\n        photoURL\n        displayName\n      }\n\n      ... on TextMessage {\n        text\n      }\n    }\n  }\n": types.PreviewChatFieldsFragmentDoc,
@@ -78,6 +80,14 @@ export function gql(source: "\n  subscription Message($userId: ID!) {\n    newMe
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query FindUser($payload: String!) {\n    findUser(payload: $payload) {\n      firebaseId\n      displayName\n      photoURL\n    }\n  }\n"): (typeof documents)["\n  query FindUser($payload: String!) {\n    findUser(payload: $payload) {\n      firebaseId\n      displayName\n      photoURL\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation ChangeOnlineStatus($status: Boolean!) {\n    changeOnlineStatus(status: $status) {\n      firebaseId\n    }\n  }\n"): (typeof documents)["\n  mutation ChangeOnlineStatus($status: Boolean!) {\n    changeOnlineStatus(status: $status) {\n      firebaseId\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  subscription OnlineStatus($userId: ID!) {\n    onlineStatus(userId: $userId) {\n      firebaseId\n      online\n    }\n  }\n"): (typeof documents)["\n  subscription OnlineStatus($userId: ID!) {\n    onlineStatus(userId: $userId) {\n      firebaseId\n      online\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

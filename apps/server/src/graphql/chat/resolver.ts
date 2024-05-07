@@ -7,7 +7,7 @@ import { Chat } from "../../entities/Chat"
 import { TextMessage } from "../../entities/TextMessage"
 import { VoiceMessage } from "../../entities/VoiceMessage"
 import { PictureMessage } from "../../entities/PictureMessage"
-import pubsub, { CHAT_CREATED } from "../pubsub"
+import pubsub, { EVENT } from "../pubsub"
 
 export default {
   ...["Chat", "PreviewChat"].reduce((acc, name) => {
@@ -101,7 +101,7 @@ export default {
 
       const savedChat = await chatRepository.save(chat)
 
-      await pubsub.publish(CHAT_CREATED, {
+      await pubsub.publish(EVENT.CHAT_CREATED, {
         newChat: {
           ...savedChat,
           newMessagesCount: 0,
@@ -115,7 +115,7 @@ export default {
     newChat: {
       subscribe: (_, args: SubscriptionNewChatArgs) => ({
         [Symbol.asyncIterator]: withFilter(
-          () => pubsub.asyncIterator(CHAT_CREATED),
+          () => pubsub.asyncIterator(EVENT.CHAT_CREATED),
           (payload: Pick<Subscription, "newChat">) => {
             return payload.newChat.members.some((member) => member.firebaseId === args.userId)
           },
