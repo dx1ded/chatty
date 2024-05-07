@@ -1,4 +1,6 @@
+import { useRef, useState, type Dispatch, type SetStateAction } from "react"
 import { useMutation } from "@apollo/client"
+import EmojiPicker, { type EmojiClickData } from "emoji-picker-react"
 import {
   CameraAltOutlined,
   KeyboardVoiceOutlined,
@@ -6,7 +8,6 @@ import {
   SentimentSatisfiedOutlined,
 } from "@mui/icons-material"
 import type { CreateTextMessageMutation, CreateTextMessageMutationVariables } from "__generated__/graphql"
-import { useRef, type Dispatch, type SetStateAction } from "react"
 import { Input } from "shared/ui/Input"
 import { useAppSelector } from "shared/model"
 import { handleEnter } from "shared/lib"
@@ -23,6 +24,7 @@ export function ChatFooter({ setOffset }: ChatFooterProps) {
     CreateTextMessageMutation,
     CreateTextMessageMutationVariables
   >(SEND_TEXT_MESSAGE)
+  const [emojiOpen, setEmojiOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const sendTextMessage = async () => {
@@ -44,11 +46,23 @@ export function ChatFooter({ setOffset }: ChatFooterProps) {
     input.value = ""
   }
 
+  const emojiClickHandler = (data: EmojiClickData) => {
+    inputRef.current!.value += data.emoji
+    setEmojiOpen(false)
+  }
+
   return (
     <footer className="mx-9 mb-6 flex items-center gap-3 rounded border border-[#E9E9E9] px-4 py-2.5">
-      <button type="button" className="text-grayish h-7 w-6">
-        <SentimentSatisfiedOutlined sx={{ width: "100%", height: "100%" }} />
-      </button>
+      <div className="relative">
+        <EmojiPicker
+          open={emojiOpen}
+          className="!absolute -left-4 -top-6 -translate-y-full"
+          onEmojiClick={emojiClickHandler}
+        />
+        <button type="button" className="text-grayish h-7 w-6" onClick={() => setEmojiOpen((prev) => !prev)}>
+          <SentimentSatisfiedOutlined sx={{ width: "100%", height: "100%" }} />
+        </button>
+      </div>
       <Input
         ref={inputRef}
         className="border-none text-sm"

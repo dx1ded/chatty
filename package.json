@@ -21,6 +21,7 @@
     "cors": "^2.8.5",
     "dayjs": "^2.0.0-alpha.4",
     "dotenv": "^16.4.5",
+    "emoji-picker-react": "^4.9.2",
     "express": "^4.18.3",
     "firebase": "^10.8.1",
     "firebase-admin": "^12.0.0",
