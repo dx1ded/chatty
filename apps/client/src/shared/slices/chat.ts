@@ -24,7 +24,7 @@ const chatSlice = createSlice({
       state.chat = action.payload
     },
     setMessages: (state, action: PayloadAction<MessageFieldsFragment[]>) => {
-      if (state.chat.messages.length) {
+      if (state.chat.messages?.length) {
         state.chat.messages = [...action.payload, ...state.chat.messages]
       } else {
         state.chat.messages = action.payload

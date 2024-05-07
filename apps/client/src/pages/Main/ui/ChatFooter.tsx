@@ -6,15 +6,18 @@ import {
   SentimentSatisfiedOutlined,
 } from "@mui/icons-material"
 import type { CreateTextMessageMutation, CreateTextMessageMutationVariables } from "__generated__/graphql"
-import { useRef } from "react"
+import { useRef, type Dispatch, type SetStateAction } from "react"
 import { Input } from "shared/ui/Input"
-import { MESSAGE_FIELDS, useAppSelector } from "shared/model"
-import { getFragment } from "__generated__"
+import { useAppSelector } from "shared/model"
 import { handleEnter } from "shared/lib"
 import { Spinner } from "shared/ui/Spinner"
 import { SEND_TEXT_MESSAGE } from "../model/message.queries"
 
-export function ChatFooter() {
+interface ChatFooterProps {
+  setOffset: Dispatch<SetStateAction<number>>
+}
+
+export function ChatFooter({ setOffset }: ChatFooterProps) {
   const { chat } = useAppSelector((state) => state.chat)
   const [createTextMessage, { loading }] = useMutation<
     CreateTextMessageMutation,
@@ -26,7 +29,7 @@ export function ChatFooter() {
     const input = inputRef.current!
     if (!input.value) return
 
-    const req = await createTextMessage({
+    await createTextMessage({
       variables: {
         message: {
           text: input.value,
@@ -37,8 +40,7 @@ export function ChatFooter() {
       },
     })
 
-    const newMessage = getFragment(MESSAGE_FIELDS, req.data?.createTextMessage)
-    if (!newMessage) return
+    setOffset((prev) => prev + 1)
     input.value = ""
   }
 

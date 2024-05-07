@@ -14,7 +14,7 @@ import type { CreateUserMutation, CreateUserMutationVariables, IsEmailUsedQuery 
 import { AuthFormProps, SignUpSchema } from "../lib"
 import { ErrorMessage } from "./ErrorMessage"
 import { Verification } from "./Verification"
-import { CREATE_USER, IS_EMAIL_USED } from "../model/chat.queries"
+import { CREATE_USER, IS_EMAIL_USED } from "../model/user.queries"
 
 type SignUpFields = z.infer<typeof SignUpSchema>
 

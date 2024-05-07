@@ -16,7 +16,7 @@ import type { Subscription, Resolvers, SubscriptionNewMessageArgs } from "../__g
 
 export default {
   Query: {
-    async messages(_, { chatId, skip = 0, take = 15 }, { user }) {
+    async messages(_, { chatId, take = 15, skip = 0 }, { user }) {
       if (!user) return null
 
       const messages = await messageRepository
@@ -25,7 +25,7 @@ export default {
         .leftJoinAndSelect("message.author", "author")
         .orderBy("message.timeStamp", "DESC")
         .where("chat.id = :chatId", { chatId })
-        .skip(skip * take)
+        .skip(skip)
         .take(take)
         .getMany()
 

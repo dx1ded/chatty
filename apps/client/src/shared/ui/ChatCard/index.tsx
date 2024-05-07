@@ -10,7 +10,7 @@ interface ChatCardProps {
 }
 
 export function ChatCard({ chat, uid }: ChatCardProps) {
-  const message = chat.messages[0]
+  const message = chat.messages.at(-1)
 
   const partner = chat.members.find(({ firebaseId }) => firebaseId !== uid)!
   const sentByYou = message ? uid === message.author.firebaseId : false

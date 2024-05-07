@@ -24,21 +24,19 @@ import { ChatHeader } from "./ChatHeader"
 import { ChatFooter } from "./ChatFooter"
 import { MessageList } from "./MessageList"
 import { GET_MESSAGES } from "../model/message.queries"
-
-const MESSAGES_OFFSET = 15
+import { MESSAGES_TAKE } from "../lib"
 
 export function Chat() {
   const { id } = useParams()
   const { user } = useAppSelector((state) => state.firebase)
   const { chat, isLoading } = useAppSelector((state) => state.chat)
   const dispatch = useAppDispatch()
-  const [skip, setSkip] = useState(0)
+  const [offset, setOffset] = useState(0)
 
   // Reset state when change a chat
   useEffect(() => {
     return () => {
       dispatch(resetChatState())
-      setSkip(0)
     }
   }, [id, dispatch])
 
@@ -46,7 +44,6 @@ export function Chat() {
     skip: chat?.id === id,
     variables: { chatId: id || "" },
     fetchPolicy: "no-cache",
-    notifyOnNetworkStatusChange: true,
     onCompleted(data) {
       const chat = getFragment(CHAT_FIELDS, data.chat)
       if (!chat) return
@@ -55,10 +52,10 @@ export function Chat() {
     },
   })
 
-  useQuery<GetMessagesQuery, GetMessagesQueryVariables>(GET_MESSAGES, {
-    skip: !chat?.id,
-    variables: { chatId: id || "", take: MESSAGES_OFFSET, skip },
+  const { refetch } = useQuery<GetMessagesQuery, GetMessagesQueryVariables>(GET_MESSAGES, {
+    variables: { chatId: id || "", take: MESSAGES_TAKE, skip: 0 },
     fetchPolicy: "no-cache",
+    notifyOnNetworkStatusChange: true,
     onCompleted(data) {
       // `as` is used because getFragment makes an array readonly for some reason
       const messages = getFragment(MESSAGE_FIELDS, data.messages) as MessageFieldsFragment[]
@@ -77,8 +74,8 @@ export function Chat() {
   return (
     <section className="flex flex-1 flex-col gap-3">
       <ChatHeader name={chatWith.displayName} online={chatWith.online} />
-      <MessageList data={chat.messages} setSkip={setSkip} />
-      <ChatFooter />
+      <MessageList data={chat.messages} offset={offset} refetch={refetch} />
+      <ChatFooter setOffset={setOffset} />
     </section>
   )
 }
