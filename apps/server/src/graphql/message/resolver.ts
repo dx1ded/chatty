@@ -1,4 +1,6 @@
 import { withFilter } from "graphql-subscriptions"
+import { In, Not } from "typeorm"
+import { GraphQLError } from "graphql"
 import type { ApolloContext } from ".."
 import {
   chatRepository,
@@ -12,7 +14,12 @@ import { TextMessage } from "../../entities/TextMessage"
 import { VoiceMessage } from "../../entities/VoiceMessage"
 import { PictureMessage } from "../../entities/PictureMessage"
 import pubsub, { EVENT } from "../pubsub"
-import type { Subscription, Resolvers, SubscriptionNewMessageArgs } from "../__generated__"
+import type {
+  Subscription,
+  Resolvers,
+  SubscriptionNewMessageArgs,
+  SubscriptionMessageReadArgs,
+} from "../__generated__"
 
 export default {
   Query: {
@@ -45,6 +52,50 @@ export default {
     },
   },
   Mutation: {
+    async readMessages(_, { messageIds }, { user }) {
+      if (!user) return null
+
+      const messages = await messageRepository.find({
+        relations: ["author", "chat", "chat.members"],
+        where: {
+          id: In(messageIds),
+          chat: {
+            members: {
+              firebaseId: user.uid,
+            },
+          },
+          author: {
+            firebaseId: Not(user.uid),
+          },
+        },
+      })
+
+      if (messages.length !== messageIds.length) {
+        throw new GraphQLError("Some of the messages don't seem to be sent by another person in the chat")
+      }
+
+      const readMessages = messages.map((message) => {
+        if (message instanceof TextMessage) {
+          return { __typename: "TextMessage", ...message, read: true }
+        }
+        if (message instanceof VoiceMessage) {
+          return { __typename: "VoiceMessage", ...message, read: true }
+        }
+        if (message instanceof PictureMessage) {
+          return { __typename: "PictureMessage", ...message, read: true }
+        }
+
+        return message
+      })
+
+      await messageRepository.save(readMessages)
+
+      pubsub.publish(EVENT.MESSAGE_READ, {
+        messageRead: readMessages,
+      })
+
+      return readMessages
+    },
     async createTextMessage(_, { message }, { user }) {
       if (!user) return null
 
@@ -110,6 +161,16 @@ export default {
           () => pubsub.asyncIterator(EVENT.NEW_MESSAGE),
           (payload: Pick<Subscription, "newMessage">) => {
             return payload.newMessage.chat.members.some((member) => member.firebaseId === args.userId)
+          },
+        ),
+      }),
+    },
+    messageRead: {
+      subscribe: (_, args: SubscriptionMessageReadArgs) => ({
+        [Symbol.asyncIterator]: withFilter(
+          () => pubsub.asyncIterator(EVENT.MESSAGE_READ),
+          (payload: Pick<Subscription, "messageRead">) => {
+            return payload.messageRead.every((message) => message.author.firebaseId === args.userId)
           },
         ),
       }),

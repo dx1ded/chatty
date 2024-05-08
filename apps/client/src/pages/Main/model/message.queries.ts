@@ -16,10 +16,26 @@ export const SEND_TEXT_MESSAGE = gql(`
   }
 `)
 
-export const MESSAGE_SUBSCRIPTION = gql(`
-  subscription Message($userId: ID!) {
+export const NEW_MESSAGE_SUBSCRIPTION = gql(`
+  subscription NewMessage($userId: ID!) {
     newMessage(userId: $userId) {
       ...MessageFields
+    }
+  }
+`)
+
+export const MESSAGE_READ_SUBSCRIPTION = gql(`
+  subscription MessageRead($userId: ID!) {
+    messageRead(userId: $userId) {
+      id
+    }
+  }
+`)
+
+export const READ_MESSAGES = gql(`
+  mutation ReadMessages($messageIds: [ID!]!) {
+    readMessages(messageIds: $messageIds) {
+      id
     }
   }
 `)

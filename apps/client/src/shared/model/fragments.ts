@@ -58,6 +58,7 @@ export const PREVIEW_CHAT_FIELDS = gql(`
     }
     messages {
       __typename
+      id
       timeStamp
       read
       author {

@@ -40,13 +40,15 @@ type Query {
 }
 
 type Mutation {
+  readMessages(messageIds: [ID!]!): [Message!]
   createTextMessage(message: TextMessageInput!): TextMessage
   createVoiceMessage(message: VoiceMessageInput!): VoiceMessage
   createPictureMessage(message: PictureMessageInput!): PictureMessage
 }
 
 type Subscription {
-  newMessage(userId: ID!): UMessage!
+  newMessage(userId: ID!): Message!
+  messageRead(userId: ID!): [Message!]!
 }
 
 input MessageInput {

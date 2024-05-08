@@ -30,11 +30,11 @@ const firebaseSlice = createSlice({
   name: "firebase",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<User | null>) => {
-      state.user = action.payload
+    setUser: (state, { payload }: PayloadAction<User | null>) => {
+      state.user = payload
     },
-    setIsLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload
+    setIsLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.isLoading = payload
     },
   },
 })

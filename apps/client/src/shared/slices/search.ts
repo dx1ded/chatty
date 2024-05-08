@@ -15,11 +15,11 @@ const searchSlice = createSlice({
   name: "search",
   initialState,
   reducers: {
-    setSearchItems: (state, action: PayloadAction<SearchState["items"]>) => {
-      state.items = action.payload
+    setSearchItems: (state, { payload }: PayloadAction<SearchState["items"]>) => {
+      state.items = payload
     },
-    setIsLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload
+    setIsLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.isLoading = payload
     },
   },
 })

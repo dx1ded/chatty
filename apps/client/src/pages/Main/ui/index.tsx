@@ -3,17 +3,19 @@ import { useMutation, useSubscription } from "@apollo/client"
 import type {
   ChangeOnlineStatusMutation,
   ChangeOnlineStatusMutationVariables,
-  MessageSubscription,
-  MessageSubscriptionVariables,
+  MessageReadSubscription,
+  MessageReadSubscriptionVariables,
+  NewMessageSubscription,
+  NewMessageSubscriptionVariables,
   OnlineStatusSubscription,
   OnlineStatusSubscriptionVariables,
 } from "__generated__/graphql"
 import { getFragment } from "__generated__"
 import { MESSAGE_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
-import { addMessage, updateChatOnlineStatus } from "shared/slices/chat"
+import { addMessage, updateChatOnlineStatus, updateMessagesRead } from "shared/slices/chat"
 import { updateChatList, updateChatListOnlineStatus } from "shared/slices/chatList"
 import { useEffect } from "react"
-import { MESSAGE_SUBSCRIPTION } from "../model/message.queries"
+import { MESSAGE_READ_SUBSCRIPTION, NEW_MESSAGE_SUBSCRIPTION } from "../model/message.queries"
 import { Sidebar } from "./Sidebar"
 import { CHANGE_ONLINE_STATUS, ONLINE_STATUS_SUBSCRIPTION } from "../model/user.queries"
 
@@ -44,7 +46,7 @@ export function Main() {
     }
   }, [changeOnlineStatus])
 
-  useSubscription<MessageSubscription, MessageSubscriptionVariables>(MESSAGE_SUBSCRIPTION, {
+  useSubscription<NewMessageSubscription, NewMessageSubscriptionVariables>(NEW_MESSAGE_SUBSCRIPTION, {
     variables: { userId: user?.uid || "" },
     onData(options) {
       const message = getFragment(MESSAGE_FIELDS, options.data.data?.newMessage)
@@ -54,7 +56,22 @@ export function Main() {
         dispatch(addMessage(message))
       }
 
-      dispatch(updateChatList(message))
+      dispatch(
+        updateChatList({
+          userId: user?.uid || "",
+          message,
+        }),
+      )
+    },
+  })
+
+  useSubscription<MessageReadSubscription, MessageReadSubscriptionVariables>(MESSAGE_READ_SUBSCRIPTION, {
+    variables: { userId: user?.uid || "" },
+    onData(options) {
+      const messageIds = options.data.data?.messageRead.map((message) => message.id)
+      if (!messageIds) return
+
+      dispatch(updateMessagesRead(messageIds))
     },
   })
 

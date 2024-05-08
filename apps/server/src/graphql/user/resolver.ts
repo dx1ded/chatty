@@ -48,7 +48,7 @@ export default {
       })
       foundUser.online = status
 
-      pubsub.publish(EVENT.STATUS_CHANGE, {
+      pubsub.publish(EVENT.ONLINE_STATUS_CHANGE, {
         onlineStatus: foundUser,
       })
 
@@ -59,7 +59,7 @@ export default {
     onlineStatus: {
       subscribe: (_, args: SubscriptionOnlineStatusArgs) => ({
         [Symbol.asyncIterator]: withFilter(
-          () => pubsub.asyncIterator(EVENT.STATUS_CHANGE),
+          () => pubsub.asyncIterator(EVENT.ONLINE_STATUS_CHANGE),
           (payload: Pick<Subscription, "onlineStatus">) => {
             return payload.onlineStatus.chats.some((chat) =>
               chat.members.some((member) => member.firebaseId === args.userId),

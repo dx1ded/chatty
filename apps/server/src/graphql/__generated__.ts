@@ -51,6 +51,7 @@ export type Mutation = {
   createTextMessage?: Maybe<TextMessage>;
   createUser: User;
   createVoiceMessage?: Maybe<VoiceMessage>;
+  readMessages?: Maybe<Array<Message>>;
 };
 
 
@@ -81,6 +82,11 @@ export type MutationCreateUserArgs = {
 
 export type MutationCreateVoiceMessageArgs = {
   message: VoiceMessageInput;
+};
+
+
+export type MutationReadMessagesArgs = {
+  messageIds: Array<Scalars['ID']['input']>;
 };
 
 export type PictureMessage = Message & {
@@ -149,9 +155,15 @@ export type QueryMessagesArgs = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  messageRead: Array<Message>;
   newChat: PreviewChat;
-  newMessage: UMessage;
+  newMessage: Message;
   onlineStatus: User;
+};
+
+
+export type SubscriptionMessageReadArgs = {
+  userId: Scalars['ID']['input'];
 };
 
 
@@ -367,6 +379,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createTextMessage?: Resolver<Maybe<ResolversTypes['TextMessage']>, ParentType, ContextType, RequireFields<MutationCreateTextMessageArgs, 'message'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
   createVoiceMessage?: Resolver<Maybe<ResolversTypes['VoiceMessage']>, ParentType, ContextType, RequireFields<MutationCreateVoiceMessageArgs, 'message'>>;
+  readMessages?: Resolver<Maybe<Array<ResolversTypes['Message']>>, ParentType, ContextType, RequireFields<MutationReadMessagesArgs, 'messageIds'>>;
 }>;
 
 export type PictureMessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['PictureMessage'] = ResolversParentTypes['PictureMessage']> = ResolversObject<{
@@ -396,8 +409,9 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 }>;
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
+  messageRead?: SubscriptionResolver<Array<ResolversTypes['Message']>, "messageRead", ParentType, ContextType, RequireFields<SubscriptionMessageReadArgs, 'userId'>>;
   newChat?: SubscriptionResolver<ResolversTypes['PreviewChat'], "newChat", ParentType, ContextType, RequireFields<SubscriptionNewChatArgs, 'userId'>>;
-  newMessage?: SubscriptionResolver<ResolversTypes['UMessage'], "newMessage", ParentType, ContextType, RequireFields<SubscriptionNewMessageArgs, 'userId'>>;
+  newMessage?: SubscriptionResolver<ResolversTypes['Message'], "newMessage", ParentType, ContextType, RequireFields<SubscriptionNewMessageArgs, 'userId'>>;
   onlineStatus?: SubscriptionResolver<ResolversTypes['User'], "onlineStatus", ParentType, ContextType, RequireFields<SubscriptionOnlineStatusArgs, 'userId'>>;
 }>;
 
