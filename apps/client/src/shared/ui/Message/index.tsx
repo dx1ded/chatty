@@ -61,3 +61,6 @@ export function Message({ message, uid, readMessage }: MessageProps) {
     </div>
   )
 }
+
+export { PictureMessage } from "./PictureMessage"
+export { VoiceMessage } from "./VoiceMessage"

@@ -41,6 +41,19 @@ export function MessageList({ data, offset, refetch }: MessageListProps) {
     onCompleted: () => setRead([]),
   })
 
+  const { ref } = useInView({
+    onChange(inView) {
+      if (!inView || noMoreMessages) return
+      refetch({
+        chatId: id || "",
+        take: MESSAGES_TAKE,
+        skip: (page + 1) * MESSAGES_TAKE + offset,
+      })
+      setPage((prev) => prev + 1)
+      dispatch(setMessagesLoading(true))
+    },
+  })
+
   const sendReadMessagedDebounced = useDebouncedCallback(() => {
     dispatch(updateChatListMessagesRead(read))
     sendReadMessages()
@@ -54,19 +67,6 @@ export function MessageList({ data, offset, refetch }: MessageListProps) {
   }
 
   const messages = useMemo(() => data.map((_fragment) => getFragment(MESSAGE_FIELDS, _fragment)), [data])
-
-  const { ref } = useInView({
-    onChange(inView) {
-      if (!inView || noMoreMessages) return
-      refetch({
-        chatId: id || "",
-        take: MESSAGES_TAKE,
-        skip: (page + 1) * MESSAGES_TAKE + offset,
-      })
-      setPage((prev) => prev + 1)
-      dispatch(setMessagesLoading(true))
-    },
-  })
 
   return (
     <div className="flex max-h-full flex-1 flex-col-reverse overflow-y-auto px-9 py-8">
