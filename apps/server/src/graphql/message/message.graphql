@@ -43,7 +43,7 @@ type Mutation {
   readMessages(messageIds: [ID!]!): [Message!]
   createTextMessage(message: TextMessageInput!): TextMessage
   createVoiceMessage(message: VoiceMessageInput!): VoiceMessage
-  createPictureMessage(message: PictureMessageInput!): PictureMessage
+  createPictureMessage(message: PictureMessageInput!): [PictureMessage!]
 }
 
 type Subscription {
@@ -67,5 +67,5 @@ input VoiceMessageInput {
 
 input PictureMessageInput {
   meta: MessageInput!
-  imageUrl: String!
+  imagesUrl: [String!]!
 }

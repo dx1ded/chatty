@@ -2,9 +2,13 @@ import { Close } from "@mui/icons-material"
 import { useCallback, useMemo, useState } from "react"
 import { PictureMessage, VoiceMessage } from "../Message"
 
-type AttachmentItemProps = { type: "picture" | "voice"; blob: Blob }
+type AttachmentItemProps = { type: "picture"; imageUrl: string } | { type: "voice"; voiceUrl: string }
 
-export function useAttachment() {
+interface AttachmentProps {
+  onItemsDeleted(): void
+}
+
+export function useAttachment({ onItemsDeleted }: AttachmentProps) {
   const [items, setItems] = useState<AttachmentItemProps[]>([])
 
   const addItem = useCallback(
@@ -21,13 +25,22 @@ export function useAttachment() {
     [items],
   )
 
-  const removeItem = useCallback((i: number) => {
-    setItems((prev) => prev.filter((_, index) => index !== i))
-  }, [])
+  const removeItem = useCallback(
+    (i: number) => {
+      setItems((prev) => prev.filter((_, index) => index !== i))
+      if (items.length === 1) onItemsDeleted()
+    },
+    [items, onItemsDeleted],
+  )
+
+  const clearItems = useCallback(() => {
+    setItems([])
+    onItemsDeleted()
+  }, [onItemsDeleted])
 
   const contextHandler = useMemo(
     () => (
-      <div className="flex gap-2">
+      <div className="flex gap-3">
         {items.map((item, i) => (
           <div key={i} className="relative">
             <button
@@ -37,9 +50,9 @@ export function useAttachment() {
               <Close sx={{ width: "70%", height: "70%" }} />
             </button>
             {item.type === "picture" ? (
-              <PictureMessage blob={item.blob} />
+              <PictureMessage imageUrl={item.imageUrl} className="max-w-24" />
             ) : (
-              <VoiceMessage blob={item.blob} />
+              <VoiceMessage voiceUrl={item.voiceUrl} />
             )}
           </div>
         ))}
@@ -49,8 +62,9 @@ export function useAttachment() {
   )
 
   return {
+    items,
     addItem,
-    removeItem,
+    clearItems,
     contextHandler,
   }
 }

@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { useParams } from "react-router-dom"
+import { useDebouncedCallback } from "use-debounce"
 import type { RefetchFunction } from "@apollo/client/react/hooks/useSuspenseQuery"
+import { useMutation } from "@apollo/client"
 import { getFragment } from "__generated__"
 import type {
   ChatFieldsFragment,
@@ -10,14 +12,12 @@ import type {
   MessageFieldsFragment,
 } from "__generated__/graphql"
 import { MESSAGE_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
+import { updateChatListMessagesRead } from "shared/slices/chatList"
 import { Message } from "shared/ui/Message"
 import { Spinner } from "shared/ui/Spinner"
 import { setMessagesLoading, updateMessagesRead } from "shared/slices/chat"
-import { useMutation } from "@apollo/client"
-import { useDebouncedCallback } from "use-debounce"
-import { updateChatListMessagesRead } from "shared/slices/chatList"
+import { READ_MESSAGES } from "../model/queries/message"
 import { MESSAGES_TAKE } from "../lib"
-import { READ_MESSAGES } from "../model/message.queries"
 
 interface MessageListProps {
   data: ChatFieldsFragment["messages"]

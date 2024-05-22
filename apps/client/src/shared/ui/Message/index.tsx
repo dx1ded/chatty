@@ -2,7 +2,9 @@ import { Done, DoneAll } from "@mui/icons-material"
 import { formatMessageDate } from "shared/lib"
 import type { MessageFieldsFragment } from "__generated__/graphql"
 import { useInView } from "react-intersection-observer"
-import { Text } from "../Typography"
+import { VoiceMessage } from "./VoiceMessage"
+import { PictureMessage } from "./PictureMessage"
+import { TextMessage } from "./TextMessage"
 
 interface MessageProps {
   message: MessageFieldsFragment
@@ -19,12 +21,6 @@ export function Message({ message, uid, readMessage }: MessageProps) {
   })
 
   const sentByYou = message.author.firebaseId === uid
-  const messagePreview =
-    message.__typename === "TextMessage"
-      ? message.text
-      : message.__typename === "VoiceMessage"
-        ? "Voice Message"
-        : "Picture"
 
   return (
     <div
@@ -47,12 +43,22 @@ export function Message({ message, uid, readMessage }: MessageProps) {
         />
       </div>
       <div
-        className={`relative rounded-[0.75rem] border p-3.5 ${
-          sentByYou
-            ? "shadow-message-white rounded-br-none border-[#ECECEC] bg-white"
-            : "bg-primary border-primary shadow-message-blue rounded-bl-none"
+        className={`relative rounded-[0.75rem] ${
+          message.__typename === "TextMessage"
+            ? `border p-3.5 ${
+                sentByYou
+                  ? `shadow-message-white rounded-br-none border-[#ECECEC] bg-white`
+                  : "bg-primary border-primary shadow-message-blue rounded-bl-none"
+              }`
+            : ""
         }`}>
-        <Text className={`font-normal ${sentByYou ? "text-dark" : "text-white"}`}>{messagePreview}</Text>
+        {message.__typename === "TextMessage" ? (
+          <TextMessage text={message.text} sentByYou={sentByYou} />
+        ) : message.__typename === "PictureMessage" ? (
+          <PictureMessage imageUrl={message.imageUrl} className="rounded-lg" />
+        ) : (
+          <VoiceMessage voiceUrl={message.voiceUrl} />
+        )}
         <span
           className={`text-grayish absolute -bottom-6 whitespace-nowrap text-nowrap text-xs ${sentByYou ? "right-0" : "left-0"}`}>
           {formatMessageDate(message.timeStamp)}

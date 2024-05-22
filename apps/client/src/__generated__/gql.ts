@@ -20,6 +20,8 @@ const documents = {
     "\n  subscription ChatList($userId: ID!) {\n    newChat(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n": types.ChatListDocument,
     "\n  query GetMessages($chatId: ID!, $take: Int, $skip: Int) {\n    messages(chatId: $chatId, take: $take, skip: $skip) {\n      ...MessageFields\n    }\n  }\n": types.GetMessagesDocument,
     "\n  mutation CreateTextMessage($message: TextMessageInput!) {\n    createTextMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n": types.CreateTextMessageDocument,
+    "\n  mutation CreatePictureMessage($message: PictureMessageInput!) {\n    createPictureMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n": types.CreatePictureMessageDocument,
+    "\n  mutation CreateVoiceMessage($message: VoiceMessageInput!) {\n    createVoiceMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n": types.CreateVoiceMessageDocument,
     "\n  subscription NewMessage($userId: ID!) {\n    newMessage(userId: $userId) {\n      ...MessageFields\n    }\n  }\n": types.NewMessageDocument,
     "\n  subscription MessageRead($userId: ID!) {\n    messageRead(userId: $userId) {\n      id\n    }\n  }\n": types.MessageReadDocument,
     "\n  mutation ReadMessages($messageIds: [ID!]!) {\n    readMessages(messageIds: $messageIds) {\n      id\n    }\n  }\n": types.ReadMessagesDocument,
@@ -74,6 +76,14 @@ export function gql(source: "\n  query GetMessages($chatId: ID!, $take: Int, $sk
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation CreateTextMessage($message: TextMessageInput!) {\n    createTextMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n"): (typeof documents)["\n  mutation CreateTextMessage($message: TextMessageInput!) {\n    createTextMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation CreatePictureMessage($message: PictureMessageInput!) {\n    createPictureMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n"): (typeof documents)["\n  mutation CreatePictureMessage($message: PictureMessageInput!) {\n    createPictureMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation CreateVoiceMessage($message: VoiceMessageInput!) {\n    createVoiceMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n"): (typeof documents)["\n  mutation CreateVoiceMessage($message: VoiceMessageInput!) {\n    createVoiceMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

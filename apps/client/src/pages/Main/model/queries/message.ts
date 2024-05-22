@@ -16,6 +16,22 @@ export const SEND_TEXT_MESSAGE = gql(`
   }
 `)
 
+export const SEND_PICTURE_MESSAGE = gql(`
+  mutation CreatePictureMessage($message: PictureMessageInput!) {
+    createPictureMessage(message: $message) {
+      ...MessageFields
+    }
+  }
+`)
+
+export const SEND_VOICE_MESSAGE = gql(`
+  mutation CreateVoiceMessage($message: VoiceMessageInput!) {
+    createVoiceMessage(message: $message) {
+      ...MessageFields
+    }
+  }
+`)
+
 export const NEW_MESSAGE_SUBSCRIPTION = gql(`
   subscription NewMessage($userId: ID!) {
     newMessage(userId: $userId) {

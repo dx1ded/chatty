@@ -1,12 +1,12 @@
+import { forwardRef, useImperativeHandle, useRef } from "react"
+import { useDebouncedCallback } from "use-debounce"
 import { useLazyQuery } from "@apollo/client"
 import { SearchOutlined, CancelOutlined } from "@mui/icons-material"
 import { Input } from "shared/ui/Input"
-import { useDebouncedCallback } from "use-debounce"
 import { FindUserQuery, FindUserQueryVariables } from "__generated__/graphql"
 import { useAppDispatch, useAppSelector } from "shared/model"
 import { setIsLoading, setSearchItems } from "shared/slices/search"
-import { forwardRef, useImperativeHandle, useRef } from "react"
-import { FIND_USER } from "../model/user.queries"
+import { FIND_USER } from "../model/queries/user"
 
 export const Search = forwardRef<HTMLInputElement>(function Search(_, ref) {
   const dispatch = useAppDispatch()

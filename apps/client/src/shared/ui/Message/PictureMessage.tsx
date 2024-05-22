@@ -1,7 +1,8 @@
 interface PictureMessageProps {
-  blob: Blob
+  imageUrl: string
+  className?: string
 }
 
-export function PictureMessage({ blob }: PictureMessageProps) {
-  return <div />
+export function PictureMessage({ imageUrl, className }: PictureMessageProps) {
+  return <img src={imageUrl} className={`h-full w-full object-cover ${className || ""}`} alt="Attachment" />
 }

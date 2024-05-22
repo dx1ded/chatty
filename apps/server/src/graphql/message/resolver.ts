@@ -121,7 +121,10 @@ export default {
       if (!user) return null
 
       const author = await userRepository.findOneBy({ firebaseId: user.uid })
-      const chat = await chatRepository.findOneBy({ id: message.meta.chat })
+      const chat = await chatRepository.findOne({
+        relations: ["members"],
+        where: { id: message.meta.chat },
+      })
 
       const newVoiceMessage = new VoiceMessage(message.voiceUrl, author, chat)
       const savedVoiceMessage = await voiceMessageRepository.save(newVoiceMessage)
@@ -139,17 +142,24 @@ export default {
       if (!user) return null
 
       const author = await userRepository.findOneBy({ firebaseId: user.uid })
-      const chat = await chatRepository.findOneBy({ id: message.meta.chat })
-
-      const newPictureMessage = new PictureMessage(message.imageUrl, author, chat)
-      const savedPictureMessage = await pictureMessageRepository.save(newPictureMessage)
-
-      pubsub.publish(EVENT.NEW_MESSAGE, {
-        newMessage: {
-          __typename: "PictureMessage",
-          ...savedPictureMessage,
-        },
+      const chat = await chatRepository.findOne({
+        relations: ["members"],
+        where: { id: message.meta.chat },
       })
+
+      const newPictureMessages = message.imagesUrl.map(
+        (imageUrl) => new PictureMessage(imageUrl, author, chat),
+      )
+      const savedPictureMessage = await pictureMessageRepository.save(newPictureMessages)
+
+      savedPictureMessage.forEach((newMessage) =>
+        pubsub.publish(EVENT.NEW_MESSAGE, {
+          newMessage: {
+            __typename: "PictureMessage",
+            ...newMessage,
+          },
+        }),
+      )
 
       return savedPictureMessage
     },

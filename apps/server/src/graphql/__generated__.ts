@@ -47,7 +47,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   changeOnlineStatus?: Maybe<User>;
   createChat?: Maybe<Chat>;
-  createPictureMessage?: Maybe<PictureMessage>;
+  createPictureMessage?: Maybe<Array<PictureMessage>>;
   createTextMessage?: Maybe<TextMessage>;
   createUser: User;
   createVoiceMessage?: Maybe<VoiceMessage>;
@@ -100,7 +100,7 @@ export type PictureMessage = Message & {
 };
 
 export type PictureMessageInput = {
-  imageUrl: Scalars['String']['input'];
+  imagesUrl: Array<Scalars['String']['input']>;
   meta: MessageInput;
 };
 
@@ -375,7 +375,7 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   changeOnlineStatus?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationChangeOnlineStatusArgs, 'status'>>;
   createChat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<MutationCreateChatArgs, 'members'>>;
-  createPictureMessage?: Resolver<Maybe<ResolversTypes['PictureMessage']>, ParentType, ContextType, RequireFields<MutationCreatePictureMessageArgs, 'message'>>;
+  createPictureMessage?: Resolver<Maybe<Array<ResolversTypes['PictureMessage']>>, ParentType, ContextType, RequireFields<MutationCreatePictureMessageArgs, 'message'>>;
   createTextMessage?: Resolver<Maybe<ResolversTypes['TextMessage']>, ParentType, ContextType, RequireFields<MutationCreateTextMessageArgs, 'message'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
   createVoiceMessage?: Resolver<Maybe<ResolversTypes['VoiceMessage']>, ParentType, ContextType, RequireFields<MutationCreateVoiceMessageArgs, 'message'>>;

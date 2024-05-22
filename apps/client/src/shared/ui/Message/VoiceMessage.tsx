@@ -1,29 +1,41 @@
-import { PlayCircle } from "@mui/icons-material"
-import { useMemo, useState } from "react"
+import { PlayCircle, StopCircle } from "@mui/icons-material"
+import { useEffect, useMemo, useState } from "react"
 import { AudioVisualizer } from "react-audio-visualize"
+import { base64ToBlob, dataURLToBase64 } from "shared/lib"
 
 interface VoiceMessageProps {
-  blob: Blob
+  voiceUrl: string
 }
 
-export function VoiceMessage({ blob }: VoiceMessageProps) {
+export function VoiceMessage({ voiceUrl }: VoiceMessageProps) {
   const [currentTime, setCurrentTime] = useState(0)
-  const audio = useMemo(() => new Audio(window.URL.createObjectURL(blob)), [blob])
+  const [playing, setPlaying] = useState(false)
+  const [blob, setBlob] = useState<Blob | null>(null)
+  const audio = useMemo(() => new Audio(voiceUrl), [voiceUrl])
+
+  useEffect(() => {
+    setBlob(base64ToBlob(dataURLToBase64(voiceUrl), "audio/ogg; codecs=opus"))
+  }, [voiceUrl])
 
   const clickHandler = () => {
     if (!audio.paused && audio.currentTime > 0 && !audio.ended) {
+      setPlaying(false)
       return audio.pause()
     }
 
+    setPlaying(true)
     audio.play()
     audio.ontimeupdate = () => setCurrentTime(audio.currentTime)
     audio.onended = () => {
       setCurrentTime(0)
+      setPlaying(false)
       audio.currentTime = 0
       audio.ontimeupdate = null
       audio.onended = null
     }
   }
+
+  const VoiceIcon = playing ? StopCircle : PlayCircle
 
   return (
     <div className="bg-primary relative flex items-center gap-2 rounded-xl border border-gray-200 p-2">
@@ -31,19 +43,20 @@ export function VoiceMessage({ blob }: VoiceMessageProps) {
         type="button"
         className="flex h-7 w-7 items-center justify-center text-white"
         onClick={clickHandler}>
-        <PlayCircle sx={{ width: "100%", height: "100%" }} />
+        <VoiceIcon sx={{ width: "100%", height: "100%" }} />
       </button>
-      <AudioVisualizer
-        blob={blob}
-        currentTime={currentTime}
-        width={180}
-        height={35}
-        barWidth={3}
-        gap={2}
-        barPlayedColor="rgba(255, 255, 255, 0.7)"
-        barColor="rgb(255, 255, 255)"
-      />
-      {/* <audio controls src={window.URL.createObjectURL(blob)} /> */}
+      {blob && (
+        <AudioVisualizer
+          blob={blob}
+          currentTime={currentTime}
+          width={180}
+          height={35}
+          barWidth={3}
+          gap={2}
+          barPlayedColor="rgba(255, 255, 255, 0.7)"
+          barColor="rgb(255, 255, 255)"
+        />
+      )}
     </div>
   )
 }

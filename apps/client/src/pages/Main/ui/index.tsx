@@ -1,27 +1,20 @@
+import { useEffect } from "react"
 import { Outlet } from "react-router-dom"
 import { useMutation, useSubscription } from "@apollo/client"
 import type {
   ChangeOnlineStatusMutation,
   ChangeOnlineStatusMutationVariables,
-  MessageReadSubscription,
-  MessageReadSubscriptionVariables,
-  NewMessageSubscription,
-  NewMessageSubscriptionVariables,
   OnlineStatusSubscription,
   OnlineStatusSubscriptionVariables,
 } from "__generated__/graphql"
-import { getFragment } from "__generated__"
-import { MESSAGE_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
-import { addMessage, updateChatOnlineStatus, updateMessagesRead } from "shared/slices/chat"
-import { updateChatList, updateChatListOnlineStatus } from "shared/slices/chatList"
-import { useEffect } from "react"
-import { MESSAGE_READ_SUBSCRIPTION, NEW_MESSAGE_SUBSCRIPTION } from "../model/message.queries"
+import { updateChatListOnlineStatus } from "shared/slices/chatList"
+import { updateChatOnlineStatus } from "shared/slices/chat"
+import { useAppDispatch, useAppSelector } from "shared/model"
 import { Sidebar } from "./Sidebar"
-import { CHANGE_ONLINE_STATUS, ONLINE_STATUS_SUBSCRIPTION } from "../model/user.queries"
+import { CHANGE_ONLINE_STATUS, ONLINE_STATUS_SUBSCRIPTION } from "../model/queries/user"
 
 export function Main() {
   const { user } = useAppSelector((state) => state.firebase)
-  const { chat } = useAppSelector((state) => state.chat)
   const dispatch = useAppDispatch()
   const [changeOnlineStatus] = useMutation<ChangeOnlineStatusMutation, ChangeOnlineStatusMutationVariables>(
     CHANGE_ONLINE_STATUS,
@@ -45,35 +38,6 @@ export function Main() {
       window.removeEventListener("beforeunload", setOffline)
     }
   }, [changeOnlineStatus])
-
-  useSubscription<NewMessageSubscription, NewMessageSubscriptionVariables>(NEW_MESSAGE_SUBSCRIPTION, {
-    variables: { userId: user?.uid || "" },
-    onData(options) {
-      const message = getFragment(MESSAGE_FIELDS, options.data.data?.newMessage)
-      if (!message) return
-
-      if (message.chat.id === chat?.id) {
-        dispatch(addMessage(message))
-      }
-
-      dispatch(
-        updateChatList({
-          userId: user?.uid || "",
-          message,
-        }),
-      )
-    },
-  })
-
-  useSubscription<MessageReadSubscription, MessageReadSubscriptionVariables>(MESSAGE_READ_SUBSCRIPTION, {
-    variables: { userId: user?.uid || "" },
-    onData(options) {
-      const messageIds = options.data.data?.messageRead.map((message) => message.id)
-      if (!messageIds) return
-
-      dispatch(updateMessagesRead(messageIds))
-    },
-  })
 
   useSubscription<OnlineStatusSubscription, OnlineStatusSubscriptionVariables>(ONLINE_STATUS_SUBSCRIPTION, {
     variables: { userId: user?.uid || "" },

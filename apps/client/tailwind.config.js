@@ -27,6 +27,16 @@ module.exports = {
       "message-blue": "0 5px 5px 0 rgba(54, 116, 255, 0.2)",
       "message-white": "0 1px 2px 0 rgba(0, 0, 0, 0.2)",
     },
+    keyframes: {
+      shake: {
+        "0%, 100%": { transform: "translateX(0)" },
+        "20%, 60%": { transform: "translateX(-10px)" },
+        "40%, 80%": { transform: "translateX(10px)" },
+      },
+    },
+    animation: {
+      shake: "shake 0.5s ease-in-out",
+    },
   },
   plugins: [],
 }

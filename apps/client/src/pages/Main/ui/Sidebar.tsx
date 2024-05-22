@@ -1,6 +1,7 @@
+import { useRef } from "react"
+import Skeleton from "react-loading-skeleton"
 import { useQuery, useSubscription } from "@apollo/client"
 import { GroupOutlined, LaunchOutlined } from "@mui/icons-material"
-import { useRef } from "react"
 import type {
   GetChatListQuery,
   GetChatListQueryVariables,
@@ -8,14 +9,13 @@ import type {
   ChatListSubscriptionVariables,
   PreviewChatFieldsFragment,
 } from "__generated__/graphql"
-import Skeleton from "react-loading-skeleton"
 import { PREVIEW_CHAT_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
 import { Text } from "shared/ui/Typography"
 import { ChatCard } from "shared/ui/ChatCard"
 import { ProfileCard } from "shared/ui/ProfileCard"
 import { setChatList, setIsLoading } from "shared/slices/chatList"
 import { getFragment } from "__generated__"
-import { CHAT_LIST_SUBSCRIPTION, GET_CHAT_LIST } from "../model/chat.queries"
+import { CHAT_LIST_SUBSCRIPTION, GET_CHAT_LIST } from "../model/queries/chat"
 import { Search } from "./Search"
 
 export function Sidebar() {

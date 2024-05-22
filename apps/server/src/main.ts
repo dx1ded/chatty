@@ -57,7 +57,7 @@ async function start() {
 
   app.use(
     "/graphql",
-    bodyParser.json(),
+    bodyParser.json({ limit: "50mb" }),
     cors<cors.CorsRequest>(),
     expressMiddleware(server, {
       context: async ({ req }) => {
