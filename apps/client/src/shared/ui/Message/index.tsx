@@ -57,7 +57,7 @@ export function Message({ message, uid, readMessage }: MessageProps) {
         ) : message.__typename === "PictureMessage" ? (
           <PictureMessage imageUrl={message.imageUrl} className="rounded-lg" />
         ) : (
-          <VoiceMessage voiceUrl={message.voiceUrl} />
+          <VoiceMessage voiceUrl={message.voiceUrl} width={225} height={50} />
         )}
         <span
           className={`text-grayish absolute -bottom-6 whitespace-nowrap text-nowrap text-xs ${sentByYou ? "right-0" : "left-0"}`}>

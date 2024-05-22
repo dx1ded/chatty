@@ -5,9 +5,20 @@ import { base64ToBlob, dataURLToBase64 } from "shared/lib"
 
 interface VoiceMessageProps {
   voiceUrl: string
+  /**
+   * In px
+   */
+  width?: number
+  /**
+   * In px
+   */
+  height?: number
 }
 
-export function VoiceMessage({ voiceUrl }: VoiceMessageProps) {
+const DEFAULT_WIDTH = 180
+const DEFAULT_HEIGHT = 35
+
+export function VoiceMessage({ voiceUrl, width, height }: VoiceMessageProps) {
   const [currentTime, setCurrentTime] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [blob, setBlob] = useState<Blob | null>(null)
@@ -49,8 +60,8 @@ export function VoiceMessage({ voiceUrl }: VoiceMessageProps) {
         <AudioVisualizer
           blob={blob}
           currentTime={currentTime}
-          width={180}
-          height={35}
+          width={width || DEFAULT_WIDTH}
+          height={height || DEFAULT_HEIGHT}
           barWidth={3}
           gap={2}
           barPlayedColor="rgba(255, 255, 255, 0.7)"
