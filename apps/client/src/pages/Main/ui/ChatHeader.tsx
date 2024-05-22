@@ -1,4 +1,5 @@
-import { MoreHoriz } from "@mui/icons-material"
+import { ArrowBack, MoreHoriz } from "@mui/icons-material"
+import { Link } from "react-router-dom"
 import { Text } from "shared/ui/Typography"
 
 interface ChatHeaderProps {
@@ -8,8 +9,10 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ name, online }: ChatHeaderProps) {
   return (
-    <header className="grid h-14 flex-shrink-0 grid-cols-3 items-center border-b border-[#F7F7F7] px-4">
-      <div />
+    <header className="flex h-14 flex-shrink-0 items-center justify-between border-b border-[#F7F7F7] px-4">
+      <Link to="/" className="flex h-8 w-8 items-center text-gray-500">
+        <ArrowBack sx={{ width: "100%" }} />
+      </Link>
       <div className="text-center">
         <Text className="font-medium leading-4">{name}</Text>
         <div className="flex items-center justify-center gap-1.5">
@@ -17,7 +20,7 @@ export function ChatHeader({ name, online }: ChatHeaderProps) {
           <Text className="text-grayish font-normal">{online ? "online" : "offline"}</Text>
         </div>
       </div>
-      <button type="button" className="text-grayish h-10 w-10 justify-self-end">
+      <button type="button" className="text-grayish h-8 w-8">
         <MoreHoriz sx={{ width: "100%" }} />
       </button>
     </header>
