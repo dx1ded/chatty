@@ -73,7 +73,9 @@ export function Sidebar() {
           ))
         ) : (
           [...chatList.items]
-            .sort((a, b) => Number(b.messages.at(-1)?.timeStamp) - Number(a.messages.at(-1)?.timeStamp))
+            .sort((a, b) => {
+              return Number(b.messages.at(-1)?.timeStamp ?? 0) - Number(a.messages.at(-1)?.timeStamp ?? 0)
+            })
             .map((chat) => <ChatCard key={chat!.id} chat={chat!} uid={user!.uid} />)
         )}
       </div>
