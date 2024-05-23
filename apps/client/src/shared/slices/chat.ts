@@ -15,7 +15,12 @@ interface ChatState {
 }
 
 const initialState: ChatState = {
-  chat: {} as ChatFieldsFragment,
+  chat: {
+    __typename: "Chat",
+    id: "",
+    members: [],
+    messages: [],
+  },
   isLoading: true,
   messagesLoading: true,
   noMoreMessages: false,

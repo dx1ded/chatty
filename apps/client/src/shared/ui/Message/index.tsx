@@ -9,10 +9,11 @@ import { TextMessage } from "./TextMessage"
 interface MessageProps {
   message: MessageFieldsFragment
   uid: string
+  isLatest: boolean
   readMessage: (id: MessageFieldsFragment["id"]) => void
 }
 
-export function Message({ message, uid, readMessage }: MessageProps) {
+export function Message({ message, uid, isLatest, readMessage }: MessageProps) {
   const { ref } = useInView({
     onChange(inView) {
       if (!inView || message.read) return
@@ -43,7 +44,7 @@ export function Message({ message, uid, readMessage }: MessageProps) {
         />
       </div>
       <div
-        className={`relative rounded-[0.75rem] ${
+        className={`relative rounded-[0.75rem] ${isLatest && !message.read ? "animate-slideUp" : ""} ${
           message.__typename === "TextMessage"
             ? `border p-3.5 ${
                 sentByYou

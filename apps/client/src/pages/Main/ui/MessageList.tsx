@@ -72,8 +72,14 @@ export function MessageList({ data, offset, refetch }: MessageListProps) {
     <div className="flex max-h-full flex-1 flex-col-reverse overflow-y-auto px-9 py-8">
       <div className="flex flex-col gap-10">
         {messagesLoading ? <Spinner className="self-center" /> : <div ref={ref} />}
-        {messages.map((message) => (
-          <Message key={message.id} message={message} uid={user!.uid} readMessage={readMessage} />
+        {messages.map((message, i) => (
+          <Message
+            key={message.id}
+            message={message}
+            uid={user!.uid}
+            isLatest={i === messages.length - 1}
+            readMessage={readMessage}
+          />
         ))}
       </div>
     </div>

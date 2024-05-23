@@ -33,9 +33,14 @@ module.exports = {
         "20%, 60%": { transform: "translateX(-10px)" },
         "40%, 80%": { transform: "translateX(10px)" },
       },
+      slideUp: {
+        "0%": { transform: "translateY(1.5rem)", opacity: 0 },
+        "100%": { transform: "translateY(0)", opacity: 1 },
+      },
     },
     animation: {
       shake: "shake 0.5s ease-in-out",
+      slideUp: "slideUp 0.2s ease-out",
     },
   },
   plugins: [],
