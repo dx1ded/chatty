@@ -154,7 +154,7 @@ export default {
 
       const savedChat = await chatRepository.save(chat)
 
-      await pubsub.publish(EVENT.CHAT_CREATED, {
+      pubsub.publish(EVENT.CHAT_CREATED, {
         newChat: {
           ...savedChat,
           newMessagesCount: 0,
@@ -176,7 +176,7 @@ export default {
       })
 
       await chatRepository.delete({ id: chatToDelete.id })
-      await pubsub.publish(EVENT.CHAT_DELETED, { chatDeleted: chatToDelete })
+      pubsub.publish(EVENT.CHAT_DELETED, { chatDeleted: chatToDelete })
 
       return chatToDelete
     },

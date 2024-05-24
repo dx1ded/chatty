@@ -150,9 +150,9 @@ export default {
       const newPictureMessages = message.imagesUrl.map(
         (imageUrl) => new PictureMessage(imageUrl, author, chat),
       )
-      const savedPictureMessage = await pictureMessageRepository.save(newPictureMessages)
+      const savedPictureMessages = await pictureMessageRepository.save(newPictureMessages)
 
-      savedPictureMessage.forEach((newMessage) =>
+      savedPictureMessages.forEach((newMessage) =>
         pubsub.publish(EVENT.NEW_MESSAGE, {
           newMessage: {
             __typename: "PictureMessage",
@@ -161,7 +161,33 @@ export default {
         }),
       )
 
-      return savedPictureMessage
+      return savedPictureMessages
+    },
+    async createManyTextMessages(_, { message }, { user }) {
+      if (!user) return null
+
+      const author = await userRepository.findOneBy({ firebaseId: user.uid })
+      const newTextMessages = await Promise.all(
+        message.meta.chats.map(async (chatId) => {
+          const chat = await chatRepository.findOne({
+            relations: ["members"],
+            where: { id: chatId },
+          })
+          return new TextMessage(message.text, author, chat)
+        }),
+      )
+      const savedTextMessages = await textMessageRepository.save(newTextMessages)
+
+      savedTextMessages.forEach((newMessage) =>
+        pubsub.publish(EVENT.NEW_MESSAGE, {
+          newMessage: {
+            __typename: "TextMessage",
+            ...newMessage,
+          },
+        }),
+      )
+
+      return savedTextMessages
     },
   },
   Subscription: {

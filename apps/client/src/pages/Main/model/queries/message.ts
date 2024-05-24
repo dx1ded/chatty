@@ -32,6 +32,14 @@ export const SEND_VOICE_MESSAGE = gql(`
   }
 `)
 
+export const SEND_MANY_TEXT_MESSAGES = gql(`
+  mutation CreateManyTextMessages($message: ManyTextMessagesInput!) {
+    createManyTextMessages(message: $message) {
+      ...MessageFields
+    }
+  }
+`)
+
 export const NEW_MESSAGE_SUBSCRIPTION = gql(`
   subscription NewMessage($userId: ID!) {
     newMessage(userId: $userId) {

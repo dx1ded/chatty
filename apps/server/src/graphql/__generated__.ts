@@ -40,6 +40,15 @@ export type CreateUserInput = {
   uid: Scalars['ID']['input'];
 };
 
+export type ManyMessagesInput = {
+  chats: Array<Scalars['ID']['input']>;
+};
+
+export type ManyTextMessagesInput = {
+  meta: ManyMessagesInput;
+  text: Scalars['String']['input'];
+};
+
 export type Message = {
   author: User;
   chat: Chat;
@@ -56,6 +65,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   changeOnlineStatus?: Maybe<User>;
   createChat?: Maybe<Chat>;
+  createManyTextMessages?: Maybe<Array<TextMessage>>;
   createPictureMessage?: Maybe<Array<PictureMessage>>;
   createTextMessage?: Maybe<TextMessage>;
   createUser: User;
@@ -72,6 +82,11 @@ export type MutationChangeOnlineStatusArgs = {
 
 export type MutationCreateChatArgs = {
   members: Array<Scalars['ID']['input']>;
+};
+
+
+export type MutationCreateManyTextMessagesArgs = {
+  message: ManyTextMessagesInput;
 };
 
 
@@ -137,6 +152,7 @@ export type Query = {
   __typename?: 'Query';
   chat?: Maybe<Chat>;
   chatInfo?: Maybe<ChatInfo>;
+  findContacts?: Maybe<Array<User>>;
   findUser?: Maybe<Array<User>>;
   findUserChats: Array<PreviewChat>;
   isEmailUsed: Scalars['Boolean']['output'];
@@ -339,6 +355,8 @@ export type ResolversTypes = ResolversObject<{
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  ManyMessagesInput: ManyMessagesInput;
+  ManyTextMessagesInput: ManyTextMessagesInput;
   Message: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Message']>;
   MessageInput: MessageInput;
   Mutation: ResolverTypeWrapper<{}>;
@@ -365,6 +383,8 @@ export type ResolversParentTypes = ResolversObject<{
   Date: Scalars['Date']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  ManyMessagesInput: ManyMessagesInput;
+  ManyTextMessagesInput: ManyTextMessagesInput;
   Message: ResolversInterfaceTypes<ResolversParentTypes>['Message'];
   MessageInput: MessageInput;
   Mutation: {};
@@ -414,6 +434,7 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   changeOnlineStatus?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationChangeOnlineStatusArgs, 'status'>>;
   createChat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<MutationCreateChatArgs, 'members'>>;
+  createManyTextMessages?: Resolver<Maybe<Array<ResolversTypes['TextMessage']>>, ParentType, ContextType, RequireFields<MutationCreateManyTextMessagesArgs, 'message'>>;
   createPictureMessage?: Resolver<Maybe<Array<ResolversTypes['PictureMessage']>>, ParentType, ContextType, RequireFields<MutationCreatePictureMessageArgs, 'message'>>;
   createTextMessage?: Resolver<Maybe<ResolversTypes['TextMessage']>, ParentType, ContextType, RequireFields<MutationCreateTextMessageArgs, 'message'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
@@ -444,6 +465,7 @@ export type PreviewChatResolvers<ContextType = any, ParentType extends Resolvers
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   chat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<QueryChatArgs, 'id'>>;
   chatInfo?: Resolver<Maybe<ResolversTypes['ChatInfo']>, ParentType, ContextType, RequireFields<QueryChatInfoArgs, 'id'>>;
+  findContacts?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
   findUser?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType, RequireFields<QueryFindUserArgs, 'payload'>>;
   findUserChats?: Resolver<Array<ResolversTypes['PreviewChat']>, ParentType, ContextType, RequireFields<QueryFindUserChatsArgs, 'userId'>>;
   isEmailUsed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<QueryIsEmailUsedArgs, 'email'>>;

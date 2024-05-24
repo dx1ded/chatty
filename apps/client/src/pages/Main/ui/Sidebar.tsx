@@ -15,6 +15,7 @@ import { setChatList, setIsLoading } from "shared/slices/chatList"
 import { getFragment } from "__generated__"
 import { GET_CHAT_LIST } from "../model/queries/chat"
 import { Search } from "./Search"
+import { useContactList } from "./ContactList"
 
 export function Sidebar() {
   const { user } = useAppSelector((state) => state.firebase)
@@ -22,6 +23,7 @@ export function Sidebar() {
   const chatList = useAppSelector((state) => state.chatList)
   const dispatch = useAppDispatch()
   const searchRef = useRef<HTMLInputElement>(null)
+  const { openContactList, ContactListModal } = useContactList()
 
   useQuery<GetChatListQuery, GetChatListQueryVariables>(GET_CHAT_LIST, {
     skip: !user?.uid,
@@ -37,12 +39,13 @@ export function Sidebar() {
 
   return (
     <aside className="flex flex-shrink-0 basis-96 flex-col border-r border-[#F7F7F7]">
+      {ContactListModal}
       <div className="mb-5 flex h-14 items-center justify-between border-b border-[#F7F7F7] px-5">
         <div className="flex items-center gap-2">
           <GroupOutlined className="text-dark" />
           <Text className="font-normal tracking-wide">Chat List</Text>
         </div>
-        <button type="button" className="flex h-5 w-5 items-center">
+        <button type="button" className="flex h-5 w-5 items-center" onClick={openContactList}>
           <LaunchOutlined className="text-dark" sx={{ width: "100%", height: "100%" }} />
         </button>
       </div>

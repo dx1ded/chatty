@@ -44,6 +44,7 @@ type Mutation {
   createTextMessage(message: TextMessageInput!): TextMessage
   createVoiceMessage(message: VoiceMessageInput!): VoiceMessage
   createPictureMessage(message: PictureMessageInput!): [PictureMessage!]
+  createManyTextMessages(message: ManyTextMessagesInput!): [TextMessage!]
 }
 
 type Subscription {
@@ -53,6 +54,10 @@ type Subscription {
 
 input MessageInput {
   chat: ID!
+}
+
+input ManyMessagesInput {
+  chats: [ID!]!
 }
 
 input TextMessageInput {
@@ -68,4 +73,9 @@ input VoiceMessageInput {
 input PictureMessageInput {
   meta: MessageInput!
   imagesUrl: [String!]!
+}
+
+input ManyTextMessagesInput {
+  meta: ManyMessagesInput!
+  text: String!
 }

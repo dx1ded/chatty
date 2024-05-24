@@ -1,4 +1,4 @@
-import { Raw } from "typeorm"
+import { Not, Raw } from "typeorm"
 import { withFilter } from "graphql-subscriptions"
 import { userRepository } from "../../database"
 import type { ApolloContext } from ".."
@@ -30,6 +30,21 @@ export default {
         [isEmail ? "email" : "displayName"]: Raw(
           (alias) => `LOWER(${alias}) Like '${payload.toLowerCase()}%'`,
         ),
+      })
+    },
+    findContacts(_, __, { user }) {
+      if (!user) return null
+
+      return userRepository.find({
+        relations: ["chats", "chats.members"],
+        where: {
+          firebaseId: Not(user.uid),
+          chats: {
+            members: {
+              firebaseId: user.uid,
+            },
+          },
+        },
       })
     },
   },

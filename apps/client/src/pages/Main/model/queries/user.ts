@@ -10,6 +10,23 @@ export const FIND_USER = gql(`
   }
 `)
 
+export const FIND_CONTACTS = gql(`
+  query FindContacts {
+    findContacts {
+      firebaseId
+      displayName
+      photoURL
+      online
+      chats {
+      id
+      members {
+        firebaseId
+      }
+    }
+    }
+  }
+`)
+
 export const CHANGE_ONLINE_STATUS = gql(`
   mutation ChangeOnlineStatus($status: Boolean!) {
     changeOnlineStatus(status: $status) {
