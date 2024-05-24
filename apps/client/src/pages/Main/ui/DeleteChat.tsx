@@ -1,14 +1,13 @@
 import { useMutation } from "@apollo/client"
-import { Delete } from "@mui/icons-material"
-import { Dialog, MenuItem } from "@mui/material"
-import { useState } from "react"
+import { Dialog } from "@mui/material"
+import { useCallback, useMemo, useState } from "react"
 import { Button } from "shared/ui/Button"
 import { Subheading, Text } from "shared/ui/Typography"
 import type { DeleteChatMutation, DeleteChatMutationVariables } from "__generated__/graphql"
 import { useAppSelector } from "shared/model"
 import { DELETE_CHAT } from "../model/queries/chat"
 
-export function DeleteChat() {
+export function useDeleteChat() {
   const { chat } = useAppSelector((state) => state.chat)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [deleteChat, { loading }] = useMutation<DeleteChatMutation, DeleteChatMutationVariables>(
@@ -18,8 +17,10 @@ export function DeleteChat() {
     },
   )
 
-  return (
-    <>
+  const openDeleteChatDialog = useCallback(() => setIsDialogOpen(true), [])
+
+  const DeleteChatDialog = useMemo(
+    () => (
       <Dialog
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
@@ -42,14 +43,12 @@ export function DeleteChat() {
           </div>
         </div>
       </Dialog>
-      <MenuItem
-        className="flex items-center gap-2.5 !px-3 !py-1.5 !text-sm !text-red-600"
-        onClick={() => setIsDialogOpen(true)}>
-        <span className="flex h-4 w-4 items-center" aria-hidden>
-          <Delete sx={{ width: "100%", height: "100%" }} />
-        </span>
-        Delete
-      </MenuItem>
-    </>
+    ),
+    [deleteChat, isDialogOpen, loading],
   )
+
+  return {
+    openDeleteChatDialog,
+    DeleteChatDialog,
+  }
 }

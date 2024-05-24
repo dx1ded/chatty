@@ -38,7 +38,6 @@ export function MessageList({ data, refetch }: MessageListProps) {
   const { ref } = useInView({
     onChange(inView) {
       if (!inView || noMoreMessages) return
-      console.log(offset)
       refetch({
         chatId: id || "",
         take: MESSAGES_TAKE,

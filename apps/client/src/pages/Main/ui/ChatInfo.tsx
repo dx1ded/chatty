@@ -1,14 +1,15 @@
 import { useLazyQuery } from "@apollo/client"
-import { Close, FormatColorText, Info, Image, KeyboardVoice } from "@mui/icons-material"
-import { MenuItem, Modal } from "@mui/material"
-import { useState } from "react"
+import { Close, FormatColorText, Image, KeyboardVoice } from "@mui/icons-material"
+import { Modal } from "@mui/material"
+import { useMemo, useState } from "react"
+import Skeleton from "react-loading-skeleton"
 import dayjs from "dayjs"
 import type { ChatInfoQuery, ChatInfoQueryVariables } from "__generated__/graphql"
 import { Subheading, Text } from "shared/ui/Typography"
 import { useAppSelector } from "shared/model"
 import { GET_CHAT_INFO } from "../model/queries/chat"
 
-export function ChatInfo() {
+export function useChatInfo() {
   const { chat } = useAppSelector((state) => state.chat)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [sendGetChatInfo, { data, loading }] = useLazyQuery<ChatInfoQuery, ChatInfoQueryVariables>(
@@ -19,13 +20,13 @@ export function ChatInfo() {
     },
   )
 
-  const getChatInfo = () => {
-    setIsModalOpen(true)
+  const openChatInfoModal = () => {
     sendGetChatInfo()
+    setIsModalOpen(true)
   }
 
-  return (
-    <>
+  const ChatInfoModal = useMemo(
+    () => (
       <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} aria-labelledby="info-modal-title">
         <div className="absolute left-1/2 top-1/2 w-full max-w-96 -translate-x-1/2 -translate-y-1/2 rounded bg-white p-4">
           <div className="mb-5 flex items-center justify-between">
@@ -44,7 +45,11 @@ export function ChatInfo() {
                 </div>
                 <Text>Text messages</Text>
               </div>
-              {loading ? <p>Loading</p> : <Text className="font-medium">{data?.chatInfo?.text}</Text>}
+              {loading ? (
+                <Skeleton containerClassName="w-8 h-5" />
+              ) : (
+                <Text className="font-medium">{data?.chatInfo?.text}</Text>
+              )}
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
@@ -53,7 +58,11 @@ export function ChatInfo() {
                 </div>
                 <Text>Pictures</Text>
               </div>
-              {loading ? <p>Loading</p> : <Text className="font-medium">{data?.chatInfo?.pictures}</Text>}
+              {loading ? (
+                <Skeleton containerClassName="w-8 h-5" />
+              ) : (
+                <Text className="font-medium">{data?.chatInfo?.pictures}</Text>
+              )}
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
@@ -62,11 +71,17 @@ export function ChatInfo() {
                 </div>
                 <Text>Voice messages</Text>
               </div>
-              {loading ? <p>Loading</p> : <Text className="font-medium">{data?.chatInfo?.voices}</Text>}
+              {loading ? (
+                <Skeleton containerClassName="w-8 h-5" />
+              ) : (
+                <Text className="font-medium">{data?.chatInfo?.voices}</Text>
+              )}
             </div>
           </div>
           {loading ? (
-            <p>Loading</p>
+            <div className="h-4 w-40">
+              <Skeleton />
+            </div>
           ) : (
             <p className="text-xs text-gray-400">
               Created at {dayjs(data?.chatInfo?.createdAt).format("YYYY-MM-DD hh:mm A")}
@@ -74,14 +89,12 @@ export function ChatInfo() {
           )}
         </div>
       </Modal>
-      <MenuItem
-        className="flex items-center gap-2.5 !px-3 !py-1.5 !text-sm !text-yellow-400"
-        onClick={getChatInfo}>
-        <span className="flex h-4 w-4 items-center" aria-hidden>
-          <Info sx={{ width: "100%", height: "100%" }} />
-        </span>
-        Info
-      </MenuItem>
-    </>
+    ),
+    [data?.chatInfo, isModalOpen, loading],
   )
+
+  return {
+    openChatInfoModal,
+    ChatInfoModal,
+  }
 }
