@@ -19,9 +19,18 @@ export type Scalars = {
 
 export type Chat = {
   __typename?: 'Chat';
+  createdAt: Scalars['Date']['output'];
   id: Scalars['ID']['output'];
   members: Array<User>;
   messages: Array<Message>;
+};
+
+export type ChatInfo = {
+  __typename?: 'ChatInfo';
+  createdAt: Scalars['Date']['output'];
+  pictures: Scalars['Int']['output'];
+  text: Scalars['Int']['output'];
+  voices: Scalars['Int']['output'];
 };
 
 export type CreateUserInput = {
@@ -51,6 +60,7 @@ export type Mutation = {
   createTextMessage?: Maybe<TextMessage>;
   createUser: User;
   createVoiceMessage?: Maybe<VoiceMessage>;
+  deleteChat?: Maybe<Chat>;
   readMessages?: Maybe<Array<Message>>;
 };
 
@@ -85,6 +95,11 @@ export type MutationCreateVoiceMessageArgs = {
 };
 
 
+export type MutationDeleteChatArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationReadMessagesArgs = {
   messageIds: Array<Scalars['ID']['input']>;
 };
@@ -111,6 +126,7 @@ export type PictureMessageInput = {
  */
 export type PreviewChat = {
   __typename?: 'PreviewChat';
+  createdAt: Scalars['Date']['output'];
   id: Scalars['ID']['output'];
   members: Array<User>;
   messages: Array<Message>;
@@ -120,6 +136,7 @@ export type PreviewChat = {
 export type Query = {
   __typename?: 'Query';
   chat?: Maybe<Chat>;
+  chatInfo?: Maybe<ChatInfo>;
   findUser?: Maybe<Array<User>>;
   findUserChats: Array<PreviewChat>;
   isEmailUsed: Scalars['Boolean']['output'];
@@ -128,6 +145,11 @@ export type Query = {
 
 
 export type QueryChatArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryChatInfoArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -155,10 +177,16 @@ export type QueryMessagesArgs = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  chatDeleted: Chat;
   messageRead: Array<Message>;
   newChat: PreviewChat;
   newMessage: Message;
   onlineStatus: User;
+};
+
+
+export type SubscriptionChatDeletedArgs = {
+  userId: Scalars['ID']['input'];
 };
 
 
@@ -306,6 +334,7 @@ export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = R
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Chat: ResolverTypeWrapper<Chat>;
+  ChatInfo: ResolverTypeWrapper<ChatInfo>;
   CreateUserInput: CreateUserInput;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
@@ -331,6 +360,7 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   Chat: Chat;
+  ChatInfo: ChatInfo;
   CreateUserInput: CreateUserInput;
   Date: Scalars['Date']['output'];
   ID: Scalars['ID']['output'];
@@ -353,9 +383,18 @@ export type ResolversParentTypes = ResolversObject<{
 }>;
 
 export type ChatResolvers<ContextType = any, ParentType extends ResolversParentTypes['Chat'] = ResolversParentTypes['Chat']> = ResolversObject<{
+  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   members?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   messages?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ChatInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['ChatInfo'] = ResolversParentTypes['ChatInfo']> = ResolversObject<{
+  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  pictures?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  voices?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -379,6 +418,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createTextMessage?: Resolver<Maybe<ResolversTypes['TextMessage']>, ParentType, ContextType, RequireFields<MutationCreateTextMessageArgs, 'message'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
   createVoiceMessage?: Resolver<Maybe<ResolversTypes['VoiceMessage']>, ParentType, ContextType, RequireFields<MutationCreateVoiceMessageArgs, 'message'>>;
+  deleteChat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<MutationDeleteChatArgs, 'id'>>;
   readMessages?: Resolver<Maybe<Array<ResolversTypes['Message']>>, ParentType, ContextType, RequireFields<MutationReadMessagesArgs, 'messageIds'>>;
 }>;
 
@@ -393,6 +433,7 @@ export type PictureMessageResolvers<ContextType = any, ParentType extends Resolv
 }>;
 
 export type PreviewChatResolvers<ContextType = any, ParentType extends ResolversParentTypes['PreviewChat'] = ResolversParentTypes['PreviewChat']> = ResolversObject<{
+  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   members?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   messages?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>;
@@ -402,6 +443,7 @@ export type PreviewChatResolvers<ContextType = any, ParentType extends Resolvers
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   chat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<QueryChatArgs, 'id'>>;
+  chatInfo?: Resolver<Maybe<ResolversTypes['ChatInfo']>, ParentType, ContextType, RequireFields<QueryChatInfoArgs, 'id'>>;
   findUser?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType, RequireFields<QueryFindUserArgs, 'payload'>>;
   findUserChats?: Resolver<Array<ResolversTypes['PreviewChat']>, ParentType, ContextType, RequireFields<QueryFindUserChatsArgs, 'userId'>>;
   isEmailUsed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<QueryIsEmailUsedArgs, 'email'>>;
@@ -409,6 +451,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 }>;
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
+  chatDeleted?: SubscriptionResolver<ResolversTypes['Chat'], "chatDeleted", ParentType, ContextType, RequireFields<SubscriptionChatDeletedArgs, 'userId'>>;
   messageRead?: SubscriptionResolver<Array<ResolversTypes['Message']>, "messageRead", ParentType, ContextType, RequireFields<SubscriptionMessageReadArgs, 'userId'>>;
   newChat?: SubscriptionResolver<ResolversTypes['PreviewChat'], "newChat", ParentType, ContextType, RequireFields<SubscriptionNewChatArgs, 'userId'>>;
   newMessage?: SubscriptionResolver<ResolversTypes['Message'], "newMessage", ParentType, ContextType, RequireFields<SubscriptionNewMessageArgs, 'userId'>>;
@@ -452,6 +495,7 @@ export type VoiceMessageResolvers<ContextType = any, ParentType extends Resolver
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   Chat?: ChatResolvers<ContextType>;
+  ChatInfo?: ChatInfoResolvers<ContextType>;
   Date?: GraphQLScalarType;
   Message?: MessageResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;

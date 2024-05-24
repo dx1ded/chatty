@@ -2,6 +2,7 @@ type Chat {
   id: ID!
   members: [User!]!
   messages: [Message!]!
+  createdAt: Date!
 }
 
 """
@@ -14,17 +15,28 @@ type PreviewChat {
   members: [User!]!
   messages: [Message!]!
   newMessagesCount: Int!
+  createdAt: Date!
+}
+
+type ChatInfo {
+  text: Int!
+  pictures: Int!
+  voices: Int!
+  createdAt: Date!
 }
 
 type Query {
   chat(id: ID!): Chat
+  chatInfo(id: ID!): ChatInfo
   findUserChats(userId: ID!): [PreviewChat!]!
 }
 
 type Mutation {
   createChat(members: [ID!]!): Chat
+  deleteChat(id: ID!): Chat
 }
 
 type Subscription {
   newChat(userId: ID!): PreviewChat!
+  chatDeleted(userId: ID!): Chat!
 }

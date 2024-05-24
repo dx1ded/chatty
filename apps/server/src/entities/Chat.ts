@@ -1,5 +1,14 @@
 import { nanoid } from "nanoid"
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn, Relation } from "typeorm"
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryColumn,
+  Relation,
+} from "typeorm"
 import type { Chat as IChat } from "../graphql/__generated__"
 import { User } from "./User"
 import { Message } from "./Message"
@@ -13,9 +22,12 @@ export class Chat implements IChat {
   @JoinTable()
   members: Relation<User>[]
 
-  @OneToMany(() => Message, (message) => message.chat)
+  @OneToMany(() => Message, (message) => message.chat, { cascade: true })
   messages: Relation<Message>[]
 
   @Column({ nullable: true, select: false })
   newMessagesCount: number
+
+  @CreateDateColumn()
+  createdAt: Date
 }

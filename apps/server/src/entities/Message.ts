@@ -21,7 +21,7 @@ export class Message implements IMessage {
   @ManyToOne(() => User, (user) => user.messages)
   author: Relation<User>
 
-  @ManyToOne(() => Chat, (chat) => chat.messages)
+  @ManyToOne(() => Chat, (chat) => chat.messages, { onDelete: "CASCADE" })
   chat: Relation<Chat>
 
   @CreateDateColumn()

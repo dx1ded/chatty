@@ -5,6 +5,7 @@ import type {
   MessageFieldsFragment,
   OnlineStatusSubscription,
 } from "__generated__/graphql"
+import type { MessageID } from "shared/lib"
 import { MESSAGE_FIELDS } from "shared/model"
 
 interface ChatState {
@@ -44,7 +45,7 @@ const chatSlice = createSlice({
     addMessage: (state, { payload }: PayloadAction<MessageFieldsFragment>) => {
       state.chat.messages = [...state.chat.messages, payload]
     },
-    updateMessagesRead: (state, { payload }: PayloadAction<MessageFieldsFragment["id"][]>) => {
+    updateMessagesRead: (state, { payload }: PayloadAction<MessageID[]>) => {
       state.chat.messages = state.chat.messages.map((fragment) => {
         const message = getFragment(MESSAGE_FIELDS, fragment)
         return payload.includes(message.id) ? { ...message, read: true } : fragment

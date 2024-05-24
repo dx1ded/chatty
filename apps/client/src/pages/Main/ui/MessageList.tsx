@@ -1,37 +1,31 @@
 import { useMemo, useState } from "react"
 import { useInView } from "react-intersection-observer"
-import { useParams } from "react-router-dom"
+import { useOutletContext, useParams } from "react-router-dom"
 import { useDebouncedCallback } from "use-debounce"
 import type { RefetchFunction } from "@apollo/client/react/hooks/useSuspenseQuery"
 import { useMutation } from "@apollo/client"
 import { getFragment } from "__generated__"
-import type {
-  ChatFieldsFragment,
-  GetMessagesQuery,
-  GetMessagesQueryVariables,
-  MessageFieldsFragment,
-} from "__generated__/graphql"
+import type { ChatFieldsFragment, GetMessagesQuery, GetMessagesQueryVariables } from "__generated__/graphql"
 import { MESSAGE_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
 import { updateChatListMessagesRead } from "shared/slices/chatList"
 import { Message } from "shared/ui/Message"
 import { Spinner } from "shared/ui/Spinner"
 import { setMessagesLoading, updateMessagesRead } from "shared/slices/chat"
+import type { MessageID } from "shared/lib"
 import { READ_MESSAGES } from "../model/queries/message"
 import { MESSAGES_TAKE } from "../lib"
 
 interface MessageListProps {
   data: ChatFieldsFragment["messages"]
-  offset: number
   refetch: RefetchFunction<GetMessagesQuery, GetMessagesQueryVariables>
 }
 
-type MessageID = MessageFieldsFragment["id"]
-
-export function MessageList({ data, offset, refetch }: MessageListProps) {
+export function MessageList({ data, refetch }: MessageListProps) {
   const { id } = useParams()
   const { messagesLoading, noMoreMessages } = useAppSelector((state) => state.chat)
   const { user } = useAppSelector((state) => state.firebase)
   const dispatch = useAppDispatch()
+  const offset = useOutletContext<number>()
   const [page, setPage] = useState(0)
   const [read, setRead] = useState<MessageID[]>([])
   const [sendReadMessages] = useMutation(READ_MESSAGES, {
@@ -44,6 +38,7 @@ export function MessageList({ data, offset, refetch }: MessageListProps) {
   const { ref } = useInView({
     onChange(inView) {
       if (!inView || noMoreMessages) return
+      console.log(offset)
       refetch({
         chatId: id || "",
         take: MESSAGES_TAKE,

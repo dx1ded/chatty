@@ -1,12 +1,10 @@
 import { useRef } from "react"
 import Skeleton from "react-loading-skeleton"
-import { useQuery, useSubscription } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import { GroupOutlined, LaunchOutlined } from "@mui/icons-material"
 import type {
   GetChatListQuery,
   GetChatListQueryVariables,
-  ChatListSubscription,
-  ChatListSubscriptionVariables,
   PreviewChatFieldsFragment,
 } from "__generated__/graphql"
 import { PREVIEW_CHAT_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
@@ -15,7 +13,7 @@ import { ChatCard } from "shared/ui/ChatCard"
 import { ProfileCard } from "shared/ui/ProfileCard"
 import { setChatList, setIsLoading } from "shared/slices/chatList"
 import { getFragment } from "__generated__"
-import { CHAT_LIST_SUBSCRIPTION, GET_CHAT_LIST } from "../model/queries/chat"
+import { GET_CHAT_LIST } from "../model/queries/chat"
 import { Search } from "./Search"
 
 export function Sidebar() {
@@ -34,15 +32,6 @@ export function Sidebar() {
       // Did a casting here because for some reason getFragment always returns a ReadonlyArray which is supposed to be a bug - https://github.com/dotansimha/graphql-code-generator/issues/9803
       dispatch(setChatList(chats))
       dispatch(setIsLoading(false))
-    },
-  })
-
-  useSubscription<ChatListSubscription, ChatListSubscriptionVariables>(CHAT_LIST_SUBSCRIPTION, {
-    variables: { userId: user?.uid || "" },
-    onData(options) {
-      const chat = getFragment(PREVIEW_CHAT_FIELDS, options.data.data?.newChat)
-      if (!chat) return
-      dispatch(setChatList([...chatList.items, chat]))
     },
   })
 

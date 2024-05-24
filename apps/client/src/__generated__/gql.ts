@@ -17,7 +17,10 @@ const documents = {
     "\n  mutation CreateUser($user: CreateUserInput!) {\n    createUser(user: $user) {\n      firebaseId\n    }\n  }\n": types.CreateUserDocument,
     "\n  query GetChat($chatId: ID!) {\n    chat(id: $chatId) {\n      ...ChatFields\n    }\n  }\n": types.GetChatDocument,
     "\n  query GetChatList($userId: ID!) {\n    findUserChats(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n": types.GetChatListDocument,
-    "\n  subscription ChatList($userId: ID!) {\n    newChat(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n": types.ChatListDocument,
+    "\n  query ChatInfo($chatInfoId: ID!) {\n    chatInfo(id: $chatInfoId) {\n      createdAt\n      pictures\n      text\n      voices\n    }\n  }\n": types.ChatInfoDocument,
+    "\n  mutation DeleteChat($deleteChatId: ID!) {\n    deleteChat(id: $deleteChatId) {\n      id\n    }\n  }\n": types.DeleteChatDocument,
+    "\n  subscription NewChat($userId: ID!) {\n    newChat(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n": types.NewChatDocument,
+    "\n  subscription ChatDeleted($userId: ID!) {\n    chatDeleted(userId: $userId) {\n      id\n    }\n  }\n": types.ChatDeletedDocument,
     "\n  query GetMessages($chatId: ID!, $take: Int, $skip: Int) {\n    messages(chatId: $chatId, take: $take, skip: $skip) {\n      ...MessageFields\n    }\n  }\n": types.GetMessagesDocument,
     "\n  mutation CreateTextMessage($message: TextMessageInput!) {\n    createTextMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n": types.CreateTextMessageDocument,
     "\n  mutation CreatePictureMessage($message: PictureMessageInput!) {\n    createPictureMessage(message: $message) {\n      ...MessageFields\n    }\n  }\n": types.CreatePictureMessageDocument,
@@ -67,7 +70,19 @@ export function gql(source: "\n  query GetChatList($userId: ID!) {\n    findUser
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  subscription ChatList($userId: ID!) {\n    newChat(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n"): (typeof documents)["\n  subscription ChatList($userId: ID!) {\n    newChat(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n"];
+export function gql(source: "\n  query ChatInfo($chatInfoId: ID!) {\n    chatInfo(id: $chatInfoId) {\n      createdAt\n      pictures\n      text\n      voices\n    }\n  }\n"): (typeof documents)["\n  query ChatInfo($chatInfoId: ID!) {\n    chatInfo(id: $chatInfoId) {\n      createdAt\n      pictures\n      text\n      voices\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation DeleteChat($deleteChatId: ID!) {\n    deleteChat(id: $deleteChatId) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteChat($deleteChatId: ID!) {\n    deleteChat(id: $deleteChatId) {\n      id\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  subscription NewChat($userId: ID!) {\n    newChat(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n"): (typeof documents)["\n  subscription NewChat($userId: ID!) {\n    newChat(userId: $userId) {\n      ...PreviewChatFields\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  subscription ChatDeleted($userId: ID!) {\n    chatDeleted(userId: $userId) {\n      id\n    }\n  }\n"): (typeof documents)["\n  subscription ChatDeleted($userId: ID!) {\n    chatDeleted(userId: $userId) {\n      id\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

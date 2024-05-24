@@ -1,5 +1,5 @@
 import { Done, DoneAll } from "@mui/icons-material"
-import { formatMessageDate } from "shared/lib"
+import { formatMessageDate, type MessageID } from "shared/lib"
 import type { MessageFieldsFragment } from "__generated__/graphql"
 import { useInView } from "react-intersection-observer"
 import { VoiceMessage } from "./VoiceMessage"
@@ -10,7 +10,7 @@ interface MessageProps {
   message: MessageFieldsFragment
   uid: string
   isLatest: boolean
-  readMessage: (id: MessageFieldsFragment["id"]) => void
+  readMessage: (id: MessageID) => void
 }
 
 export function Message({ message, uid, isLatest, readMessage }: MessageProps) {

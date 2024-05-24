@@ -1,6 +1,7 @@
-import { ArrowBack, MoreHoriz } from "@mui/icons-material"
+import { ArrowBack } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import { Text } from "shared/ui/Typography"
+import { ChatOptions } from "./ChatOptions"
 
 interface ChatHeaderProps {
   name: string
@@ -20,9 +21,7 @@ export function ChatHeader({ name, online }: ChatHeaderProps) {
           <Text className="text-grayish font-normal">{online ? "online" : "offline"}</Text>
         </div>
       </div>
-      <button type="button" className="text-grayish h-8 w-8">
-        <MoreHoriz sx={{ width: "100%" }} />
-      </button>
+      <ChatOptions />
     </header>
   )
 }

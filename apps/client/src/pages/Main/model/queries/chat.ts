@@ -16,10 +16,37 @@ export const GET_CHAT_LIST = gql(`
   }
 `)
 
-export const CHAT_LIST_SUBSCRIPTION = gql(`
-  subscription ChatList($userId: ID!) {
+export const GET_CHAT_INFO = gql(`
+  query ChatInfo($chatInfoId: ID!) {
+    chatInfo(id: $chatInfoId) {
+      createdAt
+      pictures
+      text
+      voices
+    }
+  }
+`)
+
+export const DELETE_CHAT = gql(`
+  mutation DeleteChat($deleteChatId: ID!) {
+    deleteChat(id: $deleteChatId) {
+      id
+    }
+  }
+`)
+
+export const NEW_CHAT_SUBSCRIPTION = gql(`
+  subscription NewChat($userId: ID!) {
     newChat(userId: $userId) {
       ...PreviewChatFields
+    }
+  }
+`)
+
+export const CHAT_DELETED_SUBSCRIPTION = gql(`
+  subscription ChatDeleted($userId: ID!) {
+    chatDeleted(userId: $userId) {
+      id
     }
   }
 `)

@@ -1,8 +1,19 @@
 import { In } from "typeorm"
 import { withFilter } from "graphql-subscriptions"
 import type { ApolloContext } from ".."
-import { chatRepository, userRepository } from "../../database"
-import type { Resolvers, Subscription, SubscriptionNewChatArgs } from "../__generated__"
+import {
+  chatRepository,
+  pictureMessageRepository,
+  textMessageRepository,
+  userRepository,
+  voiceMessageRepository,
+} from "../../database"
+import type {
+  Resolvers,
+  Subscription,
+  SubscriptionChatDeletedArgs,
+  SubscriptionNewChatArgs,
+} from "../__generated__"
 import { Chat } from "../../entities/Chat"
 import { TextMessage } from "../../entities/TextMessage"
 import { VoiceMessage } from "../../entities/VoiceMessage"
@@ -73,6 +84,48 @@ export default {
         .groupBy("chat.id, member.id, message.id, author.id")
         .getMany()
     },
+    async chatInfo(_, { id }, { user }) {
+      if (!user) return null
+
+      const textCount = await textMessageRepository.count({
+        relations: ["chat"],
+        where: {
+          chat: {
+            id,
+          },
+        },
+      })
+
+      const picturesCount = await pictureMessageRepository.count({
+        relations: ["chat"],
+        where: {
+          chat: {
+            id,
+          },
+        },
+      })
+
+      const voicesCount = await voiceMessageRepository.count({
+        relations: ["chat"],
+        where: {
+          chat: {
+            id,
+          },
+        },
+      })
+
+      const { createdAt } = await chatRepository.findOne({
+        select: { createdAt: true },
+        where: { id },
+      })
+
+      return {
+        text: textCount,
+        pictures: picturesCount,
+        voices: voicesCount,
+        createdAt,
+      }
+    },
   },
   Mutation: {
     async createChat(_, { members }, { user, pubsub }) {
@@ -110,15 +163,40 @@ export default {
 
       return savedChat
     },
+    async deleteChat(_, { id }, { user, pubsub }) {
+      if (!user) return null
+
+      /*
+        Used only relation `members` because it's the only thing needed for the subscription.
+        If needed something else for graphql return (like messages, message.author, etc) then put it in the `relations` prop
+      */
+      const chatToDelete = await chatRepository.findOne({
+        relations: ["members"],
+        where: { id },
+      })
+
+      await chatRepository.delete({ id: chatToDelete.id })
+      await pubsub.publish(EVENT.CHAT_DELETED, { chatDeleted: chatToDelete })
+
+      return chatToDelete
+    },
   },
   Subscription: {
     newChat: {
       subscribe: (_, args: SubscriptionNewChatArgs) => ({
         [Symbol.asyncIterator]: withFilter(
           () => pubsub.asyncIterator(EVENT.CHAT_CREATED),
-          (payload: Pick<Subscription, "newChat">) => {
-            return payload.newChat.members.some((member) => member.firebaseId === args.userId)
-          },
+          (payload: Pick<Subscription, "newChat">) =>
+            payload.newChat.members.some((member) => member.firebaseId === args.userId),
+        ),
+      }),
+    },
+    chatDeleted: {
+      subscribe: (_, args: SubscriptionChatDeletedArgs) => ({
+        [Symbol.asyncIterator]: withFilter(
+          () => pubsub.asyncIterator(EVENT.CHAT_DELETED),
+          (payload: Pick<Subscription, "chatDeleted">) =>
+            payload.chatDeleted.members.some((member) => member.firebaseId === args.userId),
         ),
       }),
     },
