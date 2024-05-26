@@ -15,15 +15,15 @@ import type {
   OnlineStatusSubscription,
   OnlineStatusSubscriptionVariables,
 } from "__generated__/graphql"
+import { getFragment } from "__generated__"
 import { setChatList, updateChatList, updateChatListOnlineStatus } from "shared/slices/chatList"
 import { addMessage, updateChatOnlineStatus, updateMessagesRead } from "shared/slices/chat"
 import { MESSAGE_FIELDS, PREVIEW_CHAT_FIELDS, useAppDispatch, useAppSelector } from "shared/model"
-import { getFragment } from "__generated__"
+import { VerificationBar } from "shared/ui/Verification"
 import { CHANGE_ONLINE_STATUS, ONLINE_STATUS_SUBSCRIPTION } from "../model/queries/user"
 import { CHAT_DELETED_SUBSCRIPTION, NEW_CHAT_SUBSCRIPTION } from "../model/queries/chat"
-import { Sidebar } from "./Sidebar"
 import { MESSAGE_READ_SUBSCRIPTION, NEW_MESSAGE_SUBSCRIPTION } from "../model/queries/message"
-import { VerificationBar } from "./VerificationBar"
+import { Sidebar } from "./Sidebar"
 
 export function Main() {
   const { id } = useParams()

@@ -2,15 +2,12 @@ import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache, split } fr
 import { setContext } from "@apollo/client/link/context"
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions"
 import { getMainDefinition } from "@apollo/client/utilities"
-import { CancelRounded, CheckCircleRounded } from "@mui/icons-material"
 import { createClient } from "graphql-ws"
-import { useMemo } from "react"
 import { Route, Routes } from "react-router-dom"
 import { Provider } from "react-redux"
 import { Auth } from "pages/Auth"
 import { Main, Chat, NoSelected } from "pages/Main"
-import { VerificationContext, type VerificationContextType } from "shared/model"
-import { useNotification } from "shared/ui/Notification"
+import { VerificationProvider } from "shared/ui/Verification"
 import { PrivateRoutes, PublicRoutes, OnAuthStateChanged } from "./ui"
 import { store } from "./store"
 
@@ -53,31 +50,10 @@ const client = new ApolloClient({
 })
 
 export function App() {
-  const verified = useNotification({
-    message: "Your e-mail has been verified!",
-    className: "!bg-green-400",
-    Icon: CheckCircleRounded,
-  })
-  const unverified = useNotification({
-    message: "Your email is not verified!",
-    className: "!bg-red-400",
-    Icon: CancelRounded,
-  })
-
-  const verificationContextValue = useMemo<VerificationContextType>(
-    () => ({
-      openVerified: verified.openNotification,
-      openUnverified: unverified.openNotification,
-    }),
-    [verified.openNotification, unverified.openNotification],
-  )
-
   return (
     <ApolloProvider client={client}>
       <Provider store={store}>
-        {verified.NotificationElement}
-        {unverified.NotificationElement}
-        <VerificationContext.Provider value={verificationContextValue}>
+        <VerificationProvider>
           <OnAuthStateChanged>
             <Routes>
               <Route element={<PublicRoutes />}>
@@ -91,7 +67,7 @@ export function App() {
               </Route>
             </Routes>
           </OnAuthStateChanged>
-        </VerificationContext.Provider>
+        </VerificationProvider>
       </Provider>
     </ApolloProvider>
   )

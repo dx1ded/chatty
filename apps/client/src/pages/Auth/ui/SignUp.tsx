@@ -11,9 +11,9 @@ import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useLazyQuery, useMutation } from "@apollo/client"
 import type { CreateUserMutation, CreateUserMutationVariables, IsEmailUsedQuery } from "__generated__/graphql"
+import { SignUpVerification } from "shared/ui/Verification"
 import { AuthFormProps, SignUpSchema } from "../lib"
 import { ErrorMessage } from "./ErrorMessage"
-import { Verification } from "./Verification"
 import { CREATE_USER, IS_EMAIL_USED } from "../model/user.queries"
 
 type SignUpFields = z.infer<typeof SignUpSchema>
@@ -82,7 +82,7 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
           <Subheading>To get in the chat, you need to sign up</Subheading>
         </div>
         {isVerification ? (
-          <Verification />
+          <SignUpVerification />
         ) : (
           <form className="px-11 py-12 shadow-md" noValidate onSubmit={handleSubmit(submitHandler)}>
             <div className="mb-6 grid gap-4">

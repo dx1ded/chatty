@@ -1,10 +1,11 @@
 import { reload } from "firebase/auth"
 import { useState } from "react"
-import { useAppSelector, useVerificationContext } from "shared/model"
-import { Button } from "shared/ui/Button"
-import { Title, Text } from "shared/ui/Typography"
+import { useAppSelector } from "../../model"
+import { Button } from "../Button"
+import { Title, Text } from "../Typography"
+import { useVerificationContext } from "./model"
 
-export function Verification() {
+export function SignUpVerification() {
   const { user } = useAppSelector((state) => state.firebase)
   const { openVerified, openUnverified } = useVerificationContext()
   const [isLoading, setIsLoading] = useState(false)

@@ -1,9 +1,10 @@
 import { CancelRounded } from "@mui/icons-material"
 import { reload } from "firebase/auth"
 import { useState } from "react"
-import { useAppSelector, useVerificationContext } from "shared/model"
-import { Button } from "shared/ui/Button"
-import { Text } from "shared/ui/Typography"
+import { useAppSelector } from "../../model"
+import { Button } from "../Button"
+import { Text } from "../Typography"
+import { useVerificationContext } from "./model"
 
 export function VerificationBar() {
   const { user } = useAppSelector((state) => state.firebase)
