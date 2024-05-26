@@ -15,5 +15,5 @@ export function PublicRoutes() {
 
   if (isLoading) return <Outlet />
 
-  return user && location.pathname === "/auth" ? <Navigate to="/" /> : <Outlet />
+  return user?.emailVerified && location.pathname === "/auth" ? <Navigate to="/" /> : <Outlet />
 }

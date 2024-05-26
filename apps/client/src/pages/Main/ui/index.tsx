@@ -23,6 +23,7 @@ import { CHANGE_ONLINE_STATUS, ONLINE_STATUS_SUBSCRIPTION } from "../model/queri
 import { CHAT_DELETED_SUBSCRIPTION, NEW_CHAT_SUBSCRIPTION } from "../model/queries/chat"
 import { Sidebar } from "./Sidebar"
 import { MESSAGE_READ_SUBSCRIPTION, NEW_MESSAGE_SUBSCRIPTION } from "../model/queries/message"
+import { VerificationBar } from "./VerificationBar"
 
 export function Main() {
   const { id } = useParams()
@@ -118,6 +119,7 @@ export function Main() {
 
   return (
     <div className="flex h-screen min-h-[32rem]">
+      <VerificationBar />
       <Sidebar />
       <Outlet context={offset} />
     </div>

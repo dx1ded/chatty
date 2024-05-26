@@ -44,6 +44,7 @@ export function useContactList() {
 
   const sendClickHandler = useCallback(async () => {
     await sendManyTextMessages()
+    setTextValue("")
     setIsOpen(false)
   }, [sendManyTextMessages])
 
