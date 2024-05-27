@@ -2,16 +2,16 @@ import dayjs from "dayjs"
 import type { KeyboardEvent } from "react"
 
 /**
- * Returns a random number between min (inclusive) and max (exclusive)
+ * Both min and max are inclusive
  */
-export const getRandomArbitrary = (min: number, max: number) => {
-  return Math.random() * (max - min) + min
+export const getRandomNumber = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 export const generateAvatarByFullName = (fullName: string) => {
   const bgColors = ["00B3FF", "C04C46", "D36E21", "7461C7", "43AA2E"]
   const stringifiedName = fullName.split(" ").join("+")
-  const randomBg = getRandomArbitrary(0, bgColors.length)
+  const randomBg = getRandomNumber(0, bgColors.length - 1)
 
   return `https://ui-avatars.com/api/?name=${stringifiedName}&background=${bgColors[randomBg]}&color=fff&rounded=true&format=svg`
 }

@@ -1,17 +1,19 @@
-import { useState } from "react"
+import { useState, type Dispatch, type SetStateAction } from "react"
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react"
 import { SentimentSatisfiedOutlined } from "@mui/icons-material"
+import { useMessageContext } from "../model"
 
 interface SendEmojiProps {
-  input: HTMLInputElement | null
+  setInputValue: Dispatch<SetStateAction<string>>
 }
 
-export function SendEmoji({ input }: SendEmojiProps) {
+export function SendEmoji({ setInputValue }: SendEmojiProps) {
   const [emojiOpen, setEmojiOpen] = useState(false)
+  const { messageType } = useMessageContext()
 
   const clickHandler = (data: EmojiClickData) => {
-    if (!input) return
-    input.value += data.emoji
+    if (messageType !== "text") return
+    setInputValue((prev) => prev + data.emoji)
     setEmojiOpen(false)
   }
 

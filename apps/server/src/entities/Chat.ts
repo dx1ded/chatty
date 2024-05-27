@@ -15,7 +15,7 @@ import { Message } from "./Message"
 
 @Entity()
 export class Chat implements IChat {
-  @PrimaryColumn({ default: nanoid(8) })
+  @PrimaryColumn()
   id: string
 
   @ManyToMany(() => User, (user) => user.chats)
@@ -30,4 +30,8 @@ export class Chat implements IChat {
 
   @CreateDateColumn()
   createdAt: Date
+
+  constructor() {
+    this.id = nanoid(8)
+  }
 }

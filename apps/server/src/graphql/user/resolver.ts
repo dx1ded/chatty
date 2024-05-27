@@ -27,6 +27,7 @@ export default {
       const isEmail = emailRegexp.test(payload)
 
       return userRepository.findBy({
+        firebaseId: Not(user.uid),
         [isEmail ? "email" : "displayName"]: Raw(
           (alias) => `LOWER(${alias}) Like '${payload.toLowerCase()}%'`,
         ),

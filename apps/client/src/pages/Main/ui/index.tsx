@@ -43,16 +43,14 @@ export function Main() {
       variables: { status: true },
     })
 
-    const setOffline = () => {
+    window.onbeforeunload = () => {
       changeOnlineStatus({
         variables: { status: false },
       })
     }
 
-    window.addEventListener("beforeunload", setOffline)
-
     return () => {
-      window.removeEventListener("beforeunload", setOffline)
+      window.onbeforeunload = null
     }
   }, [changeOnlineStatus])
 

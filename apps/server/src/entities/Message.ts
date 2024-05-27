@@ -15,7 +15,7 @@ import { Chat } from "./Chat"
 @Entity()
 @TableInheritance({ column: { type: "varchar", name: "type" } })
 export class Message implements IMessage {
-  @PrimaryColumn({ default: nanoid(8) })
+  @PrimaryColumn()
   id: string
 
   @ManyToOne(() => User, (user) => user.messages)

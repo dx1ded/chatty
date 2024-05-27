@@ -70,6 +70,7 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
 
       setIsVerification(true)
     } catch (e) {
+      console.log(e)
       /* Catch */
     }
   }

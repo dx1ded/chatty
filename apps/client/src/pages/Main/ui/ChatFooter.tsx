@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type Dispatch, type SetStateAction } from "react"
+import { useMemo, useState } from "react"
 import { Input } from "shared/ui/Input"
 import { handleEnter } from "shared/lib"
 import { useAttachment } from "shared/ui/Attachment"
@@ -11,7 +11,8 @@ import type { MessageType } from "../lib"
 
 export function ChatFooter() {
   const [messageType, setMessageType] = useState<MessageType>("text")
-  const inputRef = useRef<HTMLInputElement>(null)
+  // Using useState instead of useRef because it has to rerender the component when changed
+  const [inputValue, setInputValue] = useState("")
   const { items, addItem, clearItems, contextHandler } = useAttachment({
     onItemsDeleted: () => setMessageType("text"),
   })
@@ -19,6 +20,8 @@ export function ChatFooter() {
     messageType,
     items,
     clearItems,
+    inputValue,
+    setInputValue,
   })
 
   const contextValue = useMemo(
@@ -35,21 +38,22 @@ export function ChatFooter() {
   return (
     <MessageContext.Provider value={contextValue}>
       <footer className="mx-9 mb-6 flex items-center gap-3 rounded border border-[#E9E9E9] px-4 py-2.5">
-        <SendEmoji input={inputRef.current} />
+        <SendEmoji setInputValue={setInputValue} />
         <div className="flex-1">
           {contextHandler}
           {messageType === "text" && (
             <Input
-              ref={inputRef}
               className="border-none text-sm"
               placeholder="Write a message..."
-              onKeyDown={handleEnter(sendTextMessage(inputRef.current))}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleEnter(sendTextMessage)}
             />
           )}
         </div>
         <SendPictureMessage />
         <SendVoiceMessage />
-        {SendButton(inputRef.current)}
+        {SendButton}
       </footer>
     </MessageContext.Provider>
   )

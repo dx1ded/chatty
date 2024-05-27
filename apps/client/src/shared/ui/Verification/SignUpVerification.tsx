@@ -1,4 +1,3 @@
-import { reload } from "firebase/auth"
 import { useState } from "react"
 import { useAppSelector } from "../../model"
 import { Button } from "../Button"
@@ -13,7 +12,7 @@ export function SignUpVerification() {
   const checkEmailVerification = async () => {
     if (!user) return
     setIsLoading(true)
-    await reload(user)
+    await user.reload()
     setIsLoading(false)
     return user.emailVerified ? openVerified() : openUnverified()
   }

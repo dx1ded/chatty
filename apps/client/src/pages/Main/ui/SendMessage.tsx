@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useMemo, type Dispatch, type SetStateAction } from "react"
 import type {
   CreatePictureMessageMutation,
   CreatePictureMessageMutationVariables,
@@ -19,9 +19,17 @@ interface UseSendMessageProps {
   messageType: MessageType
   items: ReturnType<typeof useAttachment>["items"]
   clearItems: ReturnType<typeof useAttachment>["clearItems"]
+  inputValue: string
+  setInputValue: Dispatch<SetStateAction<string>>
 }
 
-export function useSendMessage({ messageType, items, clearItems }: UseSendMessageProps) {
+export function useSendMessage({
+  messageType,
+  items,
+  clearItems,
+  inputValue,
+  setInputValue,
+}: UseSendMessageProps) {
   const { chat } = useAppSelector((state) => state.chat)
 
   const [createTextMessage, { loading: textLoading }] = useMutation<
@@ -39,25 +47,22 @@ export function useSendMessage({ messageType, items, clearItems }: UseSendMessag
     CreateVoiceMessageMutationVariables
   >(SEND_VOICE_MESSAGE)
 
-  const sendTextMessage = useCallback(
-    (input: HTMLInputElement | null) => async () => {
-      if (!input || !input.value) return
+  const sendTextMessage = useCallback(async () => {
+    if (!inputValue) return
 
-      await createTextMessage({
-        variables: {
-          message: {
-            text: input.value,
-            meta: {
-              chat: chat.id,
-            },
+    await createTextMessage({
+      variables: {
+        message: {
+          text: inputValue,
+          meta: {
+            chat: chat.id,
           },
         },
-      })
+      },
+    })
 
-      input.value = ""
-    },
-    [chat.id, createTextMessage],
-  )
+    setInputValue("")
+  }, [chat.id, createTextMessage, inputValue, setInputValue])
 
   const sendPictureMessage = useCallback(async () => {
     const pictureItems = items.filter(
@@ -98,8 +103,8 @@ export function useSendMessage({ messageType, items, clearItems }: UseSendMessag
     // There's no setMessageType("text") because useAttachment does it after clearItems() - it calls onItemsDeleted()
   }, [chat.id, createVoiceMessage, items, clearItems])
 
-  const SendButton = useCallback(
-    (input: HTMLInputElement | null) =>
+  const SendButton = useMemo(
+    () =>
       textLoading || pictureLoading || voiceLoading ? (
         <Spinner type="round" size={1.5} />
       ) : (
@@ -108,7 +113,7 @@ export function useSendMessage({ messageType, items, clearItems }: UseSendMessag
           className="text-grayish h-6 w-6"
           onClick={
             messageType === "text"
-              ? sendTextMessage(input)
+              ? sendTextMessage
               : messageType === "picture"
                 ? sendPictureMessage
                 : sendVoiceMessage
