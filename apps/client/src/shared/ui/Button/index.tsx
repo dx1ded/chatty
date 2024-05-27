@@ -3,8 +3,8 @@ import type { ComponentPropsWithoutRef } from "react"
 const buttonVariants = {
   primary:
     "bg-cornflower-blue text-white font-medium hover:bg-primary active:bg-[#73B9FF] disabled:opacity-75",
-  white: "bg-white text-black font-medium",
-  danger: "bg-red-500 text-white font-medium",
+  white: "bg-white text-black hover:bg-gray-100 active:bg-gray-200 font-medium disabled:opacity-75",
+  danger: "bg-red-500 hover:bg-red-400 active:bg-red-700 text-white font-medium disabled:opacity-75",
 }
 
 interface ButtonProps extends ComponentPropsWithoutRef<"button"> {

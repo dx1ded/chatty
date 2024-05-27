@@ -28,12 +28,12 @@ export function useChatInfo() {
   const ChatInfoModal = useMemo(
     () => (
       <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} aria-labelledby="info-modal-title">
-        <div className="absolute left-1/2 top-1/2 w-full max-w-96 -translate-x-1/2 -translate-y-1/2 rounded bg-white p-4">
+        <div className="animate-appear absolute left-1/2 top-1/2 w-full max-w-96 -translate-x-1/2 -translate-y-1/2 rounded bg-white p-4">
           <div className="mb-5 flex items-center justify-between">
             <Subheading id="info-modal-title" className="font-medium">
               Chat Info
             </Subheading>
-            <button type="button" className="h-6 w-6" onClick={() => setIsModalOpen(false)}>
+            <button type="button" className="flex h-5 w-5 items-center" onClick={() => setIsModalOpen(false)}>
               <Close sx={{ width: "100%", height: "100%" }} />
             </button>
           </div>
