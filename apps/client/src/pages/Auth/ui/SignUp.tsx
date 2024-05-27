@@ -5,13 +5,13 @@ import z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth"
-import { useAppSelector } from "shared/model"
+import { useAppDispatch, useAppSelector } from "shared/model"
 import { generateAvatarByFullName } from "shared/lib"
-import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useLazyQuery, useMutation } from "@apollo/client"
 import type { CreateUserMutation, CreateUserMutationVariables, IsEmailUsedQuery } from "__generated__/graphql"
 import { SignUpVerification } from "shared/ui/Verification"
+import { setIsVerificationScreen } from "shared/slices/firebase"
 import { AuthFormProps, SignUpSchema } from "../lib"
 import { ErrorMessage } from "./ErrorMessage"
 import { CREATE_USER, IS_EMAIL_USED } from "../model/user.queries"
@@ -19,10 +19,10 @@ import { CREATE_USER, IS_EMAIL_USED } from "../model/user.queries"
 type SignUpFields = z.infer<typeof SignUpSchema>
 
 export function SignUp({ setHasAccount }: AuthFormProps) {
-  const { auth } = useAppSelector((state) => state.firebase)
+  const { auth, isVerificationScreen } = useAppSelector((state) => state.firebase)
+  const dispatch = useAppDispatch()
   const [sendIsEmailUsed, { loading, called, data }] = useLazyQuery<IsEmailUsedQuery>(IS_EMAIL_USED)
   const [createUser] = useMutation<CreateUserMutation, CreateUserMutationVariables>(CREATE_USER)
-  const [isVerification, setIsVerification] = useState(false)
   const {
     register,
     control,
@@ -68,7 +68,7 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
         },
       })
 
-      setIsVerification(true)
+      dispatch(setIsVerificationScreen())
     } catch (e) {
       /* Catch */
     }
@@ -81,7 +81,7 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
           <Heading className="mb-1.5 lg:mb-1">Sign up</Heading>
           <Subheading>To get in the chat, you need to sign up</Subheading>
         </div>
-        {isVerification ? (
+        {isVerificationScreen ? (
           <SignUpVerification />
         ) : (
           <form

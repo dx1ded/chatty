@@ -1,6 +1,8 @@
 import { ArrowBack } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import { Text } from "shared/ui/Typography"
+import { useDispatch } from "react-redux"
+import { setIsOpen } from "shared/slices/sidebar"
 import { ChatOptions } from "./ChatOptions"
 
 interface ChatHeaderProps {
@@ -9,9 +11,17 @@ interface ChatHeaderProps {
 }
 
 export function ChatHeader({ name, online }: ChatHeaderProps) {
+  const dispatch = useDispatch()
+
+  const goBackClickHandler = () => {
+    if (window.innerWidth <= 768) {
+      dispatch(setIsOpen(true))
+    }
+  }
+
   return (
-    <header className="flex h-14 flex-shrink-0 items-center justify-between border-b border-[#F7F7F7] px-4">
-      <Link to="/" className="flex h-8 w-8 items-center text-gray-500">
+    <header className="flex h-14 flex-shrink-0 items-center justify-between border-b border-[#F7F7F7] px-4 lg:px-2">
+      <Link to="/" className="flex h-8 w-8 items-center text-gray-500" onClick={goBackClickHandler}>
         <ArrowBack sx={{ width: "100%" }} />
       </Link>
       <div className="text-center">

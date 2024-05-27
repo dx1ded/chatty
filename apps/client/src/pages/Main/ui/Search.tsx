@@ -38,7 +38,7 @@ export const Search = forwardRef<HTMLInputElement>(function Search(_, ref) {
   useImperativeHandle(ref, () => inputRef.current!, [])
 
   return (
-    <div className="mb-6 px-5">
+    <div className="mb-6 px-5 md:mb-4 md:px-2 lg:mb-5 lg:px-3">
       <div className="relative">
         <SearchOutlined
           className="pointer-events-none absolute left-2.5 top-1/2 z-10 -translate-y-1/2 text-[#CBCBCB]"

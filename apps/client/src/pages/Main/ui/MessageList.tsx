@@ -63,8 +63,8 @@ export function MessageList({ data, refetch }: MessageListProps) {
   const messages = useMemo(() => data.map((_fragment) => getFragment(MESSAGE_FIELDS, _fragment)), [data])
 
   return (
-    <div className="flex max-h-full flex-1 flex-col-reverse overflow-y-auto px-9 py-8">
-      <div className="flex flex-col gap-10">
+    <div className="flex max-h-full flex-1 flex-col-reverse overflow-y-auto px-9 py-8 lg:px-4">
+      <div className="flex flex-col gap-10 sm:gap-8">
         {messagesLoading ? <Spinner className="self-center" /> : <div ref={ref} />}
         {messages.map((message, i) => (
           <Message

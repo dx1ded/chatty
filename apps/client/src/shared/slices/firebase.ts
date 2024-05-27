@@ -6,6 +6,7 @@ interface FirebaseState {
   auth: Auth
   user: User | null
   isLoading: boolean
+  isVerificationScreen: boolean
 }
 
 const app = initializeApp({
@@ -24,6 +25,7 @@ const initialState: FirebaseState = {
   auth,
   user: null,
   isLoading: true,
+  isVerificationScreen: false,
 }
 
 const firebaseSlice = createSlice({
@@ -36,9 +38,12 @@ const firebaseSlice = createSlice({
     setIsLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.isLoading = payload
     },
+    setIsVerificationScreen: (state) => {
+      state.isVerificationScreen = true
+    },
   },
 })
 
-export const { setUser, setIsLoading } = firebaseSlice.actions
+export const { setUser, setIsLoading, setIsVerificationScreen } = firebaseSlice.actions
 
 export default firebaseSlice.reducer

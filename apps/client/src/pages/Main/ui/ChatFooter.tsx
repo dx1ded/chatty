@@ -37,7 +37,7 @@ export function ChatFooter() {
 
   return (
     <MessageContext.Provider value={contextValue}>
-      <footer className="mx-9 mb-6 flex items-center gap-3 rounded border border-[#E9E9E9] px-4 py-2.5">
+      <footer className="mx-9 mb-6 flex items-center gap-3 rounded border border-[#E9E9E9] px-4 py-2.5 lg:mx-4 lg:mb-4">
         <SendEmoji setInputValue={setInputValue} />
         <div className="flex-1">
           {contextHandler}

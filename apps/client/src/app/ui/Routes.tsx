@@ -8,8 +8,12 @@ export function PrivateRoutes() {
 }
 
 export function PublicRoutes() {
-  const { user } = useAppSelector((state) => state.firebase)
+  const { user, isVerificationScreen } = useAppSelector((state) => state.firebase)
   const location = useLocation()
 
-  return user?.emailVerified && location.pathname === "/auth" ? <Navigate to="/" /> : <Outlet />
+  if (isVerificationScreen) {
+    return user?.emailVerified && location.pathname === "/auth" ? <Navigate to="/" /> : <Outlet />
+  }
+
+  return user && location.pathname === "/auth" ? <Navigate to="/" /> : <Outlet />
 }

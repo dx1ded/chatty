@@ -14,15 +14,17 @@ interface ProfileCardProps {
   name: string
   profilePic: string
   searchRef: RefObject<HTMLInputElement>
+  closeMenu(): void
 }
 
-export function ProfileCard({ id, name, profilePic, searchRef }: ProfileCardProps) {
+export function ProfileCard({ id, name, profilePic, searchRef, closeMenu }: ProfileCardProps) {
   const navigate = useNavigate()
   const { user } = useAppSelector((state) => state.firebase)
   const dispatch = useAppDispatch()
   const [createChat] = useMutation<CreateChatMutation, CreateChatMutationVariables>(CREATE_CHAT)
 
   const clickHandler = async () => {
+    closeMenu()
     dispatch(setIsLoading(true))
 
     const query = await createChat({
@@ -45,9 +47,9 @@ export function ProfileCard({ id, name, profilePic, searchRef }: ProfileCardProp
   return (
     <button
       type="button"
-      className="flex w-full cursor-pointer items-center gap-2.5 px-5 py-3 transition-colors duration-500 hover:bg-[#F3F7FF]"
+      className="flex w-full cursor-pointer items-center gap-2.5 px-5 py-3 transition-colors duration-500 hover:bg-[#F3F7FF] md:px-3 md:py-2"
       onClick={clickHandler}>
-      <img src={profilePic} alt="User" className="h-10 w-10" />
+      <img src={profilePic} alt="User" className="h-10 w-10 md:h-9 md:w-9" />
       <Text className="font-medium">{name}</Text>
     </button>
   )

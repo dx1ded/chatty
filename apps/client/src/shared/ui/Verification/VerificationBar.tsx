@@ -22,7 +22,7 @@ export function VerificationBar() {
   return (
     isOpen &&
     !user?.emailVerified && (
-      <div className="fixed left-0 top-0 flex h-12 w-full items-center gap-4 border-b bg-yellow-500 px-4 py-2 shadow-md">
+      <div className="fixed left-0 top-0 z-50 flex h-12 w-full items-center gap-4 border-b bg-yellow-500 px-4 py-2 shadow-md">
         <Text className="text-white">
           Your e-mail is not verified yet. Please follow the link that was sent to the provided e-mail
         </Text>
