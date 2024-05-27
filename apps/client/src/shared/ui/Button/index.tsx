@@ -16,7 +16,7 @@ export function Button({ children, className, variant = "primary", ...props }: B
     <button
       type="button"
       {...props}
-      className={`rounded px-3 py-1.5 text-center text-sm transition-all duration-500 ${buttonVariants[variant]} ${className || ""}`}>
+      className={`rounded px-3 py-1.5 text-center text-sm transition-all duration-500 sm:text-xs ${buttonVariants[variant]} ${className || ""}`}>
       {children}
     </button>
   )

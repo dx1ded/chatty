@@ -70,23 +70,25 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
 
       setIsVerification(true)
     } catch (e) {
-      console.log(e)
       /* Catch */
     }
   }
 
   return (
-    <div className="absolute left-1/2 top-1/2 max-h-full w-full max-w-[26.875rem] -translate-x-1/2 -translate-y-1/2 p-2.5">
+    <div className="absolute left-1/2 top-1/2 max-h-full w-full max-w-[26.875rem] -translate-x-1/2 -translate-y-1/2 p-2.5 md:max-w-96">
       <div>
-        <div className="mb-12 text-center">
-          <Heading className="mb-1.5">Sign up</Heading>
+        <div className="mb-12 text-center md:mb-4 lg:mb-6">
+          <Heading className="mb-1.5 lg:mb-1">Sign up</Heading>
           <Subheading>To get in the chat, you need to sign up</Subheading>
         </div>
         {isVerification ? (
           <SignUpVerification />
         ) : (
-          <form className="px-11 py-12 shadow-md" noValidate onSubmit={handleSubmit(submitHandler)}>
-            <div className="mb-6 grid gap-4">
+          <form
+            className="px-11 py-12 shadow-md sm:px-4 sm:py-5 md:px-6 md:py-7 lg:px-8 lg:py-9"
+            noValidate
+            onSubmit={handleSubmit(submitHandler)}>
+            <div className="mb-6 grid gap-4 md:mb-3 md:gap-2 lg:mb-4 lg:gap-3">
               <div>
                 <Controller
                   name="email"
@@ -95,7 +97,7 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
                     <Input
                       ref={field.ref}
                       type="email"
-                      className="p-4"
+                      className="p-4 lg:p-3"
                       placeholder="E-mail"
                       autoComplete="off"
                       isCorrect={errors.email ? false : called ? !data?.isEmailUsed : undefined}
@@ -113,7 +115,7 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
               <div>
                 <Input
                   type="text"
-                  className="p-4"
+                  className="p-4 lg:p-3"
                   placeholder="Full name"
                   autoComplete="off"
                   isCorrect={errors.fullName ? false : undefined}
@@ -124,7 +126,7 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
               <div>
                 <Input
                   type="password"
-                  className="p-4"
+                  className="p-4 lg:p-3"
                   placeholder="Password"
                   autoComplete="off"
                   isCorrect={errors.password ? false : undefined}
@@ -135,7 +137,7 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
               <div>
                 <Input
                   type="password"
-                  className="p-4"
+                  className="p-4 lg:p-3"
                   placeholder="Confirm password"
                   autoComplete="off"
                   isCorrect={errors.confirmPassword ? false : undefined}
@@ -144,13 +146,16 @@ export function SignUp({ setHasAccount }: AuthFormProps) {
                 {errors.confirmPassword && <ErrorMessage message={errors.confirmPassword.message!} />}
               </div>
             </div>
-            <div className="flex flex-col items-center gap-7">
-              <Button type="submit" className="w-full py-4 uppercase" disabled={isSubmitting}>
+            <div className="flex flex-col items-center gap-7 md:gap-4 lg:gap-5">
+              <Button
+                type="submit"
+                className="w-full py-4 uppercase md:text-xs lg:p-3"
+                disabled={isSubmitting}>
                 Sign up
               </Button>
               <button
                 type="button"
-                className="text-center font-light text-[#ADADAD]"
+                className="text-center font-light text-[#ADADAD] md:text-xs lg:text-sm"
                 onClick={() => setHasAccount(true)}>
                 Already have an account?
               </button>

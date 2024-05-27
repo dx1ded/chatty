@@ -27,7 +27,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   { className, containerClassName, variant = "primary", isCorrect, isLoading, ...props }: InputProps,
   ref,
 ) {
-  const inputClassName = `rounded w-full border outline-none ${inputVariants[variant]} ${className || ""}`
+  const inputClassName = `rounded w-full border outline-none lg:text-sm sm:text-xs ${inputVariants[variant]} ${className || ""}`
   const isCorrectSet = typeof isCorrect !== "undefined"
   const ExtrasIcon = isCorrect ? Done : Close
   const extrasClassName = isCorrect ? "bg-green-500" : "bg-red-500"

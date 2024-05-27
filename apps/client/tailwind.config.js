@@ -39,7 +39,6 @@ module.exports = {
       },
     },
     screens: {
-      v: { max: "89rem" }, // validation
       xl: { max: "80rem" }, // 1280px
       lg: { max: "64rem" }, // 1024px
       md: { max: "48rem" }, // 768px
