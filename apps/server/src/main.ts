@@ -16,6 +16,9 @@ import { schema } from "./graphql"
 import pubsub from "./graphql/pubsub"
 import firebaseCredentials from "./credentials"
 
+const HOST = String(process.env.HOST) || "localhost"
+const PORT = Number(process.env.PORT) || 4000
+
 async function start() {
   const app = express()
   const httpServer = createServer(app)
@@ -77,8 +80,8 @@ async function start() {
     }),
   )
 
-  httpServer.listen(Number(process.env.GRAPHQL_PORT), () => {
-    console.log(`Server is listening port ${process.env.GRAPHQL_PORT}`)
+  httpServer.listen(PORT, HOST, () => {
+    console.log(`Server is listening port ${PORT}`)
   })
 }
 
