@@ -9,4 +9,5 @@ RUN npm install
 RUN npx nx run server:build-graphql-types
 
 EXPOSE 4000
-CMD ["npx", "nx", "run", "server:serve"]
+CMD ["npx", "nx", "run", "server:serve:production"]
+

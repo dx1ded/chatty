@@ -7,6 +7,13 @@ COPY ../ .
 RUN npm install
 
 RUN npx nx run server:build-graphql-types
+
+# Passing from docker-compose
+ARG VITE_GRAPHQL_URL
+ARG VITE_GRAPHQL_WS_URL
+ENV VITE_GRAPHQL_URL=${VITE_GRAPHQL_URL}
+ENV VITE_GRAPHQL_WS_URL=${VITE_GRAPHQL_WS_URL}
+
 RUN npx nx run client:build
 
 # Serving client
