@@ -24,8 +24,6 @@ async function start() {
   const httpServer = createServer(app)
 
   const wsServer = new WebSocketServer({
-    host: HOST,
-    port: PORT,
     server: httpServer,
     path: "/graphql",
   })
