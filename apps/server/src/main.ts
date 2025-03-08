@@ -31,7 +31,6 @@ async function start() {
   const firebase = initializeApp({
     credential: cert(firebaseCredentials),
   })
-  console.log(firebase)
   const auth = getAuth(firebase)
 
   const serverCleanup = useServer(
