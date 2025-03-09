@@ -7,7 +7,6 @@ RUN npm install
 
 RUN npx nx run server:build-graphql-types
 
-RUN rm -rf apps/client/.env
 RUN --mount=type=secret,id=env_file \
     if [ -f /run/secrets/env_file ]; then \
       cat /run/secrets/env_file > apps/client/.env.local; \
@@ -17,11 +16,6 @@ RUN npx nx run client:build
 
 FROM nginx:stable-alpine AS runner
 WORKDIR /usr/share/nginx/html
-
-ARG VITE_GRAPHQL_URL
-ARG VITE_GRAPHQL_WS_URL
-ENV VITE_GRAPHQL_URL=${VITE_GRAPHQL_URL}
-ENV VITE_GRAPHQL_WS_URL=${VITE_GRAPHQL_WS_URL}
 
 COPY --from=builder /app/dist/apps/client .
 COPY ../nginx.conf /etc/nginx/conf.d/default.conf
